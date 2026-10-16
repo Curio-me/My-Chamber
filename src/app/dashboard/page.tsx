@@ -235,8 +235,8 @@ export default function DashboardPage() {
 
   const publicUrl =
     typeof window !== "undefined"
-      ? `${window.location.origin}/adv/${profile.slug}`
-      : `https://virtualchamber.in/adv/${profile.slug}`;
+      ? `${window.location.origin}/${profile.slug}`
+      : `https://my-chamber.vercel.app/${profile.slug}`;
 
   const copyPublicLink = () => {
     navigator.clipboard.writeText(publicUrl);
@@ -325,14 +325,13 @@ export default function DashboardPage() {
             </button>
 
             <Link
-              href={`/adv/${profile.slug}`}
+              href={`/${profile.slug}`}
               target="_blank"
               className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8ab4f8] hover:text-[#aecbfa] bg-[#1a2333] hover:bg-[#212c40] px-3.5 py-2 rounded-xl border border-[#8ab4f8]/30 transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>View Public Card</span>
             </Link>
-
             <button
               onClick={handleSave}
               className="flex items-center gap-1.5 bg-[#8ab4f8] hover:bg-[#aecbfa] active:bg-[#729ee6] text-[#0e0e10] font-bold text-xs px-4 py-2 rounded-xl shadow-md transition-all"
@@ -388,7 +387,7 @@ export default function DashboardPage() {
                   Chamber URL Slug
                 </label>
                 <div className="flex items-center bg-[#202227] border border-[#343840] rounded-xl px-3 py-2.5 text-sm focus-within:border-[#8ab4f8]">
-                  <span className="text-[#9aa0a6] text-xs">/adv/</span>
+                  <span className="text-[#9aa0a6] text-xs font-mono">/</span>
                   <input
                     type="text"
                     value={profile.slug}
@@ -398,8 +397,8 @@ export default function DashboardPage() {
                         slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ""),
                       })
                     }
-                    placeholder="your-name-slug"
-                    className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1"
+                    placeholder="rajavikrant"
+                    className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1 font-mono"
                   />
                 </div>
               </div>

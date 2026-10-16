@@ -230,7 +230,7 @@ export default function Home() {
             <FeatureCard
               icon={<Globe className="w-6 h-6 text-[#c9a84c]" />}
               title="Your Unique URL"
-              desc="Get a shareable link like virtualchamber.in/adv-yourname. Put it everywhere."
+              desc="Get a shareable link like my-chamber.vercel.app/rajavikrant. Put it everywhere."
             />
           </div>
         </div>
