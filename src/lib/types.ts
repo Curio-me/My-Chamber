@@ -12,6 +12,7 @@ export interface Advocate {
   slug: string;
   fullName: string;
   enrollmentNo: string;
+  barAssociations?: string[]; // e.g. ["Panchkula Bar Association", "Punjab and Haryana High Court Bar Association"]
   bio: string;
   photoUrl?: string;
   bannerUrl?: string;
@@ -36,6 +37,20 @@ export interface Advocate {
   enable3d?: boolean;
   isVerified: boolean;
 }
+
+// Popular / Common Bar Associations in India
+export const COMMON_BAR_ASSOCIATIONS = [
+  "Punjab and Haryana High Court Bar Association",
+  "Panchkula Bar Association",
+  "Supreme Court Bar Association (SCBA)",
+  "Delhi High Court Bar Association (DHCBA)",
+  "Chandigarh District Bar Association",
+  "Bombay Bar Association",
+  "Madras High Court Advocates Association (MHAA)",
+  "Calcutta High Court Bar Association",
+  "Allahabad High Court Bar Association",
+  "District & Sessions Court Bar Association",
+];
 
 // All possible specializations
 export const ALL_SPECIALIZATIONS = [

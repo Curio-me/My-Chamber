@@ -6,6 +6,7 @@ export const EMPTY_ADVOCATE: Advocate = {
   slug: "",
   fullName: "",
   enrollmentNo: "",
+  barAssociations: [],
   bio: "",
   photoUrl: undefined,
   bannerUrl: undefined,
@@ -24,7 +25,7 @@ export const EMPTY_ADVOCATE: Advocate = {
   websiteUrl: "",
   customLinks: [],
   themePreference: "dark",
-  enable3d: true,
+  enable3d: false,
   isVerified: false,
 };
 
@@ -34,6 +35,10 @@ export const DEMO_ADVOCATE: Advocate = {
   slug: "adv-sample",
   fullName: "Adv. Legal Counsel",
   enrollmentNo: "D/1234/2015",
+  barAssociations: [
+    "Delhi High Court Bar Association (DHCBA)",
+    "New Delhi Bar Association",
+  ],
   bio: "Advocate practicing across Constitutional, Civil, and Criminal matters. Dedicated to accessible legal counsel, fair representation, and courtroom advocacy.",
   photoUrl: undefined,
   mobile: "+91-98000-00000",

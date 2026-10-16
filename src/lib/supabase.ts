@@ -17,6 +17,10 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
   const newsItems: any[] = Array.isArray(row.news_media) ? [...row.news_media] : [];
 
   customLinksRaw.forEach((item: any) => {
+    if (item.isBarAssociations) {
+      return;
+    }
+
     const isNews =
       item.isNews ||
       item.publication ||
@@ -59,11 +63,25 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     }
   });
 
+  // Extract Bar Associations (either column or custom_links fallback)
+  let barAssocs: string[] = [];
+  if (Array.isArray(row.bar_associations)) {
+    barAssocs = row.bar_associations;
+  } else if (Array.isArray(row.barAssociations)) {
+    barAssocs = row.barAssociations;
+  } else {
+    const metaItem = customLinksRaw.find((c: any) => c.isBarAssociations);
+    if (metaItem && Array.isArray(metaItem.items)) {
+      barAssocs = metaItem.items;
+    }
+  }
+
   return {
     id: row.id,
     slug: row.slug,
     fullName: row.full_name,
     enrollmentNo: row.enrollment_no || "",
+    barAssociations: barAssocs,
     bio: row.bio || "",
     photoUrl: row.photo_url || undefined,
     mobile: row.mobile || "",
@@ -88,7 +106,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
 }
 
 export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
-  // Store both customLinks and newsMedia tagged inside custom_links JSONB
+  // Store customLinks, newsMedia, and barAssociations metadata inside custom_links JSONB
   const combinedCustomLinks = [
     ...(advocate.customLinks || []).map((l) => ({ ...l, isNews: false })),
     ...(advocate.newsMedia || []).map((n) => ({
@@ -100,6 +118,9 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
       date: n.date || null,
       isNews: true,
     })),
+    ...(advocate.barAssociations && advocate.barAssociations.length > 0
+      ? [{ id: "meta_bar_associations", isBarAssociations: true, items: advocate.barAssociations }]
+      : []),
   ];
 
   return {

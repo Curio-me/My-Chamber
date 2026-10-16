@@ -13,6 +13,10 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
       slug: "rajavikrant",
       fullName: "Adv. RajaVikrant Sharma",
       enrollmentNo: "PH//7797//2025",
+      barAssociations: [
+        "Panchkula Bar Association",
+        "Punjab and Haryana High Court Bar Association",
+      ],
       bio: "Advocate with 1+ years of experience practicing at the Punjab and Haryana High Court. I have handled over 2 Constitutional cases, 5 Consumer Cases and have a strong track record in Cyber, Civil and Consumer disputes. My mission is to ensure every client receives fair representation and justice, regardless of their background.",
       mobile: "",
       officePhone: "",

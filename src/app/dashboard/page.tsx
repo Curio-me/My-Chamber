@@ -2,7 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Advocate, NewsMediaItem, ALL_SPECIALIZATIONS, ALL_COURTS } from "@/lib/types";
+import {
+  Advocate,
+  NewsMediaItem,
+  ALL_SPECIALIZATIONS,
+  ALL_COURTS,
+  COMMON_BAR_ASSOCIATIONS,
+} from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import { upsertAdvocateProfile } from "@/lib/supabase";
@@ -32,6 +38,7 @@ import {
   Newspaper,
   Wand2,
   Loader2,
+  Landmark,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -46,6 +53,7 @@ export default function DashboardPage() {
   const [customCourtInput, setCustomCourtInput] = useState("");
   const [courtSearch, setCourtSearch] = useState("");
   const [customLangInput, setCustomLangInput] = useState("");
+  const [customBarAssocInput, setCustomBarAssocInput] = useState("");
   const [extractingNewsId, setExtractingNewsId] = useState<string | null>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
@@ -174,6 +182,28 @@ export default function DashboardPage() {
     setProfile((prev) => ({
       ...prev,
       languages: prev.languages.filter((l) => l !== lang),
+    }));
+  };
+
+  // Bar Associations handlers
+  const addBarAssociation = (assocName?: string) => {
+    const name = (assocName || customBarAssocInput).trim();
+    if (!name) return;
+    if (profile.barAssociations?.includes(name)) {
+      setCustomBarAssocInput("");
+      return;
+    }
+    setProfile((prev) => ({
+      ...prev,
+      barAssociations: [...(prev.barAssociations || []), name],
+    }));
+    setCustomBarAssocInput("");
+  };
+
+  const removeBarAssociation = (assocToRemove: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      barAssociations: (prev.barAssociations || []).filter((a) => a !== assocToRemove),
     }));
   };
 
@@ -467,6 +497,97 @@ export default function DashboardPage() {
                   onChange={(e) => setProfile({ ...profile, yearsExp: Number(e.target.value) || 0 })}
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
+              </div>
+            </div>
+
+            {/* Enrolled Bar Associations Subsection */}
+            <div className="pt-3 border-t border-[#2d3139]/60 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-[#f1f3f4]">
+                    <Landmark className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Enrolled with which Bar Association(s)?</span>
+                  </label>
+                  <p className="text-[11px] text-[#9aa0a6] mt-0.5">
+                    Add the Bar Associations where you are enrolled or hold membership (e.g. Panchkula Bar Association, Punjab and Haryana High Court Bar Association)
+                  </p>
+                </div>
+                <span className="text-[11px] font-semibold text-amber-400">
+                  {(profile.barAssociations || []).length} Added
+                </span>
+              </div>
+
+              {/* Active Bar Associations Chips */}
+              {(profile.barAssociations || []).length > 0 && (
+                <div className="flex flex-wrap gap-1.5 p-2.5 bg-[#202227] rounded-xl border border-[#343840]/70">
+                  {(profile.barAssociations || []).map((assoc) => (
+                    <span
+                      key={assoc}
+                      className="inline-flex items-center gap-1.5 bg-[#2a303c] border border-amber-400/30 text-amber-200 text-xs font-medium px-3 py-1 rounded-full shadow-sm"
+                    >
+                      <Landmark className="w-3 h-3 text-amber-400 shrink-0" />
+                      <span>{assoc}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeBarAssociation(assoc)}
+                        className="text-amber-400/70 hover:text-rose-400 font-bold ml-1 text-sm leading-none"
+                        title="Remove Bar Association"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Add custom Bar Association Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customBarAssocInput}
+                  onChange={(e) => setCustomBarAssocInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addBarAssociation();
+                    }
+                  }}
+                  placeholder="Type Bar Association name (e.g. Panchkula Bar Association, Punjab and Haryana High Court Bar Association)..."
+                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-xs text-[#f1f3f4] focus:outline-none focus:border-amber-400 placeholder:text-[#5f6368]"
+                />
+                <button
+                  type="button"
+                  onClick={() => addBarAssociation()}
+                  className="bg-[#2a303c] hover:bg-[#343c4c] text-amber-300 px-4 py-2 rounded-xl text-xs font-semibold border border-amber-400/30 transition-colors shadow-sm"
+                >
+                  Add Association
+                </button>
+              </div>
+
+              {/* Quick suggestion pills */}
+              <div className="space-y-1">
+                <p className="text-[11px] text-[#9aa0a6]">Popular Suggestions (Click to Add):</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {COMMON_BAR_ASSOCIATIONS.map((assoc) => {
+                    const alreadyAdded = (profile.barAssociations || []).includes(assoc);
+                    return (
+                      <button
+                        key={assoc}
+                        type="button"
+                        disabled={alreadyAdded}
+                        onClick={() => addBarAssociation(assoc)}
+                        className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                          alreadyAdded
+                            ? "bg-[#1c1f26] border-[#2d3139] text-[#5f6368] cursor-default"
+                            : "bg-[#202227] hover:bg-[#282d38] border-[#343840] text-amber-200/90 hover:border-amber-400/40"
+                        }`}
+                      >
+                        {alreadyAdded ? "✓ " : "+ "}
+                        {assoc}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
