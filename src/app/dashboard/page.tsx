@@ -60,6 +60,7 @@ export default function DashboardPage() {
   const [previewDevice, setPreviewDevice] = useState<"mobile" | "desktop">("mobile");
   const [customTagInput, setCustomTagInput] = useState("");
   const [customCourtInput, setCustomCourtInput] = useState("");
+  const [courtSearch, setCourtSearch] = useState("");
   const [customLangInput, setCustomLangInput] = useState("");
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
@@ -657,37 +658,85 @@ export default function DashboardPage() {
 
             {/* Courts selection */}
             <div className="pt-2 border-t border-[#2d3139]/60">
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-2">
-                Courts of Practice
-              </label>
-              <div className="flex flex-wrap gap-1.5 p-2 bg-[#202227] rounded-xl border border-[#343840]">
-                {ALL_COURTS.slice(0, 8).map((court) => {
-                  const selected = profile.courts.includes(court);
-                  return (
-                    <button
-                      key={court}
-                      type="button"
-                      onClick={() => toggleCourt(court)}
-                      className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                        selected
-                          ? "bg-[#8ab4f8] text-[#0e0e10] font-semibold"
-                          : "bg-[#292c33] text-[#c4c7c5] hover:bg-[#343840]"
-                      }`}
-                    >
-                      {selected ? "✓ " : "+ "}
-                      {court}
-                    </button>
-                  );
-                })}
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-medium text-[#9aa0a6]">
+                  Courts of Practice (All High Courts & Tribunals)
+                </label>
+                <span className="text-[11px] text-[#8ab4f8] font-semibold">
+                  {profile.courts.length} Selected
+                </span>
               </div>
 
+              {/* Selected courts badges */}
+              {profile.courts.length > 0 && (
+                <div className="mb-2.5 flex flex-wrap gap-1.5 p-2 bg-[#202227] rounded-xl border border-[#343840]/60">
+                  <span className="text-[11px] text-[#9aa0a6] py-1 self-center mr-1">Active:</span>
+                  {profile.courts.map((court) => (
+                    <span
+                      key={court}
+                      className="inline-flex items-center gap-1.5 bg-[#8ab4f8] text-[#0e0e10] text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm"
+                    >
+                      {court}
+                      <button
+                        type="button"
+                        onClick={() => toggleCourt(court)}
+                        className="hover:text-rose-900 font-bold ml-0.5"
+                        title="Remove Court"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Court search filter */}
+              <div className="mb-2">
+                <input
+                  type="text"
+                  value={courtSearch}
+                  onChange={(e) => setCourtSearch(e.target.value)}
+                  placeholder="🔍 Filter High Courts (e.g. Punjab, Delhi, Bombay, Madras...)"
+                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                />
+              </div>
+
+              {/* Scrollable list of ALL 25 High Courts & Tribunals */}
+              <div className="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto p-2.5 bg-[#202227] rounded-xl border border-[#343840] scrollbar-thin">
+                {Array.from(new Set([...ALL_COURTS, ...profile.courts]))
+                  .filter((court) =>
+                    courtSearch.trim()
+                      ? court.toLowerCase().includes(courtSearch.toLowerCase())
+                      : true
+                  )
+                  .map((court) => {
+                    const selected = profile.courts.includes(court);
+                    return (
+                      <button
+                        key={court}
+                        type="button"
+                        onClick={() => toggleCourt(court)}
+                        className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
+                          selected
+                            ? "bg-[#8ab4f8] text-[#0e0e10] font-semibold ring-1 ring-[#8ab4f8]"
+                            : "bg-[#292c33] text-[#c4c7c5] hover:bg-[#343840] hover:text-white"
+                        }`}
+                      >
+                        {selected ? "✓ " : "+ "}
+                        {court}
+                      </button>
+                    );
+                  })}
+              </div>
+
+              {/* Add custom local / district court */}
               <div className="mt-2.5 flex gap-2">
                 <input
                   type="text"
                   value={customCourtInput}
                   onChange={(e) => setCustomCourtInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomCourt())}
-                  placeholder="Add another court (e.g. NCLT Delhi, Patiala House Courts...)"
+                  placeholder="Or type custom court (e.g. Patiala House District Court, NCLT...)"
                   className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
                 <button
