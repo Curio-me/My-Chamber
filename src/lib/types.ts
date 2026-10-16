@@ -24,6 +24,8 @@ export interface Advocate {
   linkedinUrl?: string;
   websiteUrl?: string;
   customLinks?: { id: string; title: string; url: string }[];
+  themePreference?: "dark" | "light";
+  enable3d?: boolean;
   isVerified: boolean;
 }
 

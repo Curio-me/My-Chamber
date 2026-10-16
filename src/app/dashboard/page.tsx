@@ -425,6 +425,52 @@ export default function DashboardPage() {
                 className="w-4 h-4 accent-[#8ab4f8] rounded cursor-pointer"
               />
             </div>
+
+            {/* Theme & 3D Settings */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#2d3139]/60">
+              {/* Default Theme */}
+              <div className="p-3 rounded-xl bg-[#202227] border border-[#343840]/60 space-y-2">
+                <p className="text-xs font-semibold text-[#f1f3f4]">Default Chamber Theme</p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setProfile({ ...profile, themePreference: "dark" })}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                      profile.themePreference !== "light"
+                        ? "bg-[#283244] border-[#8ab4f8] text-[#d3e3fd]"
+                        : "bg-[#18191c] border-[#343840] text-[#9aa0a6]"
+                    }`}
+                  >
+                    🌙 Dark Obsidian
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setProfile({ ...profile, themePreference: "light" })}
+                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                      profile.themePreference === "light"
+                        ? "bg-slate-100 border-blue-500 text-slate-900"
+                        : "bg-[#18191c] border-[#343840] text-[#9aa0a6]"
+                    }`}
+                  >
+                    ☀️ Clean Light
+                  </button>
+                </div>
+              </div>
+
+              {/* 3D Tilt Enable */}
+              <div className="p-3 rounded-xl bg-[#202227] border border-[#343840]/60 flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-semibold text-[#f1f3f4]">3D Parallax Rotation</p>
+                  <p className="text-[11px] text-[#9aa0a6]">3D tilt & specular glare on hover</p>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={profile.enable3d ?? true}
+                  onChange={(e) => setProfile({ ...profile, enable3d: e.target.checked })}
+                  className="w-4 h-4 accent-[#8ab4f8] rounded cursor-pointer"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Section 2: Visuals (Photo & Cover Banner) */}

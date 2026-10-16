@@ -33,5 +33,7 @@ export const DEMO_ADVOCATE: Advocate = {
   twitterUrl: "https://twitter.com/advramesh",
   linkedinUrl: "https://linkedin.com/in/advramesh",
   websiteUrl: undefined,
+  themePreference: "dark",
+  enable3d: true,
   isVerified: true,
 };
