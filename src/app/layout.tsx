@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-// Plus Jakarta Sans — modern, geometric, exceptionally clear and readable (similar to Google Sans)
+// Plus Jakarta Sans — modern, geometric, exceptionally clear and readable
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta",
   subsets: ["latin"],
@@ -11,10 +11,19 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Adv. Ramesh Kumar Sharma | Virtual Chamber",
+  title: {
+    default: "Virtual Chamber — Digital Profiles for Indian Advocates",
+    template: "%s | Virtual Chamber",
+  },
   description:
-    "Official Virtual Chamber profile. Practice areas, Bar Council registration, office location, and direct contact channels.",
-  keywords: ["advocate", "lawyer", "virtual chamber", "Delhi High Court", "legal"],
+    "Virtual Chamber is a digital profile platform for advocates in India. Showcase office contact, bar enrollment, specializations, and office location.",
+  keywords: ["advocate", "lawyer", "virtual chamber", "High Court", "legal", "India"],
+  openGraph: {
+    title: "Virtual Chamber — Digital Profiles for Indian Advocates",
+    description:
+      "Every advocate deserves a digital presence. Shareable chamber profile with practice areas, direct contact, and map location.",
+    siteName: "Virtual Chamber",
+  },
 };
 
 export default function RootLayout({

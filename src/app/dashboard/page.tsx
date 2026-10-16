@@ -79,11 +79,18 @@ export default function DashboardPage() {
   }, []);
 
   // Save handler
-  const handleSave = () => {
+  const handleSave = async () => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
       setSavedStatus("saved");
       setTimeout(() => setSavedStatus("idle"), 2500);
+
+      // Also sync to server API
+      await fetch("/api/profile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+      }).catch(() => {});
     } catch {
       alert("Failed to save to local storage.");
     }
