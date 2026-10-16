@@ -132,25 +132,17 @@ function NewsCarousel({
           : "bg-slate-50 border-slate-200"
       }`}
     >
-      {/* Header matching Google Creator Profile "Pinned" */}
-      <div className="flex items-center justify-between mb-3 px-0.5">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3.5 px-0.5">
         <div className="flex items-center gap-2">
+          <Newspaper className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`} />
           <h2
             className={`text-base font-bold tracking-tight ${
               isDark ? "text-white" : "text-slate-900"
             }`}
           >
-            Pinned
+            Newspaper & Press Coverage
           </h2>
-          <span
-            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
-              isDark
-                ? "bg-[#282a30] text-[#9aa0a6] border border-[#343840]"
-                : "bg-white text-slate-600 border border-slate-200"
-            }`}
-          >
-            Press & Media
-          </span>
         </div>
 
         <span
