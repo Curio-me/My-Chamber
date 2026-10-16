@@ -761,32 +761,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 {advocate.yearsExp}+ Years Experience
               </span>
             </p>
-
-            {/* Enrolled Bar Associations */}
-            {advocate.barAssociations && advocate.barAssociations.length > 0 && (
-              <div className="pt-2 flex items-center flex-wrap gap-1.5">
-                <span
-                  className={`text-[11px] font-semibold flex items-center gap-1 ${
-                    isDark ? "text-amber-400" : "text-amber-800"
-                  }`}
-                >
-                  <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Enrolled Bar:</span>
-                </span>
-                {advocate.barAssociations.map((assoc) => (
-                  <span
-                    key={assoc}
-                    className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border shadow-sm ${
-                      isDark
-                        ? "bg-[#252830] text-[#f1f3f4] border-[#3d424e]"
-                        : "bg-amber-50 text-amber-900 border-amber-200"
-                    }`}
-                  >
-                    {assoc}
-                  </span>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* ── Primary Action Pill ────────────────────────────────────────── */}
