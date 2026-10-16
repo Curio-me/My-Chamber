@@ -22,6 +22,7 @@ import {
   RotateCw,
   Newspaper,
   Image as ImageIcon,
+  Pin,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
@@ -92,185 +93,175 @@ function NewsCarousel({
   items: NewsMediaItem[];
   isDark: boolean;
 }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener("resize", checkScroll);
+    return () => window.removeEventListener("resize", checkScroll);
+  }, [items]);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const scrollAmount = 220;
+      scrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+      setTimeout(checkScroll, 320);
+    }
+  };
 
   if (!items || items.length === 0) return null;
 
-  // Bound index safety
-  const activeIndex = currentIndex < items.length ? currentIndex : 0;
-  const currentItem = items[activeIndex];
-
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setCurrentIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1));
-  };
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setCurrentIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
-  };
-
   return (
     <div
-      className={`rounded-2xl p-5 border space-y-3.5 shadow-sm transition-colors ${
-        isDark ? "bg-[#202227] border-[#343840]/60" : "bg-slate-50 border-slate-200"
+      className={`rounded-3xl p-5 border shadow-sm transition-colors ${
+        isDark
+          ? "bg-[#202227] border-[#343840]/60"
+          : "bg-slate-50 border-slate-200"
       }`}
     >
-      <div className="flex items-center justify-between">
+      {/* Header matching Google Creator Profile "Pinned" */}
+      <div className="flex items-center justify-between mb-3 px-0.5">
         <div className="flex items-center gap-2">
-          <Newspaper className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`} />
           <h2
-            className={`text-sm font-semibold tracking-wide ${
-              isDark ? "text-[#f1f3f4]" : "text-slate-900"
+            className={`text-base font-bold tracking-tight ${
+              isDark ? "text-white" : "text-slate-900"
             }`}
           >
-            Newspaper & Media Coverage
+            Pinned
           </h2>
+          <span
+            className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
+              isDark
+                ? "bg-[#282a30] text-[#9aa0a6] border border-[#343840]"
+                : "bg-white text-slate-600 border border-slate-200"
+            }`}
+          >
+            Press & Media
+          </span>
         </div>
 
-        {items.length > 1 && (
-          <div className="flex items-center gap-1.5">
-            <button
-              onClick={handlePrev}
-              type="button"
-              title="Previous Article"
-              className={`p-1.5 rounded-full border transition-colors ${
-                isDark
-                  ? "bg-[#18191c] hover:bg-[#282a30] text-[#c4c7c5] hover:text-white border-[#343840]"
-                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
-              }`}
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-            <span
-              className={`text-[11px] font-mono px-1 font-semibold ${
-                isDark ? "text-[#9aa0a6]" : "text-slate-500"
-              }`}
-            >
-              {activeIndex + 1}/{items.length}
-            </span>
-            <button
-              onClick={handleNext}
-              type="button"
-              title="Next Article"
-              className={`p-1.5 rounded-full border transition-colors ${
-                isDark
-                  ? "bg-[#18191c] hover:bg-[#282a30] text-[#c4c7c5] hover:text-white border-[#343840]"
-                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
-              }`}
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
+        <span
+          className={`text-xs ${
+            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+          }`}
+        >
+          {items.length} {items.length === 1 ? "story" : "stories"}
+        </span>
       </div>
 
-      {/* Slide Card with image and target link */}
-      <a
-        href={currentItem.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`group block rounded-xl overflow-hidden border transition-all hover:scale-[1.01] shadow-md ${
-          isDark
-            ? "bg-[#18191c] hover:bg-[#1e2025] border-[#343840]/80"
-            : "bg-white hover:bg-slate-50 border-slate-200"
-        }`}
-      >
-        {/* Article Image / Newspaper clipping */}
-        {currentItem.imageUrl ? (
-          <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-black/40">
-            <img
-              src={currentItem.imageUrl}
-              alt={currentItem.title}
-              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-            <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-xs">
-              <span className="bg-[#1a73e8] px-2.5 py-0.5 rounded-full font-semibold shadow text-[11px]">
-                {currentItem.publication || "Press Coverage"}
-              </span>
-              {currentItem.date && (
-                <span className="text-[11px] text-gray-300 backdrop-blur-sm bg-black/50 px-2 py-0.5 rounded">
-                  {currentItem.date}
-                </span>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div
-            className={`p-3.5 border-b flex items-center justify-between ${
-              isDark ? "border-[#2d3139] bg-[#1a2333]/30" : "border-slate-100 bg-blue-50/50"
-            }`}
+      {/* Relative wrapper for horizontal scroll + floating circular arrows */}
+      <div className="relative group/carousel">
+        {/* Left Floating Circular Button */}
+        {canScrollLeft && (
+          <button
+            onClick={() => scroll("left")}
+            type="button"
+            aria-label="Scroll left"
+            className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white text-gray-900 shadow-xl border border-gray-200 flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
           >
-            <span
-              className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                isDark
-                  ? "bg-[#8ab4f8]/10 text-[#8ab4f8] border border-[#8ab4f8]/20"
-                  : "bg-blue-100 text-blue-700"
-              }`}
-            >
-              📰 {currentItem.publication || "Press Article"}
-            </span>
-            {currentItem.date && (
-              <span className={`text-[11px] ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
-                {currentItem.date}
-              </span>
-            )}
-          </div>
+            <ChevronLeft className="w-5 h-5 stroke-[2.5]" />
+          </button>
         )}
 
-        {/* Content Body */}
-        <div className="p-4 space-y-2">
-          <h3
-            className={`text-sm sm:text-base font-bold leading-snug line-clamp-2 transition-colors ${
-              isDark
-                ? "text-white group-hover:text-[#8ab4f8]"
-                : "text-slate-900 group-hover:text-blue-600"
-            }`}
+        {/* Right Floating Circular Button */}
+        {canScrollRight && items.length > 2 && (
+          <button
+            onClick={() => scroll("right")}
+            type="button"
+            aria-label="Scroll right"
+            className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white text-gray-900 shadow-xl border border-gray-200 flex items-center justify-center hover:scale-110 active:scale-95 transition-all"
           >
-            {currentItem.title}
-          </h3>
+            <ChevronRight className="w-5 h-5 stroke-[2.5]" />
+          </button>
+        )}
 
-          <div className="flex items-center justify-between pt-1">
-            <span
-              className={`text-xs font-medium inline-flex items-center gap-1.5 ${
-                isDark ? "text-[#8ab4f8]" : "text-blue-600"
+        {/* Horizontal Scrollable Container */}
+        <div
+          ref={scrollRef}
+          onScroll={checkScroll}
+          className="flex gap-3 overflow-x-auto scrollbar-none scroll-smooth pb-1 pt-1 -mx-1 px-1 snap-x snap-mandatory"
+        >
+          {items.map((item, idx) => (
+            <a
+              key={item.id || idx}
+              href={item.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`snap-start shrink-0 w-[160px] sm:w-[175px] h-[245px] sm:h-[265px] rounded-[22px] overflow-hidden relative flex flex-col justify-between p-3.5 border transition-all duration-300 hover:scale-[1.03] hover:shadow-2xl group select-none ${
+                isDark
+                  ? "bg-[#16171b] border-[#343840]/80 hover:border-[#8ab4f8]/60 shadow-black/50"
+                  : "bg-slate-900 border-slate-700/60 hover:border-blue-400 shadow-slate-400/30"
               }`}
             >
-              Read Full Article
-              <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-            </span>
-            <span
-              className={`text-[10px] uppercase font-mono tracking-wider ${
-                isDark ? "text-[#9aa0a6]" : "text-slate-400"
-              }`}
-            >
-              Target Link ↗
-            </span>
-          </div>
-        </div>
-      </a>
+              {/* Background Art / Image with Google Creator ambient dark styling */}
+              {item.imageUrl ? (
+                <>
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-75"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/35" />
+                </>
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1b2238] via-[#10141f] to-[#241a30]">
+                  <div className="absolute top-2 right-2 w-24 h-24 rounded-full bg-[#8ab4f8]/20 blur-xl group-hover:bg-[#8ab4f8]/30 transition-all" />
+                  <div className="absolute bottom-6 left-2 w-28 h-28 rounded-full bg-[#c9a84c]/20 blur-2xl" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-transparent" />
+                </div>
+              )}
 
-      {/* Carousel Dots */}
-      {items.length > 1 && (
-        <div className="flex items-center justify-center gap-1.5 pt-1">
-          {items.map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => setCurrentIndex(idx)}
-              title={`Go to story ${idx + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
-                idx === activeIndex
-                  ? `w-5 ${isDark ? "bg-[#8ab4f8]" : "bg-blue-600"}`
-                  : `w-1.5 ${isDark ? "bg-[#343840]" : "bg-slate-300"}`
-              }`}
-            />
+              {/* Top Row: Play / News Tag & External Indicator */}
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-semibold text-white bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full border border-white/10 flex items-center gap-1 shadow-sm">
+                  <span>📰</span>
+                  <span className="truncate max-w-[85px]">
+                    {item.date || "Order"}
+                  </span>
+                </span>
+
+                <div className="w-5 h-5 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center opacity-70 group-hover:opacity-100 transition-opacity">
+                  <ExternalLink className="w-2.5 h-2.5 text-white" />
+                </div>
+              </div>
+
+              {/* Middle / Center: Headline Title */}
+              <div className="relative z-10 my-auto py-2">
+                <h3 className="text-white text-[13px] sm:text-sm font-bold leading-snug line-clamp-4 drop-shadow group-hover:text-[#aecbfa] transition-colors">
+                  {item.title}
+                </h3>
+              </div>
+
+              {/* Bottom Row: Source Favicon + Publication Name + Pin Icon */}
+              <div className="relative z-10 pt-2 border-t border-white/15 flex items-center justify-between gap-1 text-white">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <div className="w-4 h-4 rounded-full bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center shrink-0 shadow text-[8px] font-extrabold text-white">
+                    {item.publication ? item.publication[0].toUpperCase() : "T"}
+                  </div>
+                  <span className="text-[11px] font-medium truncate text-white/90">
+                    {item.publication || "The Tribune"}
+                  </span>
+                </div>
+
+                <Pin className="w-3.5 h-3.5 text-white/80 shrink-0 transform rotate-45 group-hover:text-amber-400 transition-colors" />
+              </div>
+            </a>
           ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }
