@@ -28,6 +28,7 @@ import {
   Sparkles,
   Smartphone,
   Landmark,
+  Briefcase,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
@@ -968,67 +969,94 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </p>
           </div>
 
-          {/* ── Specializations & Practice Areas ──────────────────────────── */}
-          <div
-            className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-              isDark
-                ? "bg-[#202227] border-[#343840]/50"
-                : "bg-slate-50 border-slate-200"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <h2
-                className={`text-sm font-semibold tracking-wide ${
-                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                }`}
-              >
-                Specialized in Law
-              </h2>
-              <span
-                className={`text-xs ${
-                  isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                }`}
-              >
-                {advocate.specializations.length} Areas
-              </span>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {advocate.specializations.map((spec) => (
-                <span
-                  key={spec}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-full border shadow-sm ${
-                    isDark
-                      ? "text-[#e3e3e3] bg-[#292c33] border-[#3b404a]"
-                      : "text-slate-700 bg-white border-slate-300"
-                  }`}
-                >
-                  {spec}
-                </span>
-              ))}
-            </div>
-
-            {/* Courts list inside card */}
+          {/* ── Box: Specialized in Law (Practice Areas) ─────────────────── */}
+          {advocate.specializations && advocate.specializations.length > 0 && (
             <div
-              className={`pt-3 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs ${
-                isDark ? "border-[#2d3138]" : "border-slate-200"
+              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                isDark
+                  ? "bg-[#202227] border-[#343840]/50"
+                  : "bg-slate-50 border-slate-200"
               }`}
             >
-              <span
-                className={`font-medium ${
-                  isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                }`}
-              >
-                Courts of Practice:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex items-center justify-between">
+                <h2
+                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                  }`}
+                >
+                  <Briefcase
+                    className={`w-4 h-4 ${
+                      isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                    }`}
+                  />
+                  <span>Specialized in Law</span>
+                </h2>
+                <span
+                  className={`text-xs ${
+                    isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                  }`}
+                >
+                  {advocate.specializations.length} Areas
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {advocate.specializations.map((spec) => (
+                  <span
+                    key={spec}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-full border shadow-sm ${
+                      isDark
+                        ? "text-[#e3e3e3] bg-[#292c33] border-[#3b404a]"
+                        : "text-slate-700 bg-white border-slate-300"
+                    }`}
+                  >
+                    {spec}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── Box: Courts of Practice ──────────────────────────────────── */}
+          {advocate.courts && advocate.courts.length > 0 && (
+            <div
+              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                isDark
+                  ? "bg-[#202227] border-[#343840]/50"
+                  : "bg-slate-50 border-slate-200"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <h2
+                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                  }`}
+                >
+                  <Scale
+                    className={`w-4 h-4 ${
+                      isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                    }`}
+                  />
+                  <span>Courts of Practice</span>
+                </h2>
+                <span
+                  className={`text-xs ${
+                    isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                  }`}
+                >
+                  {advocate.courts.length}{" "}
+                  {advocate.courts.length === 1 ? "Court" : "Courts"}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
                 {advocate.courts.map((court) => (
                   <span
                     key={court}
-                    className={`text-[11px] px-2.5 py-1 rounded-md border ${
+                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm ${
                       isDark
-                        ? "text-[#c4c7c5] bg-[#18191c] border-[#2d3138]"
-                        : "text-slate-700 bg-white border-slate-300 shadow-sm"
+                        ? "text-[#e3e3e3] bg-[#18191c] border-[#343840]"
+                        : "text-slate-800 bg-white border-slate-300"
                     }`}
                   >
                     {court}
@@ -1036,39 +1064,55 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 ))}
               </div>
             </div>
+          )}
 
-            {/* Bar Associations Membership row inside card */}
-            {advocate.barAssociations && advocate.barAssociations.length > 0 && (
-              <div
-                className={`pt-3 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs ${
-                  isDark ? "border-[#2d3138]" : "border-slate-200"
-                }`}
-              >
-                <span
-                  className={`font-semibold flex items-center gap-1.5 ${
-                    isDark ? "text-amber-400" : "text-amber-800"
+          {/* ── Box: Enrolled Bar Associations ───────────────────────────── */}
+          {advocate.barAssociations && advocate.barAssociations.length > 0 && (
+            <div
+              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                isDark
+                  ? "bg-[#202227] border-amber-500/20"
+                  : "bg-amber-50/50 border-amber-200/80"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <h2
+                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                    isDark ? "text-amber-400" : "text-amber-900"
                   }`}
                 >
-                  <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  Enrolled Bar Associations:
+                  <Landmark className="w-4 h-4 text-amber-400" />
+                  <span>Enrolled Bar Associations</span>
+                </h2>
+                <span
+                  className={`text-xs ${
+                    isDark ? "text-amber-300/80" : "text-amber-800/80"
+                  }`}
+                >
+                  {advocate.barAssociations.length}{" "}
+                  {advocate.barAssociations.length === 1
+                    ? "Membership"
+                    : "Memberships"}
                 </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {advocate.barAssociations.map((assoc) => (
-                    <span
-                      key={assoc}
-                      className={`text-[11px] font-medium px-2.5 py-1 rounded-md border ${
-                        isDark
-                          ? "text-amber-200 bg-[#1c1f26] border-amber-400/20"
-                          : "text-amber-950 bg-amber-50 border-amber-200 shadow-sm"
-                      }`}
-                    >
-                      {assoc}
-                    </span>
-                  ))}
-                </div>
               </div>
-            )}
-          </div>
+
+              <div className="flex flex-wrap gap-2">
+                {advocate.barAssociations.map((assoc) => (
+                  <span
+                    key={assoc}
+                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
+                      isDark
+                        ? "text-amber-200 bg-[#1c1f26] border-amber-400/25"
+                        : "text-amber-950 bg-white border-amber-300 shadow-sm"
+                    }`}
+                  >
+                    <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>{assoc}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* ── Direct Chamber Contact Card ───────────────────────────────── */}
           <div
