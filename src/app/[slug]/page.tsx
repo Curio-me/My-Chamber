@@ -26,6 +26,26 @@ export async function generateMetadata({
     return { title: "Virtual Chamber" };
   }
 
+  if (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv") {
+    const title = "Adv. RajaVikrant Sharma";
+    const description = "Official Virtual Chamber profile of Adv. RajaVikrant Sharma, Advocate practicing at the Punjab and Haryana High Court. Bar Council No: PH//7797//2025.";
+    return {
+      title,
+      description,
+      openGraph: {
+        title: `${title} | Virtual Chamber`,
+        description,
+        type: "profile",
+        siteName: "Virtual Chamber",
+      },
+      twitter: {
+        card: "summary",
+        title: `${title} | Virtual Chamber`,
+        description,
+      },
+    };
+  }
+
   // Format clean name from slug (e.g. rajavikrant -> Adv. Rajavikrant, adv-raj-vikrant -> Adv. Raj Vikrant)
   const clean = slug.replace(/^adv-?/i, "");
   const formattedName = clean

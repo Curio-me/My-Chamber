@@ -7,6 +7,35 @@ import { Advocate } from "@/lib/types";
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
 
 function createDefaultProfileFromSlug(slug: string): Advocate {
+  if (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv") {
+    return {
+      id: "rajavikrant",
+      slug: "rajavikrant",
+      fullName: "Adv. RajaVikrant Sharma",
+      enrollmentNo: "PH//7797//2025",
+      bio: "Advocate with 1+ years of experience practicing at the Punjab and Haryana High Court. I have handled over 2 Constitutional cases, 5 Consumer Cases and have a strong track record in Cyber, Civil and Consumer disputes. My mission is to ensure every client receives fair representation and justice, regardless of their background.",
+      mobile: "",
+      officePhone: "",
+      email: "",
+      officeAddress: "Advocate Chamber, Punjab and Haryana High Court Complex, Chandigarh",
+      mapUrl: "",
+      yearsExp: 1,
+      courts: ["Punjab and Haryana High Court"],
+      specializations: [
+        "Civil Law",
+        "Cheque Bounce (NI Act)",
+        "Constitutional Law",
+        "Consumer Law",
+        "Cyber Law",
+        "Criminal Law",
+      ],
+      languages: ["English", "Hindi", "Punjabi"],
+      themePreference: "dark",
+      enable3d: true,
+      isVerified: true,
+    };
+  }
+
   const clean = slug.replace(/^adv-?/i, "");
   const formattedName = clean
     ? clean

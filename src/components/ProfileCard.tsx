@@ -284,53 +284,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           />
         )}
 
-        {/* ── Top Cover Banner with Top Bar ───────────────────────────────── */}
-        <div
-          className="relative h-36 sm:h-44 w-full bg-cover bg-center overflow-hidden transition-all duration-300"
-          style={
-            advocate.bannerUrl
-              ? { backgroundImage: `url(${advocate.bannerUrl})` }
-              : undefined
-          }
-        >
-          {advocate.bannerUrl ? (
+        {/* ── Top Header Navigation Bar ───────────────────────────────────── */}
+        <div className="relative px-5 sm:px-7 pt-5 sm:pt-6 pb-4">
+          <div className="flex items-center justify-between pb-4 border-b border-[#2d3139]/40">
             <div
-              className={`absolute inset-0 bg-gradient-to-b ${
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-full border shadow-sm ${
                 isDark
-                  ? "from-black/60 via-black/30 to-[#18191c]"
-                  : "from-black/40 via-black/20 to-white"
-              }`}
-            />
-          ) : (
-            <div
-              className={`absolute inset-0 ${
-                isDark
-                  ? "bg-gradient-to-r from-[#192233] via-[#121622] to-[#1c182a]"
-                  : "bg-gradient-to-r from-[#dbeafe] via-[#eff6ff] to-[#f1f5f9]"
-              }`}
-            >
-              <div
-                className={`absolute inset-0 opacity-20 ${
-                  isDark
-                    ? "bg-[radial-gradient(#8ab4f8_1px,transparent_1px)]"
-                    : "bg-[radial-gradient(#3b82f6_1px,transparent_1px)]"
-                } [background-size:16px_16px]`}
-              />
-              <div
-                className={`absolute -right-8 -bottom-10 w-44 h-44 rounded-full blur-2xl ${
-                  isDark ? "bg-[#8ab4f8]/10" : "bg-blue-300/30"
-                }`}
-              />
-            </div>
-          )}
-
-          {/* Top navigation actions */}
-          <div className="relative z-10 flex items-center justify-between px-4 sm:px-5 pt-3 sm:pt-4">
-            <div
-              className={`flex items-center gap-2 backdrop-blur-md px-3 py-1.5 rounded-full border shadow-sm ${
-                isDark
-                  ? "bg-[#18191c]/80 border-white/10 text-[#f1f3f4]"
-                  : "bg-white/90 border-slate-200 text-slate-800"
+                  ? "bg-[#202227] border-[#343840] text-[#f1f3f4]"
+                  : "bg-slate-100 border-slate-200 text-slate-800"
               }`}
             >
               <Scale className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`} />
@@ -344,10 +305,10 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               <button
                 onClick={() => setShowQr(!showQr)}
                 title="Show QR Code"
-                className={`w-9 h-9 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors shadow-sm ${
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors shadow-sm ${
                   isDark
-                    ? "bg-[#18191c]/80 hover:bg-[#282a2e] text-white border-white/10"
-                    : "bg-white/90 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-[#202227] hover:bg-[#282a2e] text-white border-[#343840]"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
                 }`}
               >
                 <QrCode className="w-4 h-4" />
@@ -357,10 +318,10 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               <button
                 onClick={handleShare}
                 title="Share Profile"
-                className={`w-9 h-9 rounded-full backdrop-blur-md border flex items-center justify-center transition-colors shadow-sm ${
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors shadow-sm ${
                   isDark
-                    ? "bg-[#18191c]/80 hover:bg-[#282a2e] text-white border-white/10"
-                    : "bg-white/90 hover:bg-slate-100 text-slate-700 border-slate-200"
+                    ? "bg-[#202227] hover:bg-[#282a2e] text-white border-[#343840]"
+                    : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
                 }`}
               >
                 {copied ? (
@@ -375,14 +336,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
         {/* ── Profile Header Section ───────────────────────────────────────── */}
         <div className="px-5 sm:px-7 pt-0 pb-5">
-          {/* Avatar with offset overlapping banner */}
-          <div className="relative -mt-10 sm:-mt-12 mb-3 inline-block">
+          {/* Avatar with Verified Badge */}
+          <div className="relative mb-3.5 inline-block">
             {advocate.photoUrl ? (
               <img
                 src={advocate.photoUrl}
                 alt={advocate.fullName}
                 className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 shadow-lg ${
-                  isDark ? "border-[#18191c]" : "border-white"
+                  isDark ? "border-[#202227]" : "border-slate-100"
                 }`}
               />
             ) : (
@@ -390,14 +351,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             )}
             {advocate.isVerified && (
               <div
-                className={`absolute bottom-1 right-1 p-1 rounded-full border-2 text-white shadow-sm ${
+                className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 text-white shadow-md ${
                   isDark
                     ? "bg-[#1a73e8] border-[#18191c]"
                     : "bg-blue-600 border-white"
                 }`}
                 title="Verified Bar Advocate"
               >
-                <BadgeCheck className="w-3.5 h-3.5 fill-white text-blue-600" />
+                <BadgeCheck className="w-4 h-4 fill-white text-blue-600" />
               </div>
             )}
           </div>

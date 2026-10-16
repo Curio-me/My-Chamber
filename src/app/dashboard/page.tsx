@@ -32,26 +32,6 @@ import {
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
 
-// Curated banner background presets for advocates
-const BANNER_PRESETS = [
-  {
-    name: "Classic Scales (Navy)",
-    url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Modern Courtroom (Dark)",
-    url: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Law Library Books",
-    url: "https://images.unsplash.com/photo-1453733197781-791723bb7e77?auto=format&fit=crop&w=1200&q=80",
-  },
-  {
-    name: "Obsidian Minimalist",
-    url: "", // Uses the default geometric code pattern
-  },
-];
-
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Advocate>(EMPTY_ADVOCATE);
   const [savedStatus, setSavedStatus] = useState<"idle" | "saved">("idle");
@@ -64,7 +44,6 @@ export default function DashboardPage() {
   const [customLangInput, setCustomLangInput] = useState("");
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
-  const bannerFileInputRef = useRef<HTMLInputElement>(null);
 
   // Load saved profile on mount if author previously created one
   useEffect(() => {
@@ -122,22 +101,6 @@ export default function DashboardPage() {
       const reader = new FileReader();
       reader.onload = (event) => {
         setProfile((prev) => ({ ...prev, photoUrl: event.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  // Handle local banner upload
-  const handleBannerUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 3 * 1024 * 1024) {
-        alert("Please select a banner image smaller than 3MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProfile((prev) => ({ ...prev, bannerUrl: event.target?.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -500,15 +463,15 @@ export default function DashboardPage() {
             <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
               <ImageIcon className="w-4 h-4 text-[#8ab4f8]" />
               <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
-                Photos & Background Visuals
+                Advocate Profile Photo
               </h2>
             </div>
 
             {/* Profile Photo */}
             <div>
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-2">
-                Advocate Profile Photo
-              </label>
+              <p className="text-xs text-[#9aa0a6] mb-3">
+                Upload a professional portrait or passport-style photo. A clean circular portrait is displayed with your Bar Council verification seal.
+              </p>
               <div className="flex items-center gap-4">
                 {profile.photoUrl ? (
                   <img
@@ -537,7 +500,7 @@ export default function DashboardPage() {
                       className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#24272c] hover:bg-[#2c3138] text-[#f1f3f4] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
                     >
                       <Camera className="w-3.5 h-3.5 text-[#8ab4f8]" />
-                      Upload from Device
+                      Upload Portrait Photo
                     </button>
                     {profile.photoUrl && (
                       <button
@@ -556,82 +519,6 @@ export default function DashboardPage() {
                     placeholder="Or paste image URL (https://...)"
                     className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                   />
-                </div>
-              </div>
-            </div>
-
-            {/* Header Banner Background */}
-            <div className="pt-2 border-t border-[#2d3139]/60">
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-2">
-                Header Cover Banner Image
-              </label>
-
-              {/* Banner Preview */}
-              <div
-                className="w-full h-24 rounded-xl border border-[#343840] bg-gradient-to-r from-[#192233] via-[#121622] to-[#1c182a] bg-cover bg-center flex items-center justify-center relative overflow-hidden mb-3"
-                style={profile.bannerUrl ? { backgroundImage: `url(${profile.bannerUrl})` } : undefined}
-              >
-                {!profile.bannerUrl && (
-                  <span className="text-xs text-[#9aa0a6] bg-[#0e0e10]/80 px-3 py-1 rounded-full">
-                    Default Obsidian Gradient
-                  </span>
-                )}
-                {profile.bannerUrl && (
-                  <button
-                    onClick={() => setProfile({ ...profile, bannerUrl: undefined })}
-                    className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white text-xs px-2.5 py-1 rounded-md"
-                  >
-                    Clear Banner
-                  </button>
-                )}
-              </div>
-
-              {/* Upload & Preset Options */}
-              <div className="space-y-3">
-                <div className="flex flex-wrap gap-2">
-                  <input
-                    type="file"
-                    ref={bannerFileInputRef}
-                    onChange={handleBannerUpload}
-                    accept="image/*"
-                    className="hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => bannerFileInputRef.current?.click()}
-                    className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#24272c] hover:bg-[#2c3138] text-[#f1f3f4] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
-                  >
-                    <Camera className="w-3.5 h-3.5 text-[#8ab4f8]" />
-                    Upload Cover Image
-                  </button>
-                  <input
-                    type="url"
-                    value={profile.bannerUrl || ""}
-                    onChange={(e) => setProfile({ ...profile, bannerUrl: e.target.value })}
-                    placeholder="Or paste banner image URL..."
-                    className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
-                  />
-                </div>
-
-                {/* Preset Banner Selector */}
-                <div>
-                  <p className="text-[11px] text-[#9aa0a6] mb-1.5 font-medium">Quick Legal Cover Presets:</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {BANNER_PRESETS.map((preset) => (
-                      <button
-                        key={preset.name}
-                        type="button"
-                        onClick={() => setProfile({ ...profile, bannerUrl: preset.url || undefined })}
-                        className={`text-left p-2 rounded-xl border text-xs transition-all ${
-                          profile.bannerUrl === (preset.url || undefined)
-                            ? "bg-[#283244] border-[#8ab4f8] text-[#d3e3fd]"
-                            : "bg-[#202227] border-[#343840] text-[#c4c7c5] hover:border-[#4d525e]"
-                        }`}
-                      >
-                        <p className="font-semibold truncate">{preset.name}</p>
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
