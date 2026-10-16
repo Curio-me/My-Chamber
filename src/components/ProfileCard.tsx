@@ -271,11 +271,13 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  // ── Option E: 3D Floating Gold Judicial Emblem (Scales of Justice) State ──
-  const [is3DActive, setIs3DActive] = useState(false); // Default: strictly OFF (stable 2D profile)
-  const [coinRotate, setCoinRotate] = useState({ x: 8, y: 0 });
-  const isCoinDragging = useRef(false);
-  const coinTouchStart = useRef<{ x: number; y: number } | null>(null);
+  // ── Option C: 3D Holographic / Prismatic Foil Sheen State ──────────
+  const [is3DActive, setIs3DActive] = useState(false); // Default: strictly OFF (rock-solid 2D)
+  const [isAutoSpinning, setIsAutoSpinning] = useState(false);
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const isTouchActive = useRef(false);
 
   // Update theme if prop changes
   useEffect(() => {
@@ -284,83 +286,113 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
     }
   }, [advocate.themePreference]);
 
-  // Continuous smooth 3D floating & spinning loop for the gold medallion
-  useEffect(() => {
-    if (!is3DActive) return;
-    let animId: number;
-    const startTime = performance.now();
+  // Desktop Mouse tracking with Holographic Foil Sheen
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!is3DActive || isAutoSpinning || !cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
-    const loop = (now: number) => {
-      if (!isCoinDragging.current) {
-        const elapsed = (now - startTime) / 1000;
-        setCoinRotate((prev) => ({
-          x: Math.sin(elapsed * 1.8) * 10,
-          y: (prev.y + 1.2) % 360,
-        }));
-      }
-      animId = requestAnimationFrame(loop);
-    };
+    const rotateX = -((y - centerY) / centerY) * 8.5;
+    const rotateY = ((x - centerX) / centerX) * 8.5;
 
-    animId = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(animId);
-  }, [is3DActive]);
+    setRotate({ x: rotateX, y: rotateY });
+    setGlare({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+      opacity: 0.85,
+    });
+  };
 
-  // Touch drag handlers on phone (swipe finger across coin to rotate in 3D)
-  const handleCoinTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
-      isCoinDragging.current = true;
-      coinTouchStart.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-      };
+  const handleMouseLeave = () => {
+    if (isAutoSpinning) return;
+    setRotate({ x: 0, y: 0 });
+    setGlare((prev) => ({ ...prev, opacity: 0 }));
+  };
+
+  // Mobile Touch tracking (allows dragging thumb on phone screen to shift foil sheen)
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!is3DActive || isAutoSpinning || !cardRef.current || e.touches.length !== 1) return;
+    isTouchActive.current = true;
+    const touch = e.touches[0];
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = -Math.min(Math.max(((y - centerY) / centerY) * 8.5, -12), 12);
+    const rotateY = Math.min(Math.max(((x - centerX) / centerX) * 8.5, -12), 12);
+
+    setRotate({ x: rotateX, y: rotateY });
+    setGlare({
+      x: Math.min(Math.max((x / rect.width) * 100, 10), 90),
+      y: Math.min(Math.max((y / rect.height) * 100, 10), 90),
+      opacity: 0.85,
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!is3DActive || isAutoSpinning || !cardRef.current || e.touches.length !== 1) return;
+    isTouchActive.current = true;
+    const touch = e.touches[0];
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = -Math.min(Math.max(((y - centerY) / centerY) * 8.5, -12), 12);
+    const rotateY = Math.min(Math.max(((x - centerX) / centerX) * 11, -14), 14);
+
+    setRotate({ x: rotateX, y: rotateY });
+    setGlare({
+      x: Math.min(Math.max((x / rect.width) * 100, 10), 90),
+      y: Math.min(Math.max((y / rect.height) * 100, 10), 90),
+      opacity: 0.85,
+    });
+  };
+
+  const handleTouchEnd = () => {
+    isTouchActive.current = false;
+    if (!isAutoSpinning) {
+      setRotate({ x: 0, y: 0 });
+      setGlare((prev) => ({ ...prev, opacity: 0 }));
     }
   };
 
-  const handleCoinTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!isCoinDragging.current || !coinTouchStart.current || e.touches.length !== 1) return;
-    const deltaX = e.touches[0].clientX - coinTouchStart.current.x;
-    const deltaY = e.touches[0].clientY - coinTouchStart.current.y;
-    coinTouchStart.current = {
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY,
-    };
-
-    setCoinRotate((prev) => ({
-      x: Math.min(Math.max(prev.x - deltaY * 0.5, -35), 35),
-      y: (prev.y + deltaX * 0.9) % 360,
-    }));
-  };
-
-  const handleCoinTouchEnd = () => {
-    isCoinDragging.current = false;
-    coinTouchStart.current = null;
-  };
-
-  // Mouse drag handlers on desktop
-  const handleCoinMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    isCoinDragging.current = true;
-    coinTouchStart.current = { x: e.clientX, y: e.clientY };
-  };
-
-  const handleCoinMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isCoinDragging.current || !coinTouchStart.current) return;
-    const deltaX = e.clientX - coinTouchStart.current.x;
-    const deltaY = e.clientY - coinTouchStart.current.y;
-    coinTouchStart.current = { x: e.clientX, y: e.clientY };
-
-    setCoinRotate((prev) => ({
-      x: Math.min(Math.max(prev.x - deltaY * 0.5, -35), 35),
-      y: (prev.y + deltaX * 0.9) % 360,
-    }));
-  };
-
-  const handleCoinMouseUp = () => {
-    isCoinDragging.current = false;
-    coinTouchStart.current = null;
-  };
-
-  const toggle3DShowcase = () => {
-    setIs3DActive((prev) => !prev);
+  // Toggle 360 degree showcase spin
+  const trigger3DShowcase = () => {
+    if (isAutoSpinning) {
+      setIsAutoSpinning(false);
+      setRotate({ x: 0, y: 0 });
+      setGlare((prev) => ({ ...prev, opacity: 0 }));
+      return;
+    }
+    // Turn 3D foil ON when showcase is triggered
+    setIs3DActive(true);
+    setIsAutoSpinning(true);
+    let angle = 0;
+    const interval = setInterval(() => {
+      angle += 3.5;
+      setRotate({
+        x: Math.sin((angle * Math.PI) / 180) * 8.5,
+        y: Math.sin((angle * 2 * Math.PI) / 180) * 14,
+      });
+      setGlare({
+        x: 50 + Math.sin((angle * 2 * Math.PI) / 180) * 40,
+        y: 50 + Math.cos((angle * Math.PI) / 180) * 40,
+        opacity: 0.85,
+      });
+      if (angle >= 360) {
+        clearInterval(interval);
+        setIsAutoSpinning(false);
+        setRotate({ x: 0, y: 0 });
+        setGlare((prev) => ({ ...prev, opacity: 0 }));
+      }
+    }, 20);
   };
 
   const cardRef = useRef<HTMLDivElement>(null);
@@ -441,34 +473,56 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         <div className="flex items-center gap-1.5 text-xs font-medium text-[#9aa0a6]">
           <span>Virtual Chamber</span>
           <span>•</span>
-          <span className="text-[11px] font-mono text-amber-400">
-            {is3DActive ? "✨ 3D Gold Emblem Active" : "2D Flat View"}
+          <span className="text-[11px] font-mono text-[#8ab4f8]">
+            {is3DActive ? "✦ Holographic Foil Active" : "2D Flat View"}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* 3D Showcase Button (Option E: 3D Floating Gold Judicial Emblem) */}
+          {/* Holographic Showcase Orbit Button */}
           <button
-            onClick={toggle3DShowcase}
+            onClick={trigger3DShowcase}
             title={
-              is3DActive
-                ? "Close 3D Showcase"
-                : "Open 3D Showcase (Floating 3D Gold Judicial Emblem)"
+              isAutoSpinning
+                ? "Stop 3D Showcase"
+                : "3D Holographic Foil Showcase Orbit"
             }
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all font-semibold shadow-sm ${
-              is3DActive
-                ? "bg-amber-400 text-amber-950 font-bold border-amber-300 shadow-md shadow-amber-400/25 ring-2 ring-amber-400/30"
+              isAutoSpinning
+                ? "bg-gradient-to-r from-amber-400 via-rose-400 to-cyan-400 text-black font-extrabold border-transparent shadow-md shadow-pink-500/20"
                 : isDark
                 ? "bg-[#18191c] hover:bg-[#24272c] text-[#f1f3f4] border-[#2d3139]"
                 : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
             }`}
           >
-            {is3DActive ? (
-              <RotateCw className="w-3.5 h-3.5 animate-spin text-amber-950" />
-            ) : (
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            )}
-            <span>{is3DActive ? "3D Active (Tap to Close)" : "3D Showcase"}</span>
+            <Sparkles
+              className={`w-3.5 h-3.5 ${
+                isAutoSpinning ? "animate-spin text-black" : "text-amber-400"
+              }`}
+            />
+            <span>{isAutoSpinning ? "Showcase Running" : "✦ Foil Showcase"}</span>
+          </button>
+
+          {/* 3D Foil Toggle (Off by default) */}
+          <button
+            onClick={() => setIs3DActive(!is3DActive)}
+            title={
+              is3DActive ? "Turn Holographic Foil off" : "Turn Holographic Foil on"
+            }
+            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full border transition-colors ${
+              is3DActive
+                ? isDark
+                  ? "bg-[#1f293d] border-[#8ab4f8]/40 text-[#8ab4f8] shadow-sm shadow-[#8ab4f8]/10 font-medium"
+                  : "bg-blue-50 border-blue-300 text-blue-600 shadow-sm font-medium"
+                : isDark
+                ? "bg-[#18191c] border-[#2d3139] text-[#9aa0a6]"
+                : "bg-white border-slate-300 text-slate-400"
+            }`}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span className="text-[11px] font-mono">
+              {is3DActive ? "Foil ON" : "Foil OFF"}
+            </span>
           </button>
 
           {/* Theme Toggle Button (Light / Dark) */}
@@ -486,15 +540,98 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </div>
       </div>
 
-      {/* ── Main Google Creator-Style Chamber Container (Stable 2D Card) ───── */}
+      {/* ── Main Google Creator-Style Container with Holographic Foil ──────── */}
       <div
         ref={cardRef}
-        className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-colors duration-200 select-none ${
-          isDark
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          transform: is3DActive
+            ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(0)`
+            : "none",
+          transition:
+            isAutoSpinning || isTouchActive.current
+              ? "none"
+              : "transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease",
+          touchAction: "pan-y",
+        }}
+        className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-all duration-300 select-none ${
+          is3DActive
+            ? isDark
+              ? "bg-[#16171b] border-[#8ab4f8]/50 shadow-[0_20px_60px_rgba(0,0,0,0.85)] ring-1 ring-[#8ab4f8]/30"
+              : "bg-white border-blue-400/50 shadow-[0_20px_50px_rgba(59,130,246,0.2)] ring-1 ring-blue-300/40"
+            : isDark
             ? "bg-[#18191c] border-[#2d3139]/70 shadow-black/70"
             : "bg-white border-slate-200/90 shadow-slate-300/60"
         }`}
       >
+        {/* ── Option C: Apple Card Style Holographic Foil Sheen Overlays ──── */}
+        {is3DActive && (
+          <>
+            {/* 1. Dynamic Iridescent Prismatic Foil Spectrum */}
+            <div
+              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
+              style={{
+                opacity: isDark ? 0.55 : 0.4,
+                background: `linear-gradient(
+                  ${115 + rotate.y * 3.5}deg,
+                  transparent 10%,
+                  rgba(255, 215, 0, 0.16) 22%,
+                  rgba(56, 189, 248, 0.22) 35%,
+                  rgba(236, 72, 153, 0.25) 48%,
+                  rgba(168, 85, 247, 0.22) 62%,
+                  rgba(52, 211, 153, 0.18) 75%,
+                  rgba(251, 191, 36, 0.16) 88%,
+                  transparent 98%
+                )`,
+                mixBlendMode: isDark ? "screen" : "color-dodge",
+              }}
+            />
+
+            {/* 2. Apple Card Titanium Glare Sweep */}
+            <div
+              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
+              style={{
+                opacity: 0.5,
+                background: `linear-gradient(
+                  ${-40 + rotate.x * 2.8}deg,
+                  transparent 25%,
+                  rgba(255, 255, 255, 0.12) 46%,
+                  rgba(255, 255, 255, 0.4) 50%,
+                  rgba(255, 255, 255, 0.12) 54%,
+                  transparent 75%
+                )`,
+                mixBlendMode: "overlay",
+              }}
+            />
+
+            {/* 3. Dynamic Specular Light Follower */}
+            <div
+              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
+              style={{
+                opacity: glare.opacity * 0.9,
+                background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, ${
+                  isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.5)"
+                }, transparent 55%)`,
+                mixBlendMode: "overlay",
+              }}
+            />
+
+            {/* 4. Luxury Holographic Edge / Prismatic Border Glow */}
+            <div
+              className="pointer-events-none absolute inset-0 z-20 rounded-3xl transition-all duration-300"
+              style={{
+                boxShadow: isDark
+                  ? "inset 0 0 25px rgba(138, 180, 248, 0.2), 0 0 40px rgba(138, 180, 248, 0.25)"
+                  : "inset 0 0 25px rgba(59, 130, 246, 0.15), 0 0 35px rgba(59, 130, 246, 0.2)",
+              }}
+            />
+          </>
+        )}
+
         {/* ── Top Header Navigation Bar ───────────────────────────────────── */}
         <div className="relative px-5 sm:px-7 pt-5 sm:pt-6 pb-4">
           <div className="flex items-center justify-between pb-4 border-b border-[#2d3139]/40">
@@ -505,7 +642,9 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                   : "bg-slate-100 border-slate-200 text-slate-800"
               }`}
             >
-              <Scale className={`w-4 h-4 ${isDark ? "text-amber-400" : "text-amber-600"}`} />
+              <Scale
+                className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`}
+              />
               <span className="text-xs font-semibold tracking-wide">
                 Virtual Chamber
               </span>
@@ -544,114 +683,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </div>
           </div>
         </div>
-
-        {/* ── Option E: 3D Floating Gold Judicial Seal Showcase ─────────────── */}
-        {is3DActive && (
-          <div className="relative px-5 sm:px-7 pt-3 pb-6 border-b border-amber-500/20 bg-gradient-to-b from-amber-500/10 via-amber-500/5 to-transparent transition-all animate-in fade-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                <span className="text-xs font-bold tracking-wider uppercase text-amber-400">
-                  Official 3D Judicial Seal
-                </span>
-              </div>
-              <button
-                onClick={() => setIs3DActive(false)}
-                className={`text-[11px] font-medium px-2.5 py-1 rounded-full border transition-colors ${
-                  isDark
-                    ? "border-[#2d3139] text-[#9aa0a6] hover:text-white hover:bg-[#202227]"
-                    : "border-slate-300 text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                }`}
-              >
-                ✕ Close 3D View
-              </button>
-            </div>
-
-            {/* 3D Gold Medallion Viewport */}
-            <div
-              className="w-full flex flex-col items-center justify-center py-4 cursor-grab active:cursor-grabbing select-none"
-              style={{ perspective: "1000px" }}
-              onTouchStart={handleCoinTouchStart}
-              onTouchMove={handleCoinTouchMove}
-              onTouchEnd={handleCoinTouchEnd}
-              onMouseDown={handleCoinMouseDown}
-              onMouseMove={handleCoinMouseMove}
-              onMouseUp={handleCoinMouseUp}
-              onMouseLeave={handleCoinMouseUp}
-            >
-              {/* 3D Rotating Coin */}
-              <div
-                style={{
-                  transform: `rotateX(${coinRotate.x}deg) rotateY(${coinRotate.y}deg)`,
-                  transformStyle: "preserve-3d",
-                  transition: isCoinDragging.current ? "none" : "transform 0.1s ease-out",
-                }}
-                className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-full flex items-center justify-center transition-shadow"
-              >
-                {/* Front Face: Scales of Justice 24K Gold Seal */}
-                <div
-                  style={{
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                    boxShadow:
-                      "0 20px 40px rgba(0, 0, 0, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.6), inset 0 -4px 8px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.4)",
-                  }}
-                  className="absolute inset-0 rounded-full p-2.5 bg-gradient-to-tr from-[#996515] via-[#ffd700] via-[#aa7c11] to-[#ffe57f] border-4 border-[#fff3a8] flex items-center justify-center"
-                >
-                  {/* Inner Coin Rim & Sunburst Texture */}
-                  <div className="w-full h-full rounded-full border-2 border-dashed border-[#ffe57f]/70 bg-gradient-to-br from-[#1a1505] via-[#241c06] to-[#0c0901] flex flex-col items-center justify-center p-3 text-center relative overflow-hidden shadow-inner">
-                    {/* Shimmer flare */}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#ffd700]/15 to-transparent pointer-events-none" />
-
-                    <div className="relative z-10 flex flex-col items-center">
-                      <Scale className="w-12 h-12 sm:w-14 sm:h-14 text-amber-300 drop-shadow-[0_2px_8px_rgba(255,215,0,0.6)] mb-1" />
-                      <div className="text-[10px] font-black tracking-widest text-[#ffe57f] uppercase font-serif drop-shadow-sm">
-                        VIRTUAL CHAMBER
-                      </div>
-                      <div className="text-[8px] font-mono tracking-wider text-amber-200/80 uppercase">
-                        {advocate.enrollmentNo || "LEGAL COUNCIL"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Back Face: Bar Council Credential Gold Seal */}
-                <div
-                  style={{
-                    transform: "rotateY(180deg)",
-                    backfaceVisibility: "hidden",
-                    WebkitBackfaceVisibility: "hidden",
-                    boxShadow:
-                      "0 20px 40px rgba(0, 0, 0, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.6), inset 0 -4px 8px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.4)",
-                  }}
-                  className="absolute inset-0 rounded-full p-2.5 bg-gradient-to-tr from-[#aa7c11] via-[#ffd700] via-[#996515] to-[#ffe57f] border-4 border-[#fff3a8] flex items-center justify-center"
-                >
-                  {/* Back Inner Coin */}
-                  <div className="w-full h-full rounded-full border-2 border-dashed border-[#ffe57f]/70 bg-gradient-to-br from-[#0f1422] via-[#161f36] to-[#0a0d17] flex flex-col items-center justify-center p-3 text-center relative overflow-hidden shadow-inner">
-                    <div className="relative z-10 flex flex-col items-center">
-                      <ShieldCheck className="w-12 h-12 sm:w-14 sm:h-14 text-amber-300 drop-shadow-[0_2px_8px_rgba(255,215,0,0.6)] mb-1" />
-                      <div className="text-[10px] font-black tracking-widest text-amber-200 uppercase font-serif">
-                        BAR COUNCIL
-                      </div>
-                      <div className="text-[9px] font-bold text-[#8ab4f8]">
-                        VERIFIED ADVOCATE
-                      </div>
-                      <div className="text-[8px] font-serif italic text-amber-100/70 mt-0.5">
-                        Lex et Justitia
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Interactive Helper Hint */}
-              <div className="mt-4 flex items-center gap-1.5 text-xs text-amber-400 font-medium bg-amber-500/10 border border-amber-500/20 px-3.5 py-1 rounded-full">
-                <span>👆</span>
-                <span>Drag or swipe coin to spin in 360° 3D</span>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* ── Profile Header Section ───────────────────────────────────────── */}
         <div className="px-5 sm:px-7 pt-0 pb-5">
