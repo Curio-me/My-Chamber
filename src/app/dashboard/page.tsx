@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Advocate, ALL_SPECIALIZATIONS, ALL_COURTS } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
+import { upsertAdvocateProfile } from "@/lib/supabase";
 import {
   Scale,
   Camera,
@@ -64,14 +65,17 @@ export default function DashboardPage() {
       setSavedStatus("saved");
       setTimeout(() => setSavedStatus("idle"), 2500);
 
-      // Also sync to server API
+      // 1. Direct Supabase sync
+      await upsertAdvocateProfile(profile).catch(() => {});
+
+      // 2. Also sync to server API
       await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
       }).catch(() => {});
     } catch {
-      alert("Failed to save to local storage.");
+      alert("Failed to save profile.");
     }
   };
 
