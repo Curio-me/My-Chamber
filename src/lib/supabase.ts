@@ -76,7 +76,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     }
   }
 
-  // Extract Extended Metadata (qualifications, almaMater, chamberHours)
+  // Extract Extended Metadata (qualifications, almaMater, chamberHours, boxOrder)
   const metaProfile = customLinksRaw.find((c: any) => c.isProfileMeta) || {};
   const qualifications: string[] = Array.isArray(row.qualifications)
     ? row.qualifications
@@ -85,6 +85,21 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     : [];
   const almaMater: string = row.alma_mater || metaProfile.almaMater || "";
   const chamberHours: string = row.chamber_hours || metaProfile.chamberHours || "";
+  const boxOrder: string[] = Array.isArray(row.box_order)
+    ? row.box_order
+    : Array.isArray(metaProfile.boxOrder)
+    ? metaProfile.boxOrder
+    : [
+        "about",
+        "specializations",
+        "courts",
+        "bar_associations",
+        "qualifications",
+        "contact",
+        "location",
+        "news_media",
+        "custom_links",
+      ];
 
   return {
     id: row.id,
@@ -95,6 +110,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     qualifications,
     almaMater,
     chamberHours,
+    boxOrder,
     bio: row.bio || "",
     photoUrl: row.photo_url || undefined,
     mobile: row.mobile || "",
@@ -140,6 +156,17 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
       qualifications: advocate.qualifications || [],
       almaMater: advocate.almaMater || "",
       chamberHours: advocate.chamberHours || "",
+      boxOrder: advocate.boxOrder || [
+        "about",
+        "specializations",
+        "courts",
+        "bar_associations",
+        "qualifications",
+        "contact",
+        "location",
+        "news_media",
+        "custom_links",
+      ],
     },
   ];
 

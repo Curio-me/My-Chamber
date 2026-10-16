@@ -9,6 +9,8 @@ import {
   ALL_COURTS,
   COMMON_BAR_ASSOCIATIONS,
   COMMON_QUALIFICATIONS,
+  DEFAULT_BOX_ORDER,
+  ALL_BOXES,
 } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
@@ -42,6 +44,9 @@ import {
   Landmark,
   GraduationCap,
   Clock,
+  ArrowUp,
+  ArrowDown,
+  Layers,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -231,6 +236,69 @@ export default function DashboardPage() {
       ...prev,
       qualifications: (prev.qualifications || []).filter((q) => q !== degToRemove),
     }));
+  };
+
+  // Box Mover handlers
+  const moveBox = (boxId: string, direction: "up" | "down") => {
+    const currentOrder =
+      profile.boxOrder && profile.boxOrder.length > 0
+        ? [...profile.boxOrder]
+        : [...DEFAULT_BOX_ORDER];
+
+    // Ensure all known boxes exist
+    DEFAULT_BOX_ORDER.forEach((id) => {
+      if (!currentOrder.includes(id)) currentOrder.push(id);
+    });
+
+    const index = currentOrder.indexOf(boxId);
+    if (index === -1) return;
+
+    if (direction === "up" && index > 0) {
+      const temp = currentOrder[index - 1];
+      currentOrder[index - 1] = currentOrder[index];
+      currentOrder[index] = temp;
+    } else if (direction === "down" && index < currentOrder.length - 1) {
+      const temp = currentOrder[index + 1];
+      currentOrder[index + 1] = currentOrder[index];
+      currentOrder[index] = temp;
+    }
+
+    setProfile((prev) => ({
+      ...prev,
+      boxOrder: currentOrder,
+    }));
+  };
+
+  const resetBoxOrder = () => {
+    setProfile((prev) => ({
+      ...prev,
+      boxOrder: DEFAULT_BOX_ORDER,
+    }));
+  };
+
+  const getBoxIcon = (id: string) => {
+    switch (id) {
+      case "about":
+        return <FileText className="w-4 h-4 text-[#8ab4f8]" />;
+      case "specializations":
+        return <Briefcase className="w-4 h-4 text-blue-400" />;
+      case "courts":
+        return <Scale className="w-4 h-4 text-indigo-400" />;
+      case "bar_associations":
+        return <Landmark className="w-4 h-4 text-amber-400" />;
+      case "qualifications":
+        return <GraduationCap className="w-4 h-4 text-indigo-300" />;
+      case "contact":
+        return <Phone className="w-4 h-4 text-emerald-400" />;
+      case "location":
+        return <MapPin className="w-4 h-4 text-rose-400" />;
+      case "news_media":
+        return <Newspaper className="w-4 h-4 text-cyan-400" />;
+      case "custom_links":
+        return <ExternalLink className="w-4 h-4 text-purple-400" />;
+      default:
+        return <Layers className="w-4 h-4 text-[#8ab4f8]" />;
+    }
   };
 
   // Custom Links
@@ -451,6 +519,105 @@ export default function DashboardPage() {
         {/* ── LEFT: Profile Editor Form (Cols 7 on Desktop) ────────────────── */}
         <div className={`space-y-6 lg:col-span-7 ${activeTab === "preview" ? "hidden lg:block" : "block"}`}>
           
+          {/* ── Chamber Box Mover & Layout Organizer ──────────────────────── */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-indigo-500/30 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-indigo-400" />
+                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                  Chamber Box Mover & Layout Organizer
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={resetBoxOrder}
+                className="text-[11px] text-[#9aa0a6] hover:text-white flex items-center gap-1 transition-colors bg-[#202227] hover:bg-[#282a30] px-2.5 py-1 rounded-lg border border-[#343840]"
+                title="Reset boxes to default order"
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>Reset Order</span>
+              </button>
+            </div>
+
+            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+              Rearrange the order of your profile boxes. Use the <strong className="text-white">↑ Move Up</strong> and <strong className="text-white">↓ Move Down</strong> arrows to position boxes in any sequence (e.g. place <span className="text-indigo-300 font-medium">Academic Qualifications</span> above About, or feature <span className="text-blue-300 font-medium">Specialized in Law</span> at the top).
+            </p>
+
+            <div className="space-y-2">
+              {(() => {
+                const currentOrder =
+                  profile.boxOrder && profile.boxOrder.length > 0
+                    ? profile.boxOrder
+                    : DEFAULT_BOX_ORDER;
+                const orderedIds = Array.from(
+                  new Set([...currentOrder, ...DEFAULT_BOX_ORDER])
+                );
+
+                return orderedIds.map((boxId, idx) => {
+                  const meta = ALL_BOXES.find((b) => b.id === boxId) || {
+                    id: boxId,
+                    name: boxId,
+                    shortDesc: "",
+                    category: "Card",
+                  };
+                  const isFirst = idx === 0;
+                  const isLast = idx === orderedIds.length - 1;
+
+                  return (
+                    <div
+                      key={boxId}
+                      className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-[#202227] border border-[#343840] hover:border-indigo-400/40 transition-all shadow-sm"
+                    >
+                      <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                        <span className="w-6 h-6 rounded-lg bg-[#18191c] text-[#8ab4f8] text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-[#2d3139]">
+                          #{idx + 1}
+                        </span>
+                        <div className="shrink-0">{getBoxIcon(boxId)}</div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-[#f1f3f4] truncate">
+                            {meta.name}
+                          </p>
+                          <p className="text-[11px] text-[#9aa0a6] truncate hidden sm:block">
+                            {meta.shortDesc}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                        <button
+                          type="button"
+                          disabled={isFirst}
+                          onClick={() => moveBox(boxId, "up")}
+                          title={`Move ${meta.name} Up`}
+                          className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all ${
+                            isFirst
+                              ? "opacity-30 cursor-not-allowed border-transparent text-[#5f6368]"
+                              : "bg-[#282d38] hover:bg-indigo-600 border-[#3b4252] text-white hover:border-indigo-500 shadow-sm"
+                          }`}
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isLast}
+                          onClick={() => moveBox(boxId, "down")}
+                          title={`Move ${meta.name} Down`}
+                          className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all ${
+                            isLast
+                              ? "opacity-30 cursor-not-allowed border-transparent text-[#5f6368]"
+                              : "bg-[#282d38] hover:bg-indigo-600 border-[#3b4252] text-white hover:border-indigo-500 shadow-sm"
+                          }`}
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                });
+              })()}
+            </div>
+          </div>
+
           {/* Section 1: Basic Identity & Bar Details */}
           <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">

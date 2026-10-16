@@ -1,4 +1,4 @@
-import { Advocate } from "./types";
+import { Advocate, DEFAULT_BOX_ORDER } from "./types";
 
 // Empty advocate template for new users opening the Dashboard
 export const EMPTY_ADVOCATE: Advocate = {
@@ -30,6 +30,7 @@ export const EMPTY_ADVOCATE: Advocate = {
   themePreference: "dark",
   enable3d: false,
   isVerified: false,
+  boxOrder: DEFAULT_BOX_ORDER,
 };
 
 // Generic neutral sample advocate profile (used only for /demo preview)
@@ -63,4 +64,5 @@ export const DEMO_ADVOCATE: Advocate = {
   themePreference: "dark",
   enable3d: false,
   isVerified: true,
+  boxOrder: DEFAULT_BOX_ORDER,
 };

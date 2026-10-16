@@ -39,7 +39,39 @@ export interface Advocate {
   themePreference?: "dark" | "light";
   enable3d?: boolean;
   isVerified: boolean;
+  boxOrder?: string[]; // Custom arrangement of profile boxes e.g. ["qualifications", "about", ...]
 }
+
+export interface BoxMeta {
+  id: string;
+  name: string;
+  shortDesc: string;
+  category: string;
+}
+
+export const DEFAULT_BOX_ORDER: string[] = [
+  "about",
+  "specializations",
+  "courts",
+  "bar_associations",
+  "qualifications",
+  "contact",
+  "location",
+  "news_media",
+  "custom_links",
+];
+
+export const ALL_BOXES: BoxMeta[] = [
+  { id: "about", name: "About & Chamber Overview", shortDesc: "Biography and practice overview", category: "Bio" },
+  { id: "specializations", name: "Specialized in Law", shortDesc: "Practice areas & legal expertise", category: "Practice" },
+  { id: "courts", name: "Courts of Practice", shortDesc: "High Courts, District Courts & Tribunals", category: "Practice" },
+  { id: "bar_associations", name: "Enrolled Bar Associations", shortDesc: "Bar Council & Association memberships", category: "Bar" },
+  { id: "qualifications", name: "Academic Qualifications & Alma Mater", shortDesc: "Degrees, Law Faculty & Certifications", category: "Credentials" },
+  { id: "contact", name: "Chamber Contacts", shortDesc: "Mobile, WhatsApp, Email and Landline", category: "Contact" },
+  { id: "location", name: "Office Location & Google Maps", shortDesc: "Chamber address, interactive map & 1-tap directions", category: "Location" },
+  { id: "news_media", name: "Newspaper & Press Coverage", shortDesc: "Interactive press articles & rulings carousel", category: "Media" },
+  { id: "custom_links", name: "Key Links & Publications", shortDesc: "External case orders, judgment links & websites", category: "Links" },
+];
 
 // Popular / Common Bar Associations in India
 export const COMMON_BAR_ASSOCIATIONS = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { Advocate, NewsMediaItem } from "@/lib/types";
+import { Advocate, NewsMediaItem, DEFAULT_BOX_ORDER } from "@/lib/types";
 import {
   Phone,
   Mail,
@@ -998,570 +998,631 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </div>
           )}
 
-          {/* ── About Card ────────────────────────────────────────────────── */}
-          <div
-            className={`rounded-2xl p-5 border space-y-2 shadow-sm ${
-              isDark
-                ? "bg-[#202227] border-[#343840]/50"
-                : "bg-slate-50 border-slate-200"
-            }`}
-          >
-            <h2
-              className={`text-sm font-semibold tracking-wide ${
-                isDark ? "text-[#f1f3f4]" : "text-slate-900"
-              }`}
-            >
-              About
-            </h2>
-            <p
-              className={`text-sm leading-relaxed ${
-                isDark ? "text-[#c4c7c5]" : "text-slate-600"
-              }`}
-            >
-              {advocate.bio}
-            </p>
-          </div>
+          {/* ── Dynamic Reorderable Profile Boxes (Box Mover) ─────────────── */}
+          {(() => {
+            const customOrder =
+              advocate.boxOrder && advocate.boxOrder.length > 0
+                ? advocate.boxOrder
+                : DEFAULT_BOX_ORDER;
+            const orderedBoxIds = Array.from(
+              new Set([...customOrder, ...DEFAULT_BOX_ORDER])
+            );
 
-          {/* ── Box: Specialized in Law (Practice Areas) ─────────────────── */}
-          {advocate.specializations && advocate.specializations.length > 0 && (
-            <div
-              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-                isDark
-                  ? "bg-[#202227] border-[#343840]/50"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h2
-                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
-                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                  }`}
-                >
-                  <Briefcase
-                    className={`w-4 h-4 ${
-                      isDark ? "text-[#8ab4f8]" : "text-blue-600"
-                    }`}
-                  />
-                  <span>Specialized in Law</span>
-                </h2>
-                <span
-                  className={`text-xs ${
-                    isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                  }`}
-                >
-                  {advocate.specializations.length} Areas
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {advocate.specializations.map((spec) => (
-                  <span
-                    key={spec}
-                    className={`text-xs font-medium px-3 py-1.5 rounded-full border shadow-sm ${
-                      isDark
-                        ? "text-[#e3e3e3] bg-[#292c33] border-[#3b404a]"
-                        : "text-slate-700 bg-white border-slate-300"
-                    }`}
-                  >
-                    {spec}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Box: Courts of Practice ──────────────────────────────────── */}
-          {advocate.courts && advocate.courts.length > 0 && (
-            <div
-              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-                isDark
-                  ? "bg-[#202227] border-[#343840]/50"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h2
-                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
-                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                  }`}
-                >
-                  <Scale
-                    className={`w-4 h-4 ${
-                      isDark ? "text-[#8ab4f8]" : "text-blue-600"
-                    }`}
-                  />
-                  <span>Courts of Practice</span>
-                </h2>
-                <span
-                  className={`text-xs ${
-                    isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                  }`}
-                >
-                  {advocate.courts.length}{" "}
-                  {advocate.courts.length === 1 ? "Court" : "Courts"}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {advocate.courts.map((court) => (
-                  <span
-                    key={court}
-                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm ${
-                      isDark
-                        ? "text-[#e3e3e3] bg-[#18191c] border-[#343840]"
-                        : "text-slate-800 bg-white border-slate-300"
-                    }`}
-                  >
-                    {court}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Box: Enrolled Bar Associations ───────────────────────────── */}
-          {advocate.barAssociations && advocate.barAssociations.length > 0 && (
-            <div
-              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-                isDark
-                  ? "bg-[#202227] border-amber-500/20"
-                  : "bg-amber-50/50 border-amber-200/80"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h2
-                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
-                    isDark ? "text-amber-400" : "text-amber-900"
-                  }`}
-                >
-                  <Landmark className="w-4 h-4 text-amber-400" />
-                  <span>Enrolled Bar Associations</span>
-                </h2>
-                <span
-                  className={`text-xs ${
-                    isDark ? "text-amber-300/80" : "text-amber-800/80"
-                  }`}
-                >
-                  {advocate.barAssociations.length}{" "}
-                  {advocate.barAssociations.length === 1
-                    ? "Membership"
-                    : "Memberships"}
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                {advocate.barAssociations.map((assoc) => (
-                  <span
-                    key={assoc}
-                    className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
-                      isDark
-                        ? "text-amber-200 bg-[#1c1f26] border-amber-400/25"
-                        : "text-amber-950 bg-white border-amber-300 shadow-sm"
-                    }`}
-                  >
-                    <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                    <span>{assoc}</span>
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Box: Academic Credentials & Alma Mater ──────────────────── */}
-          {((advocate.qualifications && advocate.qualifications.length > 0) || advocate.almaMater) && (
-            <div
-              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-                isDark
-                  ? "bg-[#202227] border-indigo-500/20"
-                  : "bg-indigo-50/40 border-indigo-200/70"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <h2
-                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
-                    isDark ? "text-indigo-300" : "text-indigo-900"
-                  }`}
-                >
-                  <GraduationCap className="w-4 h-4 text-indigo-400" />
-                  <span>Academic Qualifications & Alma Mater</span>
-                </h2>
-                {advocate.qualifications && advocate.qualifications.length > 0 && (
-                  <span
-                    className={`text-xs ${
-                      isDark ? "text-indigo-300/80" : "text-indigo-800/80"
-                    }`}
-                  >
-                    {advocate.qualifications.length}{" "}
-                    {advocate.qualifications.length === 1 ? "Degree" : "Degrees"}
-                  </span>
-                )}
-              </div>
-
-              {advocate.almaMater && (
-                <div
-                  className={`text-xs px-3.5 py-2.5 rounded-xl border flex items-center gap-2 ${
-                    isDark
-                      ? "bg-[#1c1d29] border-indigo-500/25 text-indigo-200"
-                      : "bg-white border-indigo-200 text-indigo-950 shadow-sm"
-                  }`}
-                >
-                  <span className="font-semibold text-indigo-400 shrink-0">Alma Mater:</span>
-                  <span className="font-medium">{advocate.almaMater}</span>
-                </div>
-              )}
-
-              {advocate.qualifications && advocate.qualifications.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {advocate.qualifications.map((degree) => (
-                    <span
-                      key={degree}
-                      className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
-                        isDark
-                          ? "text-indigo-200 bg-[#191b24] border-indigo-400/20"
-                          : "text-indigo-950 bg-white border-indigo-300 shadow-sm"
-                      }`}
-                    >
-                      <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                      <span>{degree}</span>
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── Direct Chamber Contact Card ───────────────────────────────── */}
-          <div
-            className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-              isDark
-                ? "bg-[#202227] border-[#343840]/50"
-                : "bg-slate-50 border-slate-200"
-            }`}
-          >
-            <h2
-              className={`text-sm font-semibold tracking-wide ${
-                isDark ? "text-[#f1f3f4]" : "text-slate-900"
-              }`}
-            >
-              Chamber Contacts
-            </h2>
-
-            <div className="space-y-2">
-              {/* Phone */}
-              <a
-                href={`tel:${cleanMobile}`}
-                className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
-                  isDark
-                    ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
-                    : "bg-white hover:bg-slate-100 border-slate-200"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      isDark
-                        ? "bg-[#18191c] text-[#8ab4f8]"
-                        : "bg-blue-50 text-blue-600"
-                    }`}
-                  >
-                    <Phone className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p
-                      className={`text-xs ${
-                        isDark ? "text-[#9aa0a6]" : "text-slate-400"
-                      }`}
-                    >
-                      Direct Mobile / WhatsApp
-                    </p>
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                      }`}
-                    >
-                      {advocate.mobile}
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight
-                  className={`w-4 h-4 transition-colors ${
-                    isDark
-                      ? "text-[#9aa0a6] group-hover:text-white"
-                      : "text-slate-400 group-hover:text-slate-700"
-                  }`}
-                />
-              </a>
-
-              {/* Email */}
-              <a
-                href={`mailto:${advocate.email}`}
-                className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
-                  isDark
-                    ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
-                    : "bg-white hover:bg-slate-100 border-slate-200"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                      isDark
-                        ? "bg-[#18191c] text-[#8ab4f8]"
-                        : "bg-blue-50 text-blue-600"
-                    }`}
-                  >
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <p
-                      className={`text-xs ${
-                        isDark ? "text-[#9aa0a6]" : "text-slate-400"
-                      }`}
-                    >
-                      Office Email
-                    </p>
-                    <p
-                      className={`text-sm font-medium ${
-                        isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                      }`}
-                    >
-                      {advocate.email}
-                    </p>
-                  </div>
-                </div>
-                <ChevronRight
-                  className={`w-4 h-4 transition-colors ${
-                    isDark
-                      ? "text-[#9aa0a6] group-hover:text-white"
-                      : "text-slate-400 group-hover:text-slate-700"
-                  }`}
-                />
-              </a>
-
-              {/* Office Phone if available */}
-              {advocate.officePhone && (
-                <div
-                  className={`flex items-center justify-between p-3 rounded-xl border shadow-sm ${
-                    isDark
-                      ? "bg-[#282a30] border-[#343840]/40"
-                      : "bg-white border-slate-200"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
+            const renderBox = (boxId: string) => {
+              switch (boxId) {
+                case "about":
+                  if (!advocate.bio) return null;
+                  return (
                     <div
-                      className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                      key="box-about"
+                      className={`rounded-2xl p-5 border space-y-2 shadow-sm ${
                         isDark
-                          ? "bg-[#18191c] text-[#9aa0a6]"
-                          : "bg-slate-100 text-slate-500"
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
                       }`}
                     >
-                      <Phone className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <p
-                        className={`text-xs ${
-                          isDark ? "text-[#9aa0a6]" : "text-slate-400"
-                        }`}
-                      >
-                        Landline Chamber Phone
-                      </p>
-                      <p
-                        className={`text-sm font-medium ${
+                      <h2
+                        className={`text-sm font-semibold tracking-wide ${
                           isDark ? "text-[#f1f3f4]" : "text-slate-900"
                         }`}
                       >
-                        {advocate.officePhone}
+                        About
+                      </h2>
+                      <p
+                        className={`text-sm leading-relaxed ${
+                          isDark ? "text-[#c4c7c5]" : "text-slate-600"
+                        }`}
+                      >
+                        {advocate.bio}
                       </p>
                     </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+                  );
 
-          {/* ── Office Location & Google Map ──────────────────────────────── */}
-          <div
-            className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-              isDark
-                ? "bg-[#202227] border-[#343840]/50"
-                : "bg-slate-50 border-slate-200"
-            }`}
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2
-                  className={`text-sm font-semibold tracking-wide ${
-                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                  }`}
-                >
-                  Office Location
-                </h2>
-                <p
-                  className={`text-xs mt-1 leading-relaxed ${
-                    isDark ? "text-[#c4c7c5]" : "text-slate-600"
-                  }`}
-                >
-                  {advocate.officeAddress}
-                </p>
-              </div>
-
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors shadow-sm ${
-                  isDark
-                    ? "text-[#8ab4f8] hover:text-[#aecbfa] bg-[#1a2333] border-[#8ab4f8]/30"
-                    : "text-blue-600 hover:text-blue-700 bg-white border-blue-200"
-                }`}
-              >
-                <Navigation className="w-3.5 h-3.5" />
-                Navigate
-              </a>
-            </div>
-
-            {/* Embedded map card */}
-            <div
-              className={`rounded-xl overflow-hidden border h-48 shadow-inner ${
-                isDark
-                  ? "border-[#343840]/60 bg-[#121316]"
-                  : "border-slate-200 bg-slate-100"
-              }`}
-            >
-              <iframe
-                src={mapsEmbedUrl}
-                width="100%"
-                height="100%"
-                style={{
-                  border: 0,
-                  filter: isDark ? "invert(90%) hue-rotate(180deg)" : "none",
-                }}
-                allowFullScreen
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Office Location Map"
-              />
-            </div>
-
-            {/* 1-Tap Google Maps Directions Action */}
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`w-full py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all shadow-sm ${
-                isDark
-                  ? "bg-[#1f293d] hover:bg-[#28354f] text-[#8ab4f8] border-[#8ab4f8]/30"
-                  : "bg-blue-600 hover:bg-blue-700 text-white border-blue-700"
-              }`}
-            >
-              <Navigation className="w-3.5 h-3.5" />
-              <span>Get 1-Tap Directions in Google Maps</span>
-            </a>
-          </div>
-
-          {/* ── Additional Socials (Twitter / Website) ─────────────────────── */}
-          {(advocate.twitterUrl || advocate.websiteUrl) && (
-            <div className="flex items-center gap-2 pt-1">
-              {advocate.twitterUrl && (
-                <a
-                  href={advocate.twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                    isDark
-                      ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                      : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                  }`}
-                >
-                  <TwitterIcon
-                    className={`w-4 h-4 ${isDark ? "text-white" : "text-slate-900"}`}
-                  />
-                  <span>Twitter / X</span>
-                </a>
-              )}
-              {advocate.websiteUrl && (
-                <a
-                  href={advocate.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                    isDark
-                      ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                      : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                  }`}
-                >
-                  <Globe
-                    className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`}
-                  />
-                  <span>Official Website</span>
-                </a>
-              )}
-            </div>
-          )}
-
-          {/* ── Newspaper & Media Coverage Carousel ──────────────────────── */}
-          {advocate.newsMedia && advocate.newsMedia.length > 0 && (
-            <NewsCarousel items={advocate.newsMedia} isDark={isDark} />
-          )}
-
-          {/* ── Custom Link Cards (Articles, Judgments, Publications) ─────── */}
-          {advocate.customLinks && advocate.customLinks.length > 0 && (
-            <div
-              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
-                isDark
-                  ? "bg-[#202227] border-[#343840]/50"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              <h2
-                className={`text-sm font-semibold tracking-wide ${
-                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                }`}
-              >
-                Key Links & Publications
-              </h2>
-              <div className="space-y-2">
-                {advocate.customLinks.map((link) => (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
-                      isDark
-                        ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
-                        : "bg-white hover:bg-slate-100 border-slate-200"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                          isDark
-                            ? "bg-[#18191c] text-[#8ab4f8]"
-                            : "bg-blue-50 text-blue-600"
-                        }`}
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </div>
-                      <span
-                        className={`text-sm font-medium truncate ${
-                          isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                        }`}
-                      >
-                        {link.title}
-                      </span>
-                    </div>
-                    <ChevronRight
-                      className={`w-4 h-4 shrink-0 ml-2 transition-colors ${
+                case "specializations":
+                  if (!advocate.specializations || advocate.specializations.length === 0)
+                    return null;
+                  return (
+                    <div
+                      key="box-specializations"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
                         isDark
-                          ? "text-[#9aa0a6] group-hover:text-white"
-                          : "text-slate-400 group-hover:text-slate-700"
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
                       }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                          }`}
+                        >
+                          <Briefcase
+                            className={`w-4 h-4 ${
+                              isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                            }`}
+                          />
+                          <span>Specialized in Law</span>
+                        </h2>
+                        <span
+                          className={`text-xs ${
+                            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                          }`}
+                        >
+                          {advocate.specializations.length} Areas
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {advocate.specializations.map((spec) => (
+                          <span
+                            key={spec}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-full border shadow-sm ${
+                              isDark
+                                ? "text-[#e3e3e3] bg-[#292c33] border-[#3b404a]"
+                                : "text-slate-700 bg-white border-slate-300"
+                            }`}
+                          >
+                            {spec}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                case "courts":
+                  if (!advocate.courts || advocate.courts.length === 0) return null;
+                  return (
+                    <div
+                      key="box-courts"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                          }`}
+                        >
+                          <Scale
+                            className={`w-4 h-4 ${
+                              isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                            }`}
+                          />
+                          <span>Courts of Practice</span>
+                        </h2>
+                        <span
+                          className={`text-xs ${
+                            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                          }`}
+                        >
+                          {advocate.courts.length}{" "}
+                          {advocate.courts.length === 1 ? "Court" : "Courts"}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {advocate.courts.map((court) => (
+                          <span
+                            key={court}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm ${
+                              isDark
+                                ? "text-[#e3e3e3] bg-[#18191c] border-[#343840]"
+                                : "text-slate-800 bg-white border-slate-300"
+                            }`}
+                          >
+                            {court}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                case "bar_associations":
+                  if (!advocate.barAssociations || advocate.barAssociations.length === 0)
+                    return null;
+                  return (
+                    <div
+                      key="box-bar-associations"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-amber-500/20"
+                          : "bg-amber-50/50 border-amber-200/80"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-amber-400" : "text-amber-900"
+                          }`}
+                        >
+                          <Landmark className="w-4 h-4 text-amber-400" />
+                          <span>Enrolled Bar Associations</span>
+                        </h2>
+                        <span
+                          className={`text-xs ${
+                            isDark ? "text-amber-300/80" : "text-amber-800/80"
+                          }`}
+                        >
+                          {advocate.barAssociations.length}{" "}
+                          {advocate.barAssociations.length === 1
+                            ? "Membership"
+                            : "Memberships"}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {advocate.barAssociations.map((assoc) => (
+                          <span
+                            key={assoc}
+                            className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
+                              isDark
+                                ? "text-amber-200 bg-[#1c1f26] border-amber-400/25"
+                                : "text-amber-950 bg-white border-amber-300 shadow-sm"
+                            }`}
+                          >
+                            <Landmark className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                            <span>{assoc}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                case "qualifications":
+                  if (
+                    (!advocate.qualifications || advocate.qualifications.length === 0) &&
+                    !advocate.almaMater
+                  )
+                    return null;
+                  return (
+                    <div
+                      key="box-qualifications"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-indigo-500/20"
+                          : "bg-indigo-50/40 border-indigo-200/70"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-indigo-300" : "text-indigo-900"
+                          }`}
+                        >
+                          <GraduationCap className="w-4 h-4 text-indigo-400" />
+                          <span>Academic Qualifications & Alma Mater</span>
+                        </h2>
+                        {advocate.qualifications && advocate.qualifications.length > 0 && (
+                          <span
+                            className={`text-xs ${
+                              isDark ? "text-indigo-300/80" : "text-indigo-800/80"
+                            }`}
+                          >
+                            {advocate.qualifications.length}{" "}
+                            {advocate.qualifications.length === 1 ? "Degree" : "Degrees"}
+                          </span>
+                        )}
+                      </div>
+
+                      {advocate.almaMater && (
+                        <div
+                          className={`text-xs px-3.5 py-2.5 rounded-xl border flex items-center gap-2 ${
+                            isDark
+                              ? "bg-[#1c1d29] border-indigo-500/25 text-indigo-200"
+                              : "bg-white border-indigo-200 text-indigo-950 shadow-sm"
+                          }`}
+                        >
+                          <span className="font-semibold text-indigo-400 shrink-0">
+                            Alma Mater:
+                          </span>
+                          <span className="font-medium">{advocate.almaMater}</span>
+                        </div>
+                      )}
+
+                      {advocate.qualifications && advocate.qualifications.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {advocate.qualifications.map((degree) => (
+                            <span
+                              key={degree}
+                              className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
+                                isDark
+                                  ? "text-indigo-200 bg-[#191b24] border-indigo-400/20"
+                                  : "text-indigo-950 bg-white border-indigo-300 shadow-sm"
+                              }`}
+                            >
+                              <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                              <span>{degree}</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                case "contact":
+                  return (
+                    <div
+                      key="box-contact"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
+                    >
+                      <h2
+                        className={`text-sm font-semibold tracking-wide ${
+                          isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                        }`}
+                      >
+                        Chamber Contacts
+                      </h2>
+
+                      <div className="space-y-2">
+                        {/* Phone */}
+                        <a
+                          href={`tel:${cleanMobile}`}
+                          className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
+                            isDark
+                              ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
+                              : "bg-white hover:bg-slate-100 border-slate-200"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                isDark
+                                  ? "bg-[#18191c] text-[#8ab4f8]"
+                                  : "bg-blue-50 text-blue-600"
+                              }`}
+                            >
+                              <Phone className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p
+                                className={`text-xs ${
+                                  isDark ? "text-[#9aa0a6]" : "text-slate-400"
+                                }`}
+                              >
+                                Direct Mobile
+                              </p>
+                              <p
+                                className={`text-sm font-medium ${
+                                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                                }`}
+                              >
+                                {advocate.mobile}
+                              </p>
+                            </div>
+                          </div>
+                          <ChevronRight
+                            className={`w-4 h-4 transition-colors ${
+                              isDark
+                                ? "text-[#9aa0a6] group-hover:text-white"
+                                : "text-slate-400 group-hover:text-slate-700"
+                            }`}
+                          />
+                        </a>
+
+                        {/* Email */}
+                        <a
+                          href={`mailto:${advocate.email}`}
+                          className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
+                            isDark
+                              ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
+                              : "bg-white hover:bg-slate-100 border-slate-200"
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                isDark
+                                  ? "bg-[#18191c] text-[#8ab4f8]"
+                                  : "bg-blue-50 text-blue-600"
+                              }`}
+                            >
+                              <Mail className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p
+                                className={`text-xs ${
+                                  isDark ? "text-[#9aa0a6]" : "text-slate-400"
+                                }`}
+                              >
+                                Office Email
+                              </p>
+                              <p
+                                className={`text-sm font-medium ${
+                                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                                }`}
+                              >
+                                {advocate.email}
+                              </p>
+                            </div>
+                          </div>
+                          <ChevronRight
+                            className={`w-4 h-4 transition-colors ${
+                              isDark
+                                ? "text-[#9aa0a6] group-hover:text-white"
+                                : "text-slate-400 group-hover:text-slate-700"
+                            }`}
+                          />
+                        </a>
+
+                        {/* Office Phone if available */}
+                        {advocate.officePhone && (
+                          <div
+                            className={`flex items-center justify-between p-3 rounded-xl border shadow-sm ${
+                              isDark
+                                ? "bg-[#282a30] border-[#343840]/40"
+                                : "bg-white border-slate-200"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                                  isDark
+                                    ? "bg-[#18191c] text-[#9aa0a6]"
+                                    : "bg-slate-100 text-slate-500"
+                                }`}
+                              >
+                                <Phone className="w-4 h-4" />
+                              </div>
+                              <div>
+                                <p
+                                  className={`text-xs ${
+                                    isDark ? "text-[#9aa0a6]" : "text-slate-400"
+                                  }`}
+                                >
+                                  Landline Chamber Phone
+                                </p>
+                                <p
+                                  className={`text-sm font-medium ${
+                                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                                  }`}
+                                >
+                                  {advocate.officePhone}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+
+                case "location":
+                  return (
+                    <div
+                      key="box-location"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <h2
+                            className={`text-sm font-semibold tracking-wide ${
+                              isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                            }`}
+                          >
+                            Office Location
+                          </h2>
+                          <p
+                            className={`text-xs mt-1 leading-relaxed ${
+                              isDark ? "text-[#c4c7c5]" : "text-slate-600"
+                            }`}
+                          >
+                            {advocate.officeAddress}
+                          </p>
+                        </div>
+
+                        <a
+                          href={mapsUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`shrink-0 flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors shadow-sm ${
+                            isDark
+                              ? "text-[#8ab4f8] hover:text-[#aecbfa] bg-[#1a2333] border-[#8ab4f8]/30"
+                              : "text-blue-600 hover:text-blue-700 bg-white border-blue-200"
+                          }`}
+                        >
+                          <Navigation className="w-3.5 h-3.5" />
+                          Navigate
+                        </a>
+                      </div>
+
+                      {/* Embedded map card */}
+                      <div
+                        className={`rounded-xl overflow-hidden border h-48 shadow-inner ${
+                          isDark
+                            ? "border-[#343840]/60 bg-[#121316]"
+                            : "border-slate-200 bg-slate-100"
+                        }`}
+                      >
+                        <iframe
+                          src={mapsEmbedUrl}
+                          width="100%"
+                          height="100%"
+                          style={{
+                            border: 0,
+                            filter: isDark
+                              ? "invert(90%) hue-rotate(180deg)"
+                              : "none",
+                          }}
+                          allowFullScreen
+                          loading="lazy"
+                          referrerPolicy="no-referrer-when-downgrade"
+                          title="Office Location Map"
+                        />
+                      </div>
+
+                      {/* 1-Tap Google Maps Directions Action */}
+                      <a
+                        href={mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`w-full py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all shadow-sm ${
+                          isDark
+                            ? "bg-[#1f293d] hover:bg-[#28354f] text-[#8ab4f8] border-[#8ab4f8]/30"
+                            : "bg-blue-600 hover:bg-blue-700 text-white border-blue-700"
+                        }`}
+                      >
+                        <Navigation className="w-3.5 h-3.5" />
+                        <span>Get 1-Tap Directions in Google Maps</span>
+                      </a>
+
+                      {/* Additional Socials (Twitter / Website) */}
+                      {(advocate.twitterUrl || advocate.websiteUrl) && (
+                        <div className="flex items-center gap-2 pt-1">
+                          {advocate.twitterUrl && (
+                            <a
+                              href={advocate.twitterUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                                isDark
+                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
+                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
+                              }`}
+                            >
+                              <TwitterIcon
+                                className={`w-4 h-4 ${
+                                  isDark ? "text-white" : "text-slate-900"
+                                }`}
+                              />
+                              <span>Twitter / X</span>
+                            </a>
+                          )}
+                          {advocate.websiteUrl && (
+                            <a
+                              href={advocate.websiteUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                                isDark
+                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
+                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
+                              }`}
+                            >
+                              <Globe
+                                className={`w-4 h-4 ${
+                                  isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                                }`}
+                              />
+                              <span>Official Website</span>
+                            </a>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                case "news_media":
+                  if (!advocate.newsMedia || advocate.newsMedia.length === 0)
+                    return null;
+                  return (
+                    <NewsCarousel
+                      key="box-news-media"
+                      items={advocate.newsMedia}
+                      isDark={isDark}
                     />
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
+                  );
+
+                case "custom_links":
+                  if (!advocate.customLinks || advocate.customLinks.length === 0)
+                    return null;
+                  return (
+                    <div
+                      key="box-custom-links"
+                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                        isDark
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
+                    >
+                      <h2
+                        className={`text-sm font-semibold tracking-wide ${
+                          isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                        }`}
+                      >
+                        Key Links & Publications
+                      </h2>
+                      <div className="space-y-2">
+                        {advocate.customLinks.map((link) => (
+                          <a
+                            key={link.id}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
+                              isDark
+                                ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
+                                : "bg-white hover:bg-slate-100 border-slate-200"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div
+                                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                                  isDark
+                                    ? "bg-[#18191c] text-[#8ab4f8]"
+                                    : "bg-blue-50 text-blue-600"
+                                }`}
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </div>
+                              <span
+                                className={`text-sm font-medium truncate ${
+                                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                                }`}
+                              >
+                                {link.title}
+                              </span>
+                            </div>
+                            <ChevronRight
+                              className={`w-4 h-4 shrink-0 ml-2 transition-colors ${
+                                isDark
+                                  ? "text-[#9aa0a6] group-hover:text-white"
+                                  : "text-slate-400 group-hover:text-slate-700"
+                              }`}
+                            />
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  );
+
+                default:
+                  return null;
+              }
+            };
+
+            return orderedBoxIds.map((boxId) => renderBox(boxId));
+          })()}
 
           {/* ── Minimal Google-Style Chamber Footer ───────────────────────── */}
           <div className="pt-6 pb-2 text-center space-y-3">
