@@ -26,6 +26,7 @@ import {
   Download,
   ShieldCheck,
   Sparkles,
+  Smartphone,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
@@ -270,10 +271,11 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  // ── Multi-Layer 3D Depth State (Option B) ──────────────────────────────────
+  // ── Option D: Gyroscopic 3D Tilt & Physical Motion State ──────────────────
   const cardRef = useRef<HTMLDivElement>(null);
-  const [is3DActive, setIs3DActive] = useState(advocate.enable3d === true); // Default: OFF (rock-solid 2D)
+  const [isGyroActive, setIsGyroActive] = useState(false); // Default: OFF (rock-solid 2D)
   const [isAutoSpinning, setIsAutoSpinning] = useState(false);
+  const [gyroNotice, setGyroNotice] = useState<string | null>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
 
@@ -283,6 +285,68 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       setIsDark(advocate.themePreference === "dark");
     }
   }, [advocate.themePreference]);
+
+  // Physical Phone Gyroscope (DeviceOrientation) listener
+  useEffect(() => {
+    if (!isGyroActive) return;
+
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (isAutoSpinning) return;
+      // gamma: left-to-right tilt in degrees [-90, 90]
+      // beta: front-to-back tilt in degrees [-180, 180] (normal reading angle ~45°)
+      const gamma = e.gamma ?? 0;
+      const beta = e.beta ?? 45;
+
+      const tiltY = Math.min(Math.max(gamma * 0.45, -14), 14);
+      const tiltX = -Math.min(Math.max((beta - 45) * 0.45, -12), 12);
+
+      setRotate({ x: tiltX, y: tiltY });
+      setGlare({
+        x: Math.min(Math.max(50 + gamma * 1.5, 10), 90),
+        y: Math.min(Math.max(50 + (beta - 45) * 1.5, 10), 90),
+        opacity: 0.55,
+      });
+    };
+
+    window.addEventListener("deviceorientation", handleOrientation);
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation);
+    };
+  }, [isGyroActive, isAutoSpinning]);
+
+  // Toggle Gyroscope 3D sensor on mobile (or mouse tilt on desktop)
+  const toggleGyroTilt = async () => {
+    if (isGyroActive) {
+      setIsGyroActive(false);
+      setRotate({ x: 0, y: 0 });
+      setGlare((prev) => ({ ...prev, opacity: 0 }));
+      setGyroNotice(null);
+      return;
+    }
+
+    // Check iOS permission requirements
+    try {
+      const DeviceOrientationEventAny = DeviceOrientationEvent as unknown as {
+        requestPermission?: () => Promise<string>;
+      };
+      if (typeof DeviceOrientationEventAny.requestPermission === "function") {
+        const permission = await DeviceOrientationEventAny.requestPermission();
+        if (permission === "granted") {
+          setIsGyroActive(true);
+          setGyroNotice("📱 Gyro active: Physically tilt phone!");
+          setTimeout(() => setGyroNotice(null), 3500);
+        } else {
+          setIsGyroActive(true);
+        }
+      } else {
+        setIsGyroActive(true);
+        setGyroNotice("📱 Tilt motion active!");
+        setTimeout(() => setGyroNotice(null), 3000);
+      }
+    } catch {
+      setIsGyroActive(true);
+    }
+  };
 
   const profileUrl =
     typeof window !== "undefined" ? window.location.href : "https://virtualchamber.in";
@@ -297,24 +361,23 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const mapsEmbedUrl =
     `https://www.google.com/maps?q=${encodeURIComponent(advocate.officeAddress || "Delhi, India")}&output=embed`;
 
-  // 3D Parallax Mouse Tracking with Multi-Layer Depth
+  // Desktop Mouse Tilt tracking (when Gyro/Motion mode is ON)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!is3DActive || isAutoSpinning || !cardRef.current) return;
+    if (!isGyroActive || isAutoSpinning || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Smooth tilt: max 9 degrees for elegant professional depth
-    const rotateX = -((y - centerY) / centerY) * 8.5;
-    const rotateY = ((x - centerX) / centerX) * 8.5;
+    const rotateX = -((y - centerY) / centerY) * 7.5;
+    const rotateY = ((x - centerX) / centerX) * 7.5;
 
     setRotate({ x: rotateX, y: rotateY });
     setGlare({
       x: (x / rect.width) * 100,
       y: (y / rect.height) * 100,
-      opacity: 1,
+      opacity: 0.55,
     });
   };
 
@@ -324,27 +387,32 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
     setGlare((prev) => ({ ...prev, opacity: 0 }));
   };
 
-  // Toggle 360 degree showcase spin with multi-layer depth pop-out
+  // Toggle 360 degree showcase spin
   const trigger3DShowcase = () => {
     if (isAutoSpinning) {
       setIsAutoSpinning(false);
       setRotate({ x: 0, y: 0 });
       return;
     }
-    // Turn 3D depth ON when showcase is triggered
-    setIs3DActive(true);
+    setIsGyroActive(true);
     setIsAutoSpinning(true);
     let angle = 0;
     const interval = setInterval(() => {
       angle += 4;
       setRotate({
-        x: Math.sin((angle * Math.PI) / 180) * 8.5,
-        y: Math.sin((angle * 2 * Math.PI) / 180) * 14,
+        x: Math.sin((angle * Math.PI) / 180) * 8,
+        y: Math.sin((angle * 2 * Math.PI) / 180) * 13,
+      });
+      setGlare({
+        x: 50 + Math.sin((angle * 2 * Math.PI) / 180) * 35,
+        y: 50 + Math.cos((angle * Math.PI) / 180) * 35,
+        opacity: 0.55,
       });
       if (angle >= 360) {
         clearInterval(interval);
         setIsAutoSpinning(false);
         setRotate({ x: 0, y: 0 });
+        setGlare((prev) => ({ ...prev, opacity: 0 }));
       }
     }, 20);
   };
@@ -413,33 +481,33 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           <span>Virtual Chamber</span>
           <span>•</span>
           <span className="text-[11px] font-mono text-[#8ab4f8]">
-            {is3DActive ? "Holographic Foil ✦" : "2D Flat View"}
+            {isGyroActive ? "📱 Gyro Motion Active" : "2D Flat View"}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* Holographic Showcase Orbit Button */}
+          {/* 3D Showcase Orbit Button */}
           <button
             onClick={trigger3DShowcase}
-            title={isAutoSpinning ? "Stop 3D Showcase" : "3D Holographic Foil Showcase Orbit"}
+            title={isAutoSpinning ? "Stop 3D Showcase" : "3D Physical Motion Showcase Orbit"}
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all font-semibold shadow-sm ${
               isAutoSpinning
-                ? "bg-gradient-to-r from-amber-400 via-rose-400 to-cyan-400 text-black font-extrabold border-transparent shadow-md shadow-pink-500/20"
+                ? "bg-[#8ab4f8] text-[#0e0e10] font-bold border-[#8ab4f8] shadow-md shadow-[#8ab4f8]/20"
                 : isDark
                 ? "bg-[#18191c] hover:bg-[#24272c] text-[#f1f3f4] border-[#2d3139]"
                 : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
             }`}
           >
-            <Sparkles className={`w-3.5 h-3.5 ${isAutoSpinning ? "animate-spin text-black" : "text-amber-400"}`} />
-            <span>{isAutoSpinning ? "Showcase Running" : "✦ Foil Showcase"}</span>
+            <RotateCw className={`w-3.5 h-3.5 ${isAutoSpinning ? "animate-spin text-[#0e0e10]" : "text-[#8ab4f8]"}`} />
+            <span>3D Showcase</span>
           </button>
 
-          {/* 3D Foil Toggle (Off by default) */}
+          {/* Phone Gyroscope / Motion Toggle (Off by default) */}
           <button
-            onClick={() => setIs3DActive(!is3DActive)}
-            title={is3DActive ? "Turn Holographic Foil off" : "Turn Holographic Foil on"}
+            onClick={toggleGyroTilt}
+            title={isGyroActive ? "Turn Gyro Motion off" : "Turn Gyro Motion on (Physical Phone Sensor)"}
             className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full border transition-colors ${
-              is3DActive
+              isGyroActive
                 ? isDark
                   ? "bg-[#1f293d] border-[#8ab4f8]/40 text-[#8ab4f8] shadow-sm shadow-[#8ab4f8]/10 font-medium"
                   : "bg-blue-50 border-blue-300 text-blue-600 shadow-sm font-medium"
@@ -448,8 +516,8 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 : "bg-white border-slate-300 text-slate-400"
             }`}
           >
-            <Box className="w-3.5 h-3.5" />
-            <span className="text-[11px] font-mono">{is3DActive ? "Foil ON" : "Foil OFF"}</span>
+            <Smartphone className="w-3.5 h-3.5" />
+            <span className="text-[11px] font-mono">{isGyroActive ? "Gyro ON" : "Gyro OFF"}</span>
           </button>
 
           {/* Theme Toggle Button (Light / Dark) */}
@@ -467,91 +535,45 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </div>
       </div>
 
-      {/* ── Main Google Creator-Style Container with Holographic Foil ──────── */}
+      {/* Gyro Toast / Notice Banner for Smartphones */}
+      {gyroNotice && (
+        <div className="w-full max-w-[660px] px-2 mb-2 transition-all">
+          <div className="text-center py-1.5 px-4 bg-[#1f293d] border border-[#8ab4f8]/40 text-[#8ab4f8] text-xs font-semibold rounded-full shadow-lg">
+            {gyroNotice}
+          </div>
+        </div>
+      )}
+
+      {/* ── Main Google Creator-Style Container with Gyroscopic 3D Tilt ───── */}
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         style={{
-          transform: is3DActive
+          transform: isGyroActive
             ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(0)`
             : "none",
           transition: isAutoSpinning
             ? "none"
-            : "transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease",
+            : "transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease",
         }}
-        className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-all duration-300 select-none ${
-          is3DActive
-            ? isDark
-              ? "bg-[#16171b] border-[#8ab4f8]/50 shadow-[0_20px_60px_rgba(0,0,0,0.85)] ring-1 ring-[#8ab4f8]/30"
-              : "bg-white border-blue-400/50 shadow-[0_20px_50px_rgba(59,130,246,0.2)] ring-1 ring-blue-300/40"
-            : isDark
+        className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-colors duration-200 select-none ${
+          isDark
             ? "bg-[#18191c] border-[#2d3139]/70 shadow-black/70"
             : "bg-white border-slate-200/90 shadow-slate-300/60"
         }`}
       >
-        {/* ── Option C: Apple Card Style Holographic Foil Sheen Overlays ──── */}
-        {is3DActive && (
-          <>
-            {/* 1. Dynamic Iridescent Prismatic Foil Spectrum */}
-            <div
-              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
-              style={{
-                opacity: isDark ? 0.55 : 0.4,
-                background: `linear-gradient(
-                  ${115 + rotate.y * 3.5}deg,
-                  transparent 10%,
-                  rgba(255, 215, 0, 0.16) 22%,
-                  rgba(56, 189, 248, 0.22) 35%,
-                  rgba(236, 72, 153, 0.25) 48%,
-                  rgba(168, 85, 247, 0.22) 62%,
-                  rgba(52, 211, 153, 0.18) 75%,
-                  rgba(251, 191, 36, 0.16) 88%,
-                  transparent 98%
-                )`,
-                mixBlendMode: isDark ? "screen" : "color-dodge",
-              }}
-            />
-
-            {/* 2. Apple Card Titanium Glare Sweep */}
-            <div
-              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
-              style={{
-                opacity: 0.5,
-                background: `linear-gradient(
-                  ${-40 + rotate.x * 2.8}deg,
-                  transparent 25%,
-                  rgba(255, 255, 255, 0.12) 46%,
-                  rgba(255, 255, 255, 0.4) 50%,
-                  rgba(255, 255, 255, 0.12) 54%,
-                  transparent 75%
-                )`,
-                mixBlendMode: "overlay",
-              }}
-            />
-
-            {/* 3. Dynamic Specular Light Follower */}
-            <div
-              className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
-              style={{
-                opacity: glare.opacity * 0.9,
-                background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, ${
-                  isDark ? "rgba(255, 255, 255, 0.25)" : "rgba(255, 255, 255, 0.5)"
-                }, transparent 55%)`,
-                mixBlendMode: "overlay",
-              }}
-            />
-
-            {/* 4. Luxury Holographic Edge / Prismatic Border Glow */}
-            <div
-              className="pointer-events-none absolute inset-0 z-20 rounded-3xl transition-all duration-300"
-              style={{
-                boxShadow: isDark
-                  ? "inset 0 0 25px rgba(138, 180, 248, 0.2), 0 0 40px rgba(138, 180, 248, 0.25)"
-                  : "inset 0 0 25px rgba(59, 130, 246, 0.15), 0 0 35px rgba(59, 130, 246, 0.2)",
-              }}
-            />
-          </>
+        {/* ── Dynamic Physical Specular Glint Overlay ──────────────────────── */}
+        {isGyroActive && (
+          <div
+            className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
+            style={{
+              opacity: glare.opacity,
+              background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, ${
+                isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(255, 255, 255, 0.35)"
+              }, transparent 65%)`,
+            }}
+          />
         )}
 
         {/* ── Top Header Navigation Bar ───────────────────────────────────── */}
@@ -613,7 +635,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 src={advocate.photoUrl}
                 alt={advocate.fullName}
                 className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 transition-all duration-300 ${
-                  is3DActive
+                  isGyroActive
                     ? isDark
                       ? "border-[#8ab4f8]/70 shadow-xl ring-2 ring-[#8ab4f8]/30"
                       : "border-blue-500/50 shadow-xl ring-2 ring-blue-400/30"
