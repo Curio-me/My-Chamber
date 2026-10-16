@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Advocate, ALL_SPECIALIZATIONS, ALL_COURTS } from "@/lib/types";
+import { Advocate, NewsMediaItem, ALL_SPECIALIZATIONS, ALL_COURTS } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import { upsertAdvocateProfile } from "@/lib/supabase";
@@ -29,6 +29,7 @@ import {
   BadgeCheck,
   Briefcase,
   Share2,
+  Newspaper,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -197,6 +198,38 @@ export default function DashboardPage() {
     setProfile((prev) => ({
       ...prev,
       customLinks: (prev.customLinks || []).filter((l) => l.id !== id),
+    }));
+  };
+
+  // News Media handlers
+  const addNewsMedia = () => {
+    const newItem: NewsMediaItem = {
+      id: Date.now().toString(),
+      title: "Landmark Case Order / News Feature",
+      publication: "The Tribune India",
+      url: "https://",
+      imageUrl: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80",
+      date: "Recent Coverage",
+    };
+    setProfile((prev) => ({
+      ...prev,
+      newsMedia: [...(prev.newsMedia || []), newItem],
+    }));
+  };
+
+  const updateNewsMedia = (id: string, field: keyof NewsMediaItem, val: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      newsMedia: (prev.newsMedia || []).map((item) =>
+        item.id === id ? { ...item, [field]: val } : item
+      ),
+    }));
+  };
+
+  const removeNewsMedia = (id: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      newsMedia: (prev.newsMedia || []).filter((item) => item.id !== id),
     }));
   };
 
@@ -961,6 +994,121 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Section: Newspaper & Media Coverage Carousel */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+              <div className="flex items-center gap-2">
+                <Newspaper className="w-4 h-4 text-[#8ab4f8]" />
+                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                  Newspaper & Press Coverage
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={addNewsMedia}
+                className="inline-flex items-center gap-1.5 bg-[#1a2333] hover:bg-[#212c40] text-[#8ab4f8] text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#8ab4f8]/30 transition-colors"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add News Article
+              </button>
+            </div>
+
+            <p className="text-xs text-[#9aa0a6]">
+              Showcase newspaper headlines, media coverage, and court reports in an interactive visual carousel on your chamber card.
+            </p>
+
+            {(!profile.newsMedia || profile.newsMedia.length === 0) ? (
+              <div className="text-center py-6 border border-dashed border-[#343840] rounded-xl text-xs text-[#9aa0a6] space-y-2">
+                <Newspaper className="w-8 h-8 text-[#5f6368] mx-auto" />
+                <p>No newspaper articles added yet.</p>
+                <button
+                  type="button"
+                  onClick={addNewsMedia}
+                  className="text-[#8ab4f8] hover:underline font-medium"
+                >
+                  + Add your first media mention
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {profile.newsMedia.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="bg-[#202227] p-3.5 rounded-xl border border-[#343840] space-y-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-[#8ab4f8] bg-[#1a2333] px-2 py-0.5 rounded border border-[#8ab4f8]/30">
+                        Article #{idx + 1}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => removeNewsMedia(item.id)}
+                        className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Remove
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                          Article Title / Headline
+                        </label>
+                        <input
+                          type="text"
+                          value={item.title}
+                          onChange={(e) => updateNewsMedia(item.id, "title", e.target.value)}
+                          placeholder="e.g. Swiggy told to pay Rs 2,000..."
+                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                          Publication Name
+                        </label>
+                        <input
+                          type="text"
+                          value={item.publication || ""}
+                          onChange={(e) => updateNewsMedia(item.id, "publication", e.target.value)}
+                          placeholder="e.g. The Tribune India, LiveLaw, Times of India"
+                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                          Target Article URL (Target Link)
+                        </label>
+                        <input
+                          type="url"
+                          value={item.url}
+                          onChange={(e) => updateNewsMedia(item.id, "url", e.target.value)}
+                          placeholder="https://www.tribuneindia.com/..."
+                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#8ab4f8] focus:outline-none focus:border-[#8ab4f8]"
+                        />
+                      </div>
+
+                      <div className="sm:col-span-2">
+                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                          Clipping / Image URL (Displayed in Carousel)
+                        </label>
+                        <input
+                          type="url"
+                          value={item.imageUrl || ""}
+                          onChange={(e) => updateNewsMedia(item.id, "imageUrl", e.target.value)}
+                          placeholder="https://images.unsplash.com/... or paste image link"
+                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Bottom Save Bar */}

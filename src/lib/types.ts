@@ -1,4 +1,11 @@
-// Types for Virtual Chamber advocate profiles
+export interface NewsMediaItem {
+  id: string;
+  title: string;
+  publication?: string; // e.g. "The Tribune", "Times of India", "LiveLaw", "Bar & Bench"
+  url: string; // Target link
+  imageUrl?: string; // Article image thumbnail or clipping
+  date?: string; // e.g. "Oct 2024"
+}
 
 export interface Advocate {
   id: string;
@@ -24,6 +31,7 @@ export interface Advocate {
   linkedinUrl?: string;
   websiteUrl?: string;
   customLinks?: { id: string; title: string; url: string }[];
+  newsMedia?: NewsMediaItem[];
   themePreference?: "dark" | "light";
   enable3d?: boolean;
   isVerified: boolean;

@@ -12,6 +12,53 @@ const supabaseAnonKey =
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export function mapRowToAdvocate(row: Record<string, any>): Advocate {
+  const customLinksRaw = Array.isArray(row.custom_links) ? row.custom_links : [];
+  const standardLinks: { id: string; title: string; url: string }[] = [];
+  const newsItems: any[] = Array.isArray(row.news_media) ? [...row.news_media] : [];
+
+  customLinksRaw.forEach((item: any) => {
+    const isNews =
+      item.isNews ||
+      item.publication ||
+      item.imageUrl ||
+      (item.url &&
+        (item.url.includes("tribuneindia") ||
+          item.url.includes("livelaw") ||
+          item.url.includes("barandbench") ||
+          item.url.includes("timesofindia") ||
+          item.url.includes("thehindu")));
+
+    if (isNews) {
+      if (!newsItems.some((n) => n.id === item.id || n.url === item.url)) {
+        let pub = item.publication;
+        if (!pub && item.url) {
+          if (item.url.includes("tribuneindia")) pub = "The Tribune India";
+          else if (item.url.includes("livelaw")) pub = "LiveLaw";
+          else if (item.url.includes("barandbench")) pub = "Bar and Bench";
+          else if (item.url.includes("timesofindia")) pub = "Times of India";
+          else pub = "News Media";
+        }
+
+        newsItems.push({
+          id: item.id || Date.now().toString(),
+          title: item.title || "Press Feature",
+          url: item.url,
+          publication: pub || "News Media",
+          imageUrl:
+            item.imageUrl ||
+            "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80",
+          date: item.date || "Press Coverage",
+        });
+      }
+    } else {
+      standardLinks.push({
+        id: item.id,
+        title: item.title,
+        url: item.url,
+      });
+    }
+  });
+
   return {
     id: row.id,
     slug: row.slug,
@@ -32,7 +79,8 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     twitterUrl: row.twitter_url || undefined,
     linkedinUrl: row.linkedin_url || undefined,
     websiteUrl: row.website_url || undefined,
-    customLinks: Array.isArray(row.custom_links) ? row.custom_links : [],
+    customLinks: standardLinks,
+    newsMedia: newsItems,
     themePreference: row.theme_preference || "dark",
     enable3d: row.enable_3d !== false,
     isVerified: row.is_verified !== false,
@@ -40,6 +88,20 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
 }
 
 export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
+  // Store both customLinks and newsMedia tagged inside custom_links JSONB
+  const combinedCustomLinks = [
+    ...(advocate.customLinks || []).map((l) => ({ ...l, isNews: false })),
+    ...(advocate.newsMedia || []).map((n) => ({
+      id: n.id,
+      title: n.title,
+      url: n.url,
+      publication: n.publication || "News Media",
+      imageUrl: n.imageUrl || null,
+      date: n.date || null,
+      isNews: true,
+    })),
+  ];
+
   return {
     id: advocate.id || advocate.slug,
     slug: advocate.slug,
@@ -61,7 +123,7 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
     twitter_url: advocate.twitterUrl || null,
     linkedin_url: advocate.linkedinUrl || null,
     website_url: advocate.websiteUrl || null,
-    custom_links: advocate.customLinks || [],
+    custom_links: combinedCustomLinks,
     theme_preference: advocate.themePreference || "dark",
     enable_3d: advocate.enable3d !== false,
     is_verified: advocate.isVerified !== false,

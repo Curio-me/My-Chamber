@@ -30,6 +30,16 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
         "Criminal Law",
       ],
       languages: ["English", "Hindi", "Punjabi"],
+      newsMedia: [
+        {
+          id: "tribune-swiggy",
+          title: "Swiggy told to pay Rs 2,000 over short delivery of oranges to Panchkula resident",
+          publication: "The Tribune India",
+          url: "https://www.tribuneindia.com/news/chandigarh/swiggy-told-to-pay-rs-2000-over-short-delivery-of-oranges-to-panchkula-resident/",
+          imageUrl: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80",
+          date: "District Consumer Disputes Redressal Commission",
+        },
+      ],
       themePreference: "dark",
       enable3d: true,
       isVerified: true,

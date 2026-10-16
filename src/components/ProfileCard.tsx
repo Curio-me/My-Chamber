@@ -1,6 +1,6 @@
 "use client";
 
-import { Advocate } from "@/lib/types";
+import { Advocate, NewsMediaItem } from "@/lib/types";
 import {
   Phone,
   Mail,
@@ -13,14 +13,18 @@ import {
   Check,
   ExternalLink,
   ChevronRight,
+  ChevronLeft,
   Navigation,
   QrCode,
   Sun,
   Moon,
   Box,
   RotateCw,
+  Newspaper,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 interface ProfileCardProps {
   advocate: Advocate;
@@ -77,6 +81,196 @@ function InitialsAvatar({ name, isDark }: { name: string; isDark: boolean }) {
       }`}
     >
       {initials}
+    </div>
+  );
+}
+
+function NewsCarousel({
+  items,
+  isDark,
+}: {
+  items: NewsMediaItem[];
+  isDark: boolean;
+}) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  if (!items || items.length === 0) return null;
+
+  // Bound index safety
+  const activeIndex = currentIndex < items.length ? currentIndex : 0;
+  const currentItem = items[activeIndex];
+
+  const handlePrev = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setCurrentIndex((prev) => (prev === items.length - 1 ? 0 : prev + 1));
+  };
+
+  return (
+    <div
+      className={`rounded-2xl p-5 border space-y-3.5 shadow-sm transition-colors ${
+        isDark ? "bg-[#202227] border-[#343840]/60" : "bg-slate-50 border-slate-200"
+      }`}
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Newspaper className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`} />
+          <h2
+            className={`text-sm font-semibold tracking-wide ${
+              isDark ? "text-[#f1f3f4]" : "text-slate-900"
+            }`}
+          >
+            Newspaper & Media Coverage
+          </h2>
+        </div>
+
+        {items.length > 1 && (
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={handlePrev}
+              type="button"
+              title="Previous Article"
+              className={`p-1.5 rounded-full border transition-colors ${
+                isDark
+                  ? "bg-[#18191c] hover:bg-[#282a30] text-[#c4c7c5] hover:text-white border-[#343840]"
+                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
+              }`}
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+            </button>
+            <span
+              className={`text-[11px] font-mono px-1 font-semibold ${
+                isDark ? "text-[#9aa0a6]" : "text-slate-500"
+              }`}
+            >
+              {activeIndex + 1}/{items.length}
+            </span>
+            <button
+              onClick={handleNext}
+              type="button"
+              title="Next Article"
+              className={`p-1.5 rounded-full border transition-colors ${
+                isDark
+                  ? "bg-[#18191c] hover:bg-[#282a30] text-[#c4c7c5] hover:text-white border-[#343840]"
+                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
+              }`}
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Slide Card with image and target link */}
+      <a
+        href={currentItem.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`group block rounded-xl overflow-hidden border transition-all hover:scale-[1.01] shadow-md ${
+          isDark
+            ? "bg-[#18191c] hover:bg-[#1e2025] border-[#343840]/80"
+            : "bg-white hover:bg-slate-50 border-slate-200"
+        }`}
+      >
+        {/* Article Image / Newspaper clipping */}
+        {currentItem.imageUrl ? (
+          <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-black/40">
+            <img
+              src={currentItem.imageUrl}
+              alt={currentItem.title}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white text-xs">
+              <span className="bg-[#1a73e8] px-2.5 py-0.5 rounded-full font-semibold shadow text-[11px]">
+                {currentItem.publication || "Press Coverage"}
+              </span>
+              {currentItem.date && (
+                <span className="text-[11px] text-gray-300 backdrop-blur-sm bg-black/50 px-2 py-0.5 rounded">
+                  {currentItem.date}
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div
+            className={`p-3.5 border-b flex items-center justify-between ${
+              isDark ? "border-[#2d3139] bg-[#1a2333]/30" : "border-slate-100 bg-blue-50/50"
+            }`}
+          >
+            <span
+              className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                isDark
+                  ? "bg-[#8ab4f8]/10 text-[#8ab4f8] border border-[#8ab4f8]/20"
+                  : "bg-blue-100 text-blue-700"
+              }`}
+            >
+              📰 {currentItem.publication || "Press Article"}
+            </span>
+            {currentItem.date && (
+              <span className={`text-[11px] ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                {currentItem.date}
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Content Body */}
+        <div className="p-4 space-y-2">
+          <h3
+            className={`text-sm sm:text-base font-bold leading-snug line-clamp-2 transition-colors ${
+              isDark
+                ? "text-white group-hover:text-[#8ab4f8]"
+                : "text-slate-900 group-hover:text-blue-600"
+            }`}
+          >
+            {currentItem.title}
+          </h3>
+
+          <div className="flex items-center justify-between pt-1">
+            <span
+              className={`text-xs font-medium inline-flex items-center gap-1.5 ${
+                isDark ? "text-[#8ab4f8]" : "text-blue-600"
+              }`}
+            >
+              Read Full Article
+              <ExternalLink className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+            <span
+              className={`text-[10px] uppercase font-mono tracking-wider ${
+                isDark ? "text-[#9aa0a6]" : "text-slate-400"
+              }`}
+            >
+              Target Link ↗
+            </span>
+          </div>
+        </div>
+      </a>
+
+      {/* Carousel Dots */}
+      {items.length > 1 && (
+        <div className="flex items-center justify-center gap-1.5 pt-1">
+          {items.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentIndex(idx)}
+              title={`Go to story ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all ${
+                idx === activeIndex
+                  ? `w-5 ${isDark ? "bg-[#8ab4f8]" : "bg-blue-600"}`
+                  : `w-1.5 ${isDark ? "bg-[#343840]" : "bg-slate-300"}`
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -550,13 +744,15 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                   : "bg-slate-50 border-slate-300 shadow-sm"
               }`}
             >
-              <img
-                src={`https://chart.googleapis.com/chart?chs=130x130&cht=qr&chl=${encodeURIComponent(
-                  profileUrl
-                )}&choe=UTF-8`}
-                alt="QR Code"
-                className="w-24 h-24 rounded-xl bg-white p-1.5 shadow"
-              />
+              <div className="p-3 bg-white rounded-2xl shadow-md border border-slate-200 shrink-0 flex items-center justify-center">
+                <QRCodeSVG
+                  value={profileUrl}
+                  size={110}
+                  level="M"
+                  includeMargin={false}
+                  className="w-24 h-24 sm:w-28 sm:h-28"
+                />
+              </div>
               <div className="flex-1 space-y-1">
                 <p
                   className={`text-sm font-semibold ${
@@ -930,6 +1126,11 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 </a>
               )}
             </div>
+          )}
+
+          {/* ── Newspaper & Media Coverage Carousel ──────────────────────── */}
+          {advocate.newsMedia && advocate.newsMedia.length > 0 && (
+            <NewsCarousel items={advocate.newsMedia} isDark={isDark} />
           )}
 
           {/* ── Custom Link Cards (Articles, Judgments, Publications) ─────── */}
