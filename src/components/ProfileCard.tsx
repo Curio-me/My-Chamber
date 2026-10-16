@@ -270,10 +270,9 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  // ── 3D Card Rotation & Flip State ─────────────────────────────────────────
+  // ── Multi-Layer 3D Depth State (Option B) ──────────────────────────────────
   const cardRef = useRef<HTMLDivElement>(null);
   const [is3DActive, setIs3DActive] = useState(advocate.enable3d === true); // Default: OFF (rock-solid 2D)
-  const [isFlipped, setIsFlipped] = useState(false);
   const [isAutoSpinning, setIsAutoSpinning] = useState(false);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
@@ -298,7 +297,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const mapsEmbedUrl =
     `https://www.google.com/maps?q=${encodeURIComponent(advocate.officeAddress || "Delhi, India")}&output=embed`;
 
-  // 3D Parallax Mouse Tracking
+  // 3D Parallax Mouse Tracking with Multi-Layer Depth
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!is3DActive || isAutoSpinning || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
@@ -325,19 +324,21 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
     setGlare((prev) => ({ ...prev, opacity: 0 }));
   };
 
-  // Toggle 360 degree showcase spin
+  // Toggle 360 degree showcase spin with multi-layer depth pop-out
   const trigger3DShowcase = () => {
     if (isAutoSpinning) {
       setIsAutoSpinning(false);
       setRotate({ x: 0, y: 0 });
       return;
     }
+    // Turn 3D depth ON when showcase is triggered
+    setIs3DActive(true);
     setIsAutoSpinning(true);
     let angle = 0;
     const interval = setInterval(() => {
       angle += 4;
       setRotate({
-        x: Math.sin((angle * Math.PI) / 180) * 8,
+        x: Math.sin((angle * Math.PI) / 180) * 8.5,
         y: Math.sin((angle * 2 * Math.PI) / 180) * 14,
       });
       if (angle >= 360) {
@@ -404,44 +405,44 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       className={`min-h-screen w-full flex flex-col items-center justify-start py-4 sm:py-8 px-2 sm:px-4 transition-colors duration-300 ${
         isDark ? "bg-[#0e0e10] text-[#f1f3f4]" : "bg-[#edf0f4] text-[#1e293b]"
       }`}
-      style={{ perspective: "1600px" }}
+      style={{ perspective: "1500px" }}
     >
-      {/* ── Floating Chamber Controls Bar ─────────────────────────────────────── */}
+      {/* ── Floating 3D Controls Bar ────────────────────────────────────────── */}
       <div className="w-full max-w-[660px] flex items-center justify-between mb-3 px-2">
         <div className="flex items-center gap-1.5 text-xs font-medium text-[#9aa0a6]">
           <span>Virtual Chamber</span>
           <span>•</span>
           <span className="text-[11px] font-mono text-[#8ab4f8]">
-            {isFlipped ? "Visiting Card (Back)" : "Chamber Profile (Front)"}
+            {is3DActive ? "3D Multi-Layer Active" : "2D Flat View"}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* 3D Flip Card Button */}
+          {/* 3D Showcase Orbit Button */}
           <button
-            onClick={() => setIsFlipped(!isFlipped)}
-            title={isFlipped ? "Flip to Full Profile" : "Flip to Visiting Card & QR Credential"}
+            onClick={trigger3DShowcase}
+            title={isAutoSpinning ? "Stop 3D Showcase" : "3D Multi-Layer Orbit Showcase"}
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all font-semibold shadow-sm ${
-              isFlipped
-                ? "bg-gradient-to-r from-amber-500/20 to-amber-600/30 text-amber-300 border-amber-500/50 shadow-amber-500/10"
+              isAutoSpinning
+                ? "bg-[#8ab4f8] text-[#0e0e10] font-bold border-[#8ab4f8] shadow-md shadow-[#8ab4f8]/20"
                 : isDark
                 ? "bg-[#18191c] hover:bg-[#24272c] text-[#f1f3f4] border-[#2d3139]"
                 : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
             }`}
           >
-            <RotateCw className={`w-3.5 h-3.5 text-amber-400 ${isFlipped ? "rotate-180 transition-transform duration-500" : ""}`} />
-            <span>{isFlipped ? "↶ View Profile" : "🎴 Flip Card"}</span>
+            <RotateCw className={`w-3.5 h-3.5 ${isAutoSpinning ? "animate-spin text-[#0e0e10]" : "text-[#8ab4f8]"}`} />
+            <span>3D Showcase</span>
           </button>
 
-          {/* 3D Tilt Toggle (Off by default) */}
+          {/* 3D Depth Toggle (Off by default) */}
           <button
             onClick={() => setIs3DActive(!is3DActive)}
-            title={is3DActive ? "Turn 3D tilt off" : "Turn 3D tilt on"}
-            className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full border transition-colors ${
+            title={is3DActive ? "Turn 3D Depth off" : "Turn 3D Depth on"}
+            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full border transition-colors ${
               is3DActive
                 ? isDark
-                  ? "bg-[#1f293d] border-[#8ab4f8]/40 text-[#8ab4f8]"
-                  : "bg-blue-50 border-blue-300 text-blue-600 shadow-sm"
+                  ? "bg-[#1f293d] border-[#8ab4f8]/40 text-[#8ab4f8] shadow-sm shadow-[#8ab4f8]/10 font-medium"
+                  : "bg-blue-50 border-blue-300 text-blue-600 shadow-sm font-medium"
                 : isDark
                 ? "bg-[#18191c] border-[#2d3139] text-[#9aa0a6]"
                 : "bg-white border-slate-300 text-slate-400"
@@ -466,7 +467,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </div>
       </div>
 
-      {/* ── 3D Card Flipping Scene Container ────────────────────────────────── */}
+      {/* ── Main Google Creator-Style Container with Multi-Layer 3D Depth ──── */}
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
@@ -474,28 +475,18 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         style={{
           transformStyle: "preserve-3d",
           transform: is3DActive
-            ? `rotateX(${rotate.x}deg) rotateY(${isFlipped ? 180 - rotate.y : rotate.y}deg) translateZ(0)`
-            : isFlipped
-            ? "rotateY(180deg)"
+            ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(0)`
             : "none",
           transition: isAutoSpinning
             ? "none"
-            : "transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease",
+            : "transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease",
         }}
-        className="relative w-full max-w-[660px]"
+        className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-colors duration-200 select-none ${
+          isDark
+            ? "bg-[#18191c] border-[#2d3139]/70 shadow-black/70"
+            : "bg-white border-slate-200/90 shadow-slate-300/60"
+        }`}
       >
-        {/* ════ FRONT FACE: Interactive Chamber Profile ══════════════════════ */}
-        <div
-          style={{
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-          }}
-          className={`relative w-full rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-colors duration-200 select-none ${
-            isDark
-              ? "bg-[#18191c] border-[#2d3139]/70 shadow-black/70"
-              : "bg-white border-slate-200/90 shadow-slate-300/60"
-          }`}
-        >
         {/* ── Dynamic 3D Specular Light Glare Overlay ─────────────────────── */}
         {is3DActive && (
           <div
@@ -561,14 +552,27 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
         {/* ── Profile Header Section ───────────────────────────────────────── */}
         <div className="px-5 sm:px-7 pt-0 pb-5">
-          {/* Avatar with Verified Badge */}
-          <div className="relative mb-3.5 inline-block">
+          {/* Avatar with Verified Badge (Multi-Layer Depth Layer: Z: 45px) */}
+          <div
+            style={{
+              transform: is3DActive ? "translateZ(45px)" : "none",
+              transformStyle: "preserve-3d",
+              transition: "transform 0.3s ease",
+            }}
+            className="relative mb-3.5 inline-block group"
+          >
             {advocate.photoUrl ? (
               <img
                 src={advocate.photoUrl}
                 alt={advocate.fullName}
-                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 shadow-lg ${
-                  isDark ? "border-[#202227]" : "border-slate-100"
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 transition-all duration-300 ${
+                  is3DActive
+                    ? isDark
+                      ? "border-[#8ab4f8]/70 shadow-[0_15px_30px_rgba(0,0,0,0.8)] ring-2 ring-[#8ab4f8]/30"
+                      : "border-blue-500/50 shadow-[0_15px_30px_rgba(37,99,235,0.3)] ring-2 ring-blue-400/30"
+                    : isDark
+                    ? "border-[#202227] shadow-lg"
+                    : "border-slate-100 shadow-lg"
                 }`}
               />
             ) : (
@@ -576,6 +580,10 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             )}
             {advocate.isVerified && (
               <div
+                style={{
+                  transform: is3DActive ? "translateZ(20px)" : "none",
+                  transition: "transform 0.3s ease",
+                }}
                 className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 text-white shadow-md ${
                   isDark
                     ? "bg-[#1a73e8] border-[#18191c]"
@@ -588,8 +596,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             )}
           </div>
 
-          {/* Name & Title */}
-          <div className="space-y-1">
+          {/* Name & Title (Multi-Layer Depth Layer: Z: 25px) */}
+          <div
+            style={{
+              transform: is3DActive ? "translateZ(25px)" : "none",
+              transition: "transform 0.3s ease",
+            }}
+            className="space-y-1"
+          >
             <div className="flex items-center gap-2 flex-wrap">
               <h1
                 className={`text-2xl sm:text-[26px] font-bold tracking-tight ${
@@ -631,31 +645,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </p>
           </div>
 
-          {/* ── Flip Card Invitation Banner ─────────────────────────────────── */}
-          <button
-            type="button"
-            onClick={() => setIsFlipped(true)}
-            className={`w-full mt-3.5 py-2 px-3.5 rounded-2xl border flex items-center justify-between text-xs transition-all group shadow-sm ${
-              isDark
-                ? "bg-gradient-to-r from-[#1f232c] via-[#242935] to-[#1f232c] hover:border-amber-400/50 border-[#343b48] text-[#c4c7c5]"
-                : "bg-gradient-to-r from-amber-50/70 via-slate-50 to-amber-50/70 hover:bg-amber-100/40 border-amber-200/80 text-slate-700"
-            }`}
+          {/* ── Primary Action Pill (Multi-Layer Depth Layer: Z: 35px) ───────── */}
+          <div
+            style={{
+              transform: is3DActive ? "translateZ(35px)" : "none",
+              transition: "transform 0.3s ease",
+            }}
+            className="mt-4 flex flex-col sm:flex-row gap-2.5"
           >
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                <RotateCw className="w-3 h-3 group-hover:rotate-180 transition-transform duration-500" />
-              </div>
-              <span className="font-semibold text-xs text-amber-400">
-                Official Chamber Visiting Card & QR Credential
-              </span>
-            </div>
-            <span className="text-[11px] font-bold text-amber-400 flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-              Flip Card ↷
-            </span>
-          </button>
-
-          {/* ── Primary Action Pill ────────────────────────────────────────── */}
-          <div className="mt-4 flex flex-col sm:flex-row gap-2.5">
             <a
               href={whatsappUrl}
               target="_blank"
@@ -685,8 +682,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </a>
           </div>
 
-          {/* ── Quick Link Tiles (Instagram, LinkedIn, Directions) ─────────── */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
+          {/* ── Quick Link Tiles (Multi-Layer Depth Layer: Z: 25px) ─────────── */}
+          <div
+            style={{
+              transform: is3DActive ? "translateZ(25px)" : "none",
+              transition: "transform 0.3s ease",
+            }}
+            className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4"
+          >
             {advocate.instagramUrl && (
               <a
                 href={advocate.instagramUrl}
@@ -1182,14 +1185,25 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </div>
           )}
 
-          {/* ── Newspaper & Media Coverage Carousel ──────────────────────── */}
+          {/* ── Newspaper & Media Coverage Carousel (Multi-Layer Depth: Z: 20px) */}
           {advocate.newsMedia && advocate.newsMedia.length > 0 && (
-            <NewsCarousel items={advocate.newsMedia} isDark={isDark} />
+            <div
+              style={{
+                transform: is3DActive ? "translateZ(20px)" : "none",
+                transition: "transform 0.3s ease",
+              }}
+            >
+              <NewsCarousel items={advocate.newsMedia} isDark={isDark} />
+            </div>
           )}
 
           {/* ── Custom Link Cards (Articles, Judgments, Publications) ─────── */}
           {advocate.customLinks && advocate.customLinks.length > 0 && (
             <div
+              style={{
+                transform: is3DActive ? "translateZ(20px)" : "none",
+                transition: "transform 0.3s ease",
+              }}
               className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
                 isDark
                   ? "bg-[#202227] border-[#343840]/50"
@@ -1275,222 +1289,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           </div>
         </div>
       </div>
-
-      {/* ════ BACK FACE: Official Chamber Visiting Card & Credentials ════ */}
-      <div
-        style={{
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
-          transform: "rotateY(180deg)",
-        }}
-        className={`absolute inset-0 w-full h-full rounded-3xl overflow-hidden border shadow-2xl flex flex-col justify-between transition-colors duration-200 select-none ${
-          isDark
-            ? "bg-gradient-to-br from-[#121316] via-[#17191e] to-[#0e0f12] border-amber-500/30 shadow-black/80 text-[#f1f3f4]"
-            : "bg-gradient-to-br from-[#ffffff] via-[#f8fafc] to-[#f1f5f9] border-amber-600/30 shadow-slate-400/40 text-slate-800"
-        }`}
-      >
-        {/* Subtle ambient lighting glows */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#8ab4f8]/5 rounded-full blur-3xl pointer-events-none" />
-
-        {/* Top Bar on Back Card */}
-        <div className="relative p-5 sm:p-7 pb-3.5 border-b border-amber-500/20 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-amber-700 flex items-center justify-center text-white shadow-md shadow-amber-500/20">
-              <Scale className="w-4 h-4" />
-            </div>
-            <div>
-              <p className="text-[10px] font-bold tracking-widest text-amber-400 uppercase">
-                Official Chamber Credential
-              </p>
-              <p className={`text-xs font-semibold ${isDark ? "text-slate-300" : "text-slate-700"}`}>
-                Bar Council of India
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Flip back button */}
-          <button
-            onClick={() => setIsFlipped(false)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all shadow-sm ${
-              isDark
-                ? "bg-[#1c1f26] hover:bg-[#252a34] text-amber-300 border-amber-500/40"
-                : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
-            }`}
-          >
-            <RotateCw className="w-3 h-3 text-amber-400" />
-            <span>↶ View Profile</span>
-          </button>
-        </div>
-
-        {/* Center Credential & Visiting Card Body */}
-        <div className="relative flex-1 p-5 sm:p-7 flex flex-col justify-around gap-4 overflow-y-auto scrollbar-thin">
-          {/* Advocate Identity Card */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4">
-            {advocate.photoUrl ? (
-              <img
-                src={advocate.photoUrl}
-                alt={advocate.fullName}
-                className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 border-amber-400/50 shadow-xl shadow-amber-500/10 shrink-0"
-              />
-            ) : (
-              <InitialsAvatar name={advocate.fullName} isDark={isDark} />
-            )}
-
-            <div className="space-y-1 min-w-0">
-              <div className="inline-flex items-center gap-1.5 bg-amber-500/15 text-amber-300 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border border-amber-500/30">
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span>Verified Legal Counsel</span>
-              </div>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white font-serif">
-                {advocate.fullName}
-              </h2>
-              <p className="text-xs font-mono text-amber-400 font-semibold tracking-wide">
-                Enrollment: {advocate.enrollmentNo}
-              </p>
-              <p className={`text-xs ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                {advocate.courts?.[0] || "High Court"} • {advocate.yearsExp}+ Years Standing
-              </p>
-            </div>
-          </div>
-
-          {/* High-Contrast Interactive QR Code Card */}
-          <div
-            className={`rounded-2xl p-4 sm:p-5 border flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left shadow-lg ${
-              isDark
-                ? "bg-[#181a1f] border-amber-500/20"
-                : "bg-white border-slate-200"
-            }`}
-          >
-            <div className="p-3 bg-white rounded-2xl shadow-md border border-slate-200 shrink-0 flex items-center justify-center">
-              <QRCodeSVG
-                value={profileUrl}
-                size={120}
-                level="H"
-                includeMargin={false}
-                className="w-24 h-24 sm:w-28 sm:h-28"
-              />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <div className="flex items-center justify-center sm:justify-start gap-1.5">
-                <QrCode className="w-4 h-4 text-amber-400" />
-                <p className="text-sm font-bold text-white">
-                  Scan for Smart Chamber vCard
-                </p>
-              </div>
-              <p className={`text-xs leading-relaxed ${isDark ? "text-slate-400" : "text-slate-600"}`}>
-                Point your smartphone camera at this QR code to instantly verify Bar Council credentials or add this Chamber to your contacts.
-              </p>
-              <div className="pt-1 flex flex-wrap gap-2 justify-center sm:justify-start">
-                <button
-                  onClick={downloadVCard}
-                  className="inline-flex items-center gap-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black text-xs font-bold px-3.5 py-1.5 rounded-xl shadow-md transition-all active:scale-95"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Save Contact (.vcf)</span>
-                </button>
-                <button
-                  onClick={handleShare}
-                  className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors ${
-                    isDark
-                      ? "bg-[#202227] hover:bg-[#282a30] text-slate-300 border-[#343840]"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300"
-                  }`}
-                >
-                  <Share2 className="w-3.5 h-3.5" />
-                  <span>{copied ? "Copied Link!" : "Share Profile"}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Chamber Chambers Office & Hours Info */}
-          <div
-            className={`rounded-2xl p-4 border grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs ${
-              isDark
-                ? "bg-[#181a1f]/80 border-[#2d3139]"
-                : "bg-slate-50 border-slate-200"
-            }`}
-          >
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-amber-400 font-semibold">
-                <MapPin className="w-3.5 h-3.5" />
-                <span>Chamber Complex</span>
-              </div>
-              <p className={isDark ? "text-slate-300" : "text-slate-700"}>
-                {advocate.officeAddress || "Advocate Chamber, High Court Complex"}
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center gap-1.5 text-amber-400 font-semibold">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Consultation Timings</span>
-              </div>
-              <p className={isDark ? "text-slate-300" : "text-slate-700"}>
-                Court: 10:00 AM – 4:30 PM (Mon-Fri)
-              </p>
-              <p className={isDark ? "text-slate-400" : "text-slate-500"}>
-                Chamber: By Prior Appointment
-              </p>
-            </div>
-          </div>
-
-          {/* Quick Action buttons (WhatsApp, Call, Map) */}
-          <div className="flex flex-wrap gap-2 pt-1">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 min-w-[130px] font-semibold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] border border-[#25D366]/30 transition-colors"
-            >
-              <WhatsAppIcon className="w-4 h-4 fill-[#25D366]" />
-              <span>WhatsApp</span>
-            </a>
-
-            <a
-              href={`tel:${cleanMobile}`}
-              className={`flex-1 min-w-[130px] font-semibold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 border transition-colors ${
-                isDark
-                  ? "bg-[#202227] hover:bg-[#282a30] text-white border-[#343840]"
-                  : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
-              }`}
-            >
-              <Phone className="w-3.5 h-3.5 text-[#8ab4f8]" />
-              <span>Call Chamber</span>
-            </a>
-
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`font-semibold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 border transition-colors ${
-                isDark
-                  ? "bg-[#202227] hover:bg-[#282a30] text-slate-300 border-[#343840]"
-                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
-              }`}
-            >
-              <Navigation className="w-3.5 h-3.5 text-amber-400" />
-              <span>Directions</span>
-            </a>
-          </div>
-        </div>
-
-        {/* Bottom Bar on Back Card */}
-        <div className="relative p-4 sm:p-5 pt-3 border-t border-amber-500/20 text-center space-y-2">
-          <button
-            onClick={() => setIsFlipped(false)}
-            className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 hover:underline transition-colors"
-          >
-            <RotateCw className="w-3.5 h-3.5" />
-            <span>Click to Flip Back to Full Chamber Profile & Cases</span>
-          </button>
-          <p className="text-[10px] text-slate-500">
-            Virtual Chamber • Bar Council of India Verified Digital Identity
-          </p>
-        </div>
-      </div>
     </div>
-  </div>
-);
+  );
 }
