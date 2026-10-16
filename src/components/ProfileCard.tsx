@@ -29,9 +29,13 @@ import {
   Smartphone,
   Landmark,
   Briefcase,
+  GraduationCap,
+  Clock,
+  UserPlus,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import LegalSchema from "./LegalSchema";
 
 interface ProfileCardProps {
   advocate: Advocate;
@@ -437,14 +441,17 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       "VERSION:3.0",
       `FN:${advocate.fullName}`,
       `TITLE:Advocate`,
-      `ORG:${advocate.courts?.[0] || "High Court"}`,
+      `ORG:${advocate.courts?.[0] || "Advocate Chamber"}`,
       cleanMobileNum ? `TEL;TYPE=CELL:${cleanMobileNum}` : "",
+      advocate.officePhone ? `TEL;TYPE=WORK:${advocate.officePhone}` : "",
       advocate.email ? `EMAIL:${advocate.email}` : "",
       advocate.officeAddress
         ? `ADR;TYPE=WORK:;;${advocate.officeAddress.replace(/,/g, ";")};;;;`
         : "",
       `URL:${profileUrl}`,
-      `NOTE:Virtual Chamber: ${profileUrl} | Enrollment: ${advocate.enrollmentNo}`,
+      `NOTE:Virtual Chamber: ${profileUrl} | Bar Council Enrollment: ${advocate.enrollmentNo}${
+        advocate.barAssociations?.length ? ` | Bar: ${advocate.barAssociations.join(", ")}` : ""
+      }${advocate.almaMater ? ` | Alma Mater: ${advocate.almaMater}` : ""}`,
       "END:VCARD",
     ]
       .filter(Boolean)
@@ -464,7 +471,9 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   };
 
   return (
-    <div
+    <>
+      <LegalSchema advocate={advocate} />
+      <div
       className={`min-h-screen w-full flex flex-col items-center justify-start py-4 sm:py-8 px-2 sm:px-4 transition-colors duration-300 ${
         isDark ? "bg-[#0e0e10] text-[#f1f3f4]" : "bg-[#edf0f4] text-[#1e293b]"
       }`}
@@ -653,6 +662,19 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Save Contact vCard */}
+              <button
+                onClick={downloadVCard}
+                title="Save Chamber Contact to Phone (.vcf)"
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors shadow-sm ${
+                  isDark
+                    ? "bg-[#202227] hover:bg-[#282a2e] text-[#8ab4f8] border-[#343840]"
+                    : "bg-slate-100 hover:bg-slate-200 text-blue-600 border-slate-200"
+                }`}
+              >
+                <UserPlus className="w-4 h-4" />
+              </button>
+
               {/* QR Button */}
               <button
                 onClick={() => setShowQr(!showQr)}
@@ -762,27 +784,44 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 {advocate.yearsExp}+ Years Experience
               </span>
             </p>
+
+            {/* Chamber Hours badge */}
+            {advocate.chamberHours && (
+              <div className="pt-1">
+                <div
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs border ${
+                    isDark
+                      ? "bg-[#18202e] border-[#8ab4f8]/25 text-[#aecbfa]"
+                      : "bg-blue-50 border-blue-200 text-blue-900"
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <Clock className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                  <span className="font-medium">{advocate.chamberHours}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── Primary Action Pill ────────────────────────────────────────── */}
-          <div className="mt-4 flex flex-col sm:flex-row gap-2.5">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex-1 font-semibold text-sm py-2.5 px-5 rounded-full flex items-center justify-center gap-2 transition-colors border shadow-sm ${
+              className={`font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-colors border shadow-sm ${
                 isDark
                   ? "bg-[#283244] hover:bg-[#323d52] text-[#d3e3fd] border-[#8ab4f8]/20"
                   : "bg-blue-600 hover:bg-blue-700 text-white border-blue-700"
               }`}
             >
               <WhatsAppIcon className="w-4 h-4 fill-[#25D366]" />
-              <span>Connect on WhatsApp</span>
+              <span className="truncate">WhatsApp</span>
             </a>
 
             <a
               href={`tel:${cleanMobile}`}
-              className={`font-semibold text-sm py-2.5 px-6 rounded-full flex items-center justify-center gap-2 transition-colors border ${
+              className={`font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-colors border ${
                 isDark
                   ? "bg-[#24272c] hover:bg-[#2d3137] text-[#e3e3e3] border-[#343840]"
                   : "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300"
@@ -791,8 +830,22 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               <Phone
                 className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`}
               />
-              <span>Call Chamber</span>
+              <span className="truncate">Call Chamber</span>
             </a>
+
+            <button
+              type="button"
+              onClick={downloadVCard}
+              title="Save Chamber Contact to Phone (.vcf)"
+              className={`font-semibold text-xs sm:text-sm py-2.5 px-3 rounded-full flex items-center justify-center gap-2 transition-colors border shadow-sm ${
+                isDark
+                  ? "bg-[#1f293d] hover:bg-[#28354f] text-[#8ab4f8] border-[#8ab4f8]/30"
+                  : "bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
+              }`}
+            >
+              <UserPlus className="w-4 h-4 text-emerald-400" />
+              <span className="truncate">Save Contact</span>
+            </button>
           </div>
 
           {/* ── Quick Link Tiles (Instagram, LinkedIn, Directions) ─────────── */}
@@ -1114,6 +1167,69 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </div>
           )}
 
+          {/* ── Box: Academic Credentials & Alma Mater ──────────────────── */}
+          {((advocate.qualifications && advocate.qualifications.length > 0) || advocate.almaMater) && (
+            <div
+              className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                isDark
+                  ? "bg-[#202227] border-indigo-500/20"
+                  : "bg-indigo-50/40 border-indigo-200/70"
+              }`}
+            >
+              <div className="flex items-center justify-between">
+                <h2
+                  className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                    isDark ? "text-indigo-300" : "text-indigo-900"
+                  }`}
+                >
+                  <GraduationCap className="w-4 h-4 text-indigo-400" />
+                  <span>Academic Qualifications & Alma Mater</span>
+                </h2>
+                {advocate.qualifications && advocate.qualifications.length > 0 && (
+                  <span
+                    className={`text-xs ${
+                      isDark ? "text-indigo-300/80" : "text-indigo-800/80"
+                    }`}
+                  >
+                    {advocate.qualifications.length}{" "}
+                    {advocate.qualifications.length === 1 ? "Degree" : "Degrees"}
+                  </span>
+                )}
+              </div>
+
+              {advocate.almaMater && (
+                <div
+                  className={`text-xs px-3.5 py-2.5 rounded-xl border flex items-center gap-2 ${
+                    isDark
+                      ? "bg-[#1c1d29] border-indigo-500/25 text-indigo-200"
+                      : "bg-white border-indigo-200 text-indigo-950 shadow-sm"
+                  }`}
+                >
+                  <span className="font-semibold text-indigo-400 shrink-0">Alma Mater:</span>
+                  <span className="font-medium">{advocate.almaMater}</span>
+                </div>
+              )}
+
+              {advocate.qualifications && advocate.qualifications.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {advocate.qualifications.map((degree) => (
+                    <span
+                      key={degree}
+                      className={`text-xs font-medium px-3 py-1.5 rounded-xl border shadow-sm flex items-center gap-1.5 ${
+                        isDark
+                          ? "text-indigo-200 bg-[#191b24] border-indigo-400/20"
+                          : "text-indigo-950 bg-white border-indigo-300 shadow-sm"
+                      }`}
+                    >
+                      <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      <span>{degree}</span>
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* ── Direct Chamber Contact Card ───────────────────────────────── */}
           <div
             className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
@@ -1325,6 +1441,21 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 title="Office Location Map"
               />
             </div>
+
+            {/* 1-Tap Google Maps Directions Action */}
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`w-full py-2.5 px-4 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold transition-all shadow-sm ${
+                isDark
+                  ? "bg-[#1f293d] hover:bg-[#28354f] text-[#8ab4f8] border-[#8ab4f8]/30"
+                  : "bg-blue-600 hover:bg-blue-700 text-white border-blue-700"
+              }`}
+            >
+              <Navigation className="w-3.5 h-3.5" />
+              <span>Get 1-Tap Directions in Google Maps</span>
+            </a>
           </div>
 
           {/* ── Additional Socials (Twitter / Website) ─────────────────────── */}
@@ -1461,5 +1592,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

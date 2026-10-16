@@ -8,6 +8,7 @@ import {
   ALL_SPECIALIZATIONS,
   ALL_COURTS,
   COMMON_BAR_ASSOCIATIONS,
+  COMMON_QUALIFICATIONS,
 } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
@@ -39,6 +40,8 @@ import {
   Wand2,
   Loader2,
   Landmark,
+  GraduationCap,
+  Clock,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -54,6 +57,7 @@ export default function DashboardPage() {
   const [courtSearch, setCourtSearch] = useState("");
   const [customLangInput, setCustomLangInput] = useState("");
   const [customBarAssocInput, setCustomBarAssocInput] = useState("");
+  const [customDegreeInput, setCustomDegreeInput] = useState("");
   const [extractingNewsId, setExtractingNewsId] = useState<string | null>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
@@ -204,6 +208,28 @@ export default function DashboardPage() {
     setProfile((prev) => ({
       ...prev,
       barAssociations: (prev.barAssociations || []).filter((a) => a !== assocToRemove),
+    }));
+  };
+
+  // Academic Qualifications
+  const addQualification = (deg?: string) => {
+    const name = (deg || customDegreeInput).trim();
+    if (!name) return;
+    if ((profile.qualifications || []).includes(name)) {
+      setCustomDegreeInput("");
+      return;
+    }
+    setProfile((prev) => ({
+      ...prev,
+      qualifications: [...(prev.qualifications || []), name],
+    }));
+    setCustomDegreeInput("");
+  };
+
+  const removeQualification = (degToRemove: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      qualifications: (prev.qualifications || []).filter((q) => q !== degToRemove),
     }));
   };
 
@@ -943,6 +969,110 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* Section: Academic Credentials & Alma Mater */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
+              <GraduationCap className="w-4 h-4 text-indigo-400" />
+              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                Academic Qualifications & Alma Mater
+              </h2>
+            </div>
+
+            {/* Alma Mater / University */}
+            <div>
+              <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                Alma Mater (University / Law Faculty / Law School)
+              </label>
+              <input
+                type="text"
+                value={profile.almaMater || ""}
+                onChange={(e) => setProfile({ ...profile, almaMater: e.target.value })}
+                placeholder="e.g. Department of Laws, Panjab University, Chandigarh / NLSIU Bangalore"
+                className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-indigo-400"
+              />
+            </div>
+
+            {/* Degrees / Qualifications */}
+            <div className="pt-2 border-t border-[#2d3139]/60 space-y-2">
+              <label className="block text-xs font-medium text-[#9aa0a6]">
+                Law Degrees & Certifications
+              </label>
+
+              {/* Active degrees */}
+              {profile.qualifications && profile.qualifications.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {profile.qualifications.map((deg) => (
+                    <span
+                      key={deg}
+                      className="inline-flex items-center gap-1.5 bg-[#202227] border border-indigo-400/30 text-xs text-indigo-200 px-3 py-1 rounded-lg"
+                    >
+                      <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                      {deg}
+                      <button
+                        type="button"
+                        onClick={() => removeQualification(deg)}
+                        className="text-indigo-400/70 hover:text-rose-400 font-bold ml-1 text-sm leading-none"
+                        title="Remove Degree"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Custom Degree Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customDegreeInput}
+                  onChange={(e) => setCustomDegreeInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      addQualification();
+                    }
+                  }}
+                  placeholder="Type qualification (e.g. B.A. LL.B. (Hons.), LL.M. Constitutional Law)..."
+                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-xs text-[#f1f3f4] focus:outline-none focus:border-indigo-400 placeholder:text-[#5f6368]"
+                />
+                <button
+                  type="button"
+                  onClick={() => addQualification()}
+                  className="bg-[#242735] hover:bg-[#2c3044] text-indigo-300 px-4 py-2 rounded-xl text-xs font-semibold border border-indigo-400/30 transition-colors shadow-sm"
+                >
+                  Add Degree
+                </button>
+              </div>
+
+              {/* Quick suggestions */}
+              <div className="space-y-1">
+                <p className="text-[11px] text-[#9aa0a6]">Popular Degrees (Click to Add):</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {COMMON_QUALIFICATIONS.map((deg) => {
+                    const alreadyAdded = (profile.qualifications || []).includes(deg);
+                    return (
+                      <button
+                        key={deg}
+                        type="button"
+                        disabled={alreadyAdded}
+                        onClick={() => addQualification(deg)}
+                        className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                          alreadyAdded
+                            ? "bg-[#1c1f26] border-[#2d3139] text-[#5f6368] cursor-default"
+                            : "bg-[#202227] hover:bg-[#282d38] border-[#343840] text-indigo-200/90 hover:border-indigo-400/40"
+                        }`}
+                      >
+                        {alreadyAdded ? "✓ " : "+ "}
+                        {deg}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Section 5: Contact Channels & Location */}
           <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
@@ -990,6 +1120,23 @@ export default function DashboardPage() {
                   placeholder="e.g. advocate@yourchamber.in"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
+              </div>
+
+              <div className="sm:col-span-2">
+                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-[#8ab4f8]" />
+                  <span>Chamber Office Hours & Consultation Policy</span>
+                </label>
+                <input
+                  type="text"
+                  value={profile.chamberHours || ""}
+                  onChange={(e) => setProfile({ ...profile, chamberHours: e.target.value })}
+                  placeholder="e.g. Mon – Sat: 10:00 AM – 7:30 PM (Consultations by Prior Appointment)"
+                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                />
+                <p className="text-[11px] text-[#9aa0a6] mt-1">
+                  Displays live availability status on your chamber profile and indexes in Google Search knowledge panels.
+                </p>
               </div>
 
               <div className="sm:col-span-2">

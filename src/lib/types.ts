@@ -13,6 +13,9 @@ export interface Advocate {
   fullName: string;
   enrollmentNo: string;
   barAssociations?: string[]; // e.g. ["Panchkula Bar Association", "Punjab and Haryana High Court Bar Association"]
+  qualifications?: string[]; // e.g. ["B.A. LL.B. (Hons.)", "LL.M. (Constitutional Law)"]
+  almaMater?: string; // e.g. "Department of Laws, Panjab University, Chandigarh"
+  chamberHours?: string; // e.g. "Mon – Sat: 10:00 AM – 7:30 PM (Consultations by Prior Appointment)"
   bio: string;
   photoUrl?: string;
   bannerUrl?: string;
@@ -50,6 +53,18 @@ export const COMMON_BAR_ASSOCIATIONS = [
   "Calcutta High Court Bar Association",
   "Allahabad High Court Bar Association",
   "District & Sessions Court Bar Association",
+];
+
+// Common Legal Degrees & Academic Qualifications in India
+export const COMMON_QUALIFICATIONS = [
+  "B.A. LL.B. (Hons.)",
+  "LL.B.",
+  "LL.M. (Constitutional Law)",
+  "LL.M. (Corporate & Commercial Law)",
+  "LL.M. (Criminal Law)",
+  "Ph.D. in Law",
+  "Diploma in Cyber Law",
+  "Diploma in ADR & Arbitration",
 ];
 
 // All possible specializations

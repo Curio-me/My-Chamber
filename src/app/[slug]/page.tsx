@@ -75,6 +75,9 @@ export async function generateMetadata({
   };
 }
 
+import { fetchAdvocateBySlug } from "@/lib/supabase";
+import LegalSchema, { generateLegalSchema } from "@/components/LegalSchema";
+
 export default async function Page({
   params,
 }: {
@@ -86,15 +89,55 @@ export default async function Page({
     notFound();
   }
 
+  // Attempt SSR fetch for search engine crawlers
+  let advocateData = await fetchAdvocateBySlug(slug);
+
+  if (!advocateData && (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv")) {
+    advocateData = {
+      id: "rajavikrant",
+      slug: "rajavikrant",
+      fullName: "Adv. RajaVikrant Sharma",
+      enrollmentNo: "PH//7797//2025",
+      barAssociations: [
+        "Panchkula Bar Association",
+        "Punjab and Haryana High Court Bar Association",
+      ],
+      qualifications: ["B.A. LL.B. (Hons.)"],
+      almaMater: "Department of Laws, Panjab University, Chandigarh",
+      chamberHours: "Mon – Sat: 10:00 AM – 7:30 PM (Consultations by Prior Appointment)",
+      bio: "Advocate with 1+ years of experience practicing at the Punjab and Haryana High Court. Dedicated to accessible legal counsel, fair representation, and courtroom advocacy.",
+      mobile: "+91-9876543210",
+      officePhone: "",
+      email: "advocate@virtualchamber.in",
+      officeAddress: "Advocate Chamber, Punjab and Haryana High Court Complex, Chandigarh",
+      mapUrl: "https://maps.google.com/?q=Punjab+and+Haryana+High+Court+Chandigarh",
+      yearsExp: 1,
+      courts: ["Punjab and Haryana High Court"],
+      specializations: [
+        "Civil Law",
+        "Cheque Bounce (NI Act)",
+        "Constitutional Law",
+        "Consumer Law",
+        "Cyber Law",
+        "Criminal Law",
+      ],
+      languages: ["English", "Hindi", "Punjabi"],
+      isVerified: true,
+    };
+  }
+
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center text-sm text-[#8ab4f8]">
-          Opening Virtual Chamber...
-        </div>
-      }
-    >
-      <AdvocateClientView slug={slug} />
-    </Suspense>
+    <>
+      {advocateData && <LegalSchema advocate={advocateData} />}
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center text-sm text-[#8ab4f8]">
+            Opening Virtual Chamber...
+          </div>
+        }
+      >
+        <AdvocateClientView slug={slug} />
+      </Suspense>
+    </>
   );
 }
