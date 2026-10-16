@@ -378,7 +378,7 @@ export default function DashboardPage() {
                   type="text"
                   value={profile.fullName}
                   onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
-                  placeholder="Adv. Ramesh Kumar Sharma"
+                  placeholder="e.g. Adv. Your Full Name"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>
@@ -398,7 +398,7 @@ export default function DashboardPage() {
                         slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ""),
                       })
                     }
-                    placeholder="adv-ramesh-sharma"
+                    placeholder="your-name-slug"
                     className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1"
                   />
                 </div>
@@ -412,7 +412,7 @@ export default function DashboardPage() {
                   type="text"
                   value={profile.enrollmentNo}
                   onChange={(e) => setProfile({ ...profile, enrollmentNo: e.target.value })}
-                  placeholder="e.g. D/5678/2004 or MAH/123/2010"
+                  placeholder="e.g. D/1234/2020 or State Bar Number"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>
@@ -655,7 +655,7 @@ export default function DashboardPage() {
                 rows={4}
                 value={profile.bio}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-                placeholder="Senior Advocate with 20+ years of litigation experience..."
+                placeholder="Write a brief introduction about your chamber, areas of legal expertise, and courtroom advocacy..."
                 className="w-full bg-[#202227] border border-[#343840] rounded-xl p-3.5 text-sm text-[#f1f3f4] leading-relaxed focus:outline-none focus:border-[#8ab4f8]"
               />
               <p className="text-[11px] text-[#9aa0a6] mt-1 text-right">
@@ -878,7 +878,7 @@ export default function DashboardPage() {
                   type="text"
                   value={profile.mobile}
                   onChange={(e) => setProfile({ ...profile, mobile: e.target.value })}
-                  placeholder="+91-9876543210"
+                  placeholder="e.g. +91-98XXXXXXXX"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>
@@ -891,7 +891,7 @@ export default function DashboardPage() {
                   type="text"
                   value={profile.officePhone || ""}
                   onChange={(e) => setProfile({ ...profile, officePhone: e.target.value })}
-                  placeholder="011-23456789"
+                  placeholder="e.g. 011-XXXXXXXX (Optional)"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>
@@ -904,7 +904,7 @@ export default function DashboardPage() {
                   type="email"
                   value={profile.email}
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                  placeholder="advocate@chamber.com"
+                  placeholder="e.g. advocate@yourchamber.in"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>
@@ -917,7 +917,7 @@ export default function DashboardPage() {
                   rows={2}
                   value={profile.officeAddress}
                   onChange={(e) => setProfile({ ...profile, officeAddress: e.target.value })}
-                  placeholder="Chamber No. 45, Lawyers' Complex, Saket Court, New Delhi"
+                  placeholder="e.g. Chamber No. __, Lawyers' Block, Court Complex, City"
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl p-3 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
               </div>

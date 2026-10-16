@@ -137,14 +137,14 @@ export default function Home() {
           <div className="max-w-sm mx-auto bg-gradient-to-br from-[#162348] to-[#0f1d3c] border border-[#c9a84c]/20 rounded-3xl overflow-hidden shadow-2xl shadow-black/50">
             {/* Profile Header */}
             <div className="p-6 text-center border-b border-[#c9a84c]/10">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#c9a84c] to-[#a0782e] flex items-center justify-center text-2xl font-bold text-[#0f1d3c] mx-auto mb-3 ring-4 ring-[#c9a84c]/30">
-                RS
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-2xl font-bold text-[#0e0e10] mx-auto mb-3 ring-4 ring-[#8ab4f8]/30">
+                LC
               </div>
               <div className="flex items-center justify-center gap-1 mb-0.5">
-                <h3 className="text-white font-bold text-lg">Adv. Ramesh Sharma</h3>
-                <BadgeCheck className="w-4 h-4 text-[#c9a84c]" />
+                <h3 className="text-white font-bold text-lg">Adv. Legal Counsel</h3>
+                <BadgeCheck className="w-4 h-4 text-[#8ab4f8]" />
               </div>
-              <p className="text-gray-400 text-xs mb-3">Enrollment: D/5678/2004 · 20 yrs exp.</p>
+              <p className="text-gray-400 text-xs mb-3">Enrollment: Bar Council Verified · 10+ yrs exp.</p>
               <div className="flex flex-wrap gap-1.5 justify-center">
                 {["Criminal", "Family", "Property"].map((s) => (
                   <span key={s} className="text-[10px] font-semibold text-[#c9a84c] bg-[#c9a84c]/10 border border-[#c9a84c]/30 px-2 py-0.5 rounded-full">
