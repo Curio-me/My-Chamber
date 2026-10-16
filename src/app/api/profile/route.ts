@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { Advocate } from "@/lib/types";
-
-// Server memory cache for serverless lifecycle
-const profileCache: Record<string, Advocate> = {};
+import { fetchAdvocateBySlug, upsertAdvocateProfile } from "@/lib/supabase";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -12,12 +10,13 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Slug required" }, { status: 400 });
   }
 
-  const profile = profileCache[slug];
-  if (!profile) {
-    return NextResponse.json({ found: false }, { status: 404 });
+  // 1. Attempt to fetch from Supabase
+  const dbProfile = await fetchAdvocateBySlug(slug);
+  if (dbProfile) {
+    return NextResponse.json(dbProfile);
   }
 
-  return NextResponse.json(profile);
+  return NextResponse.json({ found: false }, { status: 404 });
 }
 
 export async function POST(request: Request) {
@@ -27,10 +26,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid profile data" }, { status: 400 });
     }
 
-    profileCache[profile.slug] = profile;
+    // Upsert into Supabase database
+    const result = await upsertAdvocateProfile(profile);
+
+    if (!result.success) {
+      return NextResponse.json({ error: result.error || "Database error" }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, slug: profile.slug });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to save" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
   }
 }
