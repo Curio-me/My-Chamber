@@ -271,13 +271,15 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
 
-  // ── Option D: Gyroscopic 3D Tilt & Physical Motion State ──────────────────
+  // ── Unified 3D Showcase, Touch Tilt & Physical Gyroscope State ──────────
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isGyroActive, setIsGyroActive] = useState(false); // Default: OFF (rock-solid 2D)
-  const [isAutoSpinning, setIsAutoSpinning] = useState(false);
-  const [gyroNotice, setGyroNotice] = useState<string | null>(null);
+  const [is3DActive, setIs3DActive] = useState(false); // Default: strictly OFF (rock-solid 2D)
+  const [notice, setNotice] = useState<string | null>(null);
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const isTouchActive = useRef(false);
+  const isHoverActive = useRef(false);
 
   // Update theme if prop changes
   useEffect(() => {
@@ -286,14 +288,44 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
     }
   }, [advocate.themePreference]);
 
+  // Continuous gentle 3D Orbit showcase when 3D is active and user is not touching/hovering
+  useEffect(() => {
+    if (!is3DActive) {
+      setRotate({ x: 0, y: 0 });
+      setGlare({ x: 50, y: 50, opacity: 0 });
+      return;
+    }
+
+    let animId: number;
+    const startTime = performance.now();
+
+    const loop = (now: number) => {
+      if (!isTouchActive.current && !isHoverActive.current) {
+        const elapsed = (now - startTime) / 1000;
+        const rotX = Math.sin(elapsed * 1.5) * 6;
+        const rotY = Math.cos(elapsed * 1.1) * 10;
+        setRotate({ x: rotX, y: rotY });
+        setGlare({
+          x: 50 + Math.cos(elapsed * 1.1) * 30,
+          y: 50 + Math.sin(elapsed * 1.5) * 30,
+          opacity: 0.5,
+        });
+      }
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(animId);
+  }, [is3DActive]);
+
   // Physical Phone Gyroscope (DeviceOrientation) listener
   useEffect(() => {
-    if (!isGyroActive) return;
+    if (!is3DActive) return;
 
     const handleOrientation = (e: DeviceOrientationEvent) => {
-      if (isAutoSpinning) return;
-      // gamma: left-to-right tilt in degrees [-90, 90]
-      // beta: front-to-back tilt in degrees [-180, 180] (normal reading angle ~45°)
+      if (isTouchActive.current || isHoverActive.current) return;
+      if (e.gamma === null && e.beta === null) return;
+
       const gamma = e.gamma ?? 0;
       const beta = e.beta ?? 45;
 
@@ -308,44 +340,50 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       });
     };
 
-    window.addEventListener("deviceorientation", handleOrientation);
-    return () => {
-      window.removeEventListener("deviceorientation", handleOrientation);
-    };
-  }, [isGyroActive, isAutoSpinning]);
+    window.addEventListener("deviceorientation", handleOrientation, true);
+    window.addEventListener(
+      "deviceorientationabsolute" as unknown as "deviceorientation",
+      handleOrientation,
+      true
+    );
 
-  // Toggle Gyroscope 3D sensor on mobile (or mouse tilt on desktop)
-  const toggleGyroTilt = async () => {
-    if (isGyroActive) {
-      setIsGyroActive(false);
+    return () => {
+      window.removeEventListener("deviceorientation", handleOrientation, true);
+      window.removeEventListener(
+        "deviceorientationabsolute" as unknown as "deviceorientation",
+        handleOrientation,
+        true
+      );
+    };
+  }, [is3DActive]);
+
+  // Toggle 3D Showcase (Off by default, user-triggered)
+  const toggle3DShowcase = async () => {
+    if (is3DActive) {
+      setIs3DActive(false);
+      isTouchActive.current = false;
+      isHoverActive.current = false;
       setRotate({ x: 0, y: 0 });
-      setGlare((prev) => ({ ...prev, opacity: 0 }));
-      setGyroNotice(null);
+      setGlare({ x: 50, y: 50, opacity: 0 });
+      setNotice(null);
       return;
     }
 
-    // Check iOS permission requirements
+    // Attempt iOS motion permission request (must be directly in click handler)
     try {
       const DeviceOrientationEventAny = DeviceOrientationEvent as unknown as {
         requestPermission?: () => Promise<string>;
       };
-      if (typeof DeviceOrientationEventAny.requestPermission === "function") {
-        const permission = await DeviceOrientationEventAny.requestPermission();
-        if (permission === "granted") {
-          setIsGyroActive(true);
-          setGyroNotice("📱 Gyro active: Physically tilt phone!");
-          setTimeout(() => setGyroNotice(null), 3500);
-        } else {
-          setIsGyroActive(true);
-        }
-      } else {
-        setIsGyroActive(true);
-        setGyroNotice("📱 Tilt motion active!");
-        setTimeout(() => setGyroNotice(null), 3000);
+      if (typeof DeviceOrientationEventAny?.requestPermission === "function") {
+        await DeviceOrientationEventAny.requestPermission();
       }
     } catch {
-      setIsGyroActive(true);
+      // Browser didn't require or allow explicit motion permission
     }
+
+    setIs3DActive(true);
+    setNotice("📱 3D Active: Drag card with finger or tilt phone!");
+    setTimeout(() => setNotice(null), 4000);
   };
 
   const profileUrl =
@@ -361,17 +399,18 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const mapsEmbedUrl =
     `https://www.google.com/maps?q=${encodeURIComponent(advocate.officeAddress || "Delhi, India")}&output=embed`;
 
-  // Desktop Mouse Tilt tracking (when Gyro/Motion mode is ON)
+  // Desktop Mouse Tilt tracking
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isGyroActive || isAutoSpinning || !cardRef.current) return;
+    if (!is3DActive || !cardRef.current) return;
+    isHoverActive.current = true;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateX = -((y - centerY) / centerY) * 7.5;
-    const rotateY = ((x - centerX) / centerX) * 7.5;
+    const rotateX = -Math.min(Math.max(((y - centerY) / centerY) * 9, -12), 12);
+    const rotateY = Math.min(Math.max(((x - centerX) / centerX) * 9, -12), 12);
 
     setRotate({ x: rotateX, y: rotateY });
     setGlare({
@@ -382,39 +421,54 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   };
 
   const handleMouseLeave = () => {
-    if (isAutoSpinning) return;
-    setRotate({ x: 0, y: 0 });
-    setGlare((prev) => ({ ...prev, opacity: 0 }));
+    isHoverActive.current = false;
   };
 
-  // Toggle 360 degree showcase spin
-  const trigger3DShowcase = () => {
-    if (isAutoSpinning) {
-      setIsAutoSpinning(false);
-      setRotate({ x: 0, y: 0 });
-      return;
-    }
-    setIsGyroActive(true);
-    setIsAutoSpinning(true);
-    let angle = 0;
-    const interval = setInterval(() => {
-      angle += 4;
-      setRotate({
-        x: Math.sin((angle * Math.PI) / 180) * 8,
-        y: Math.sin((angle * 2 * Math.PI) / 180) * 13,
-      });
-      setGlare({
-        x: 50 + Math.sin((angle * 2 * Math.PI) / 180) * 35,
-        y: 50 + Math.cos((angle * Math.PI) / 180) * 35,
-        opacity: 0.55,
-      });
-      if (angle >= 360) {
-        clearInterval(interval);
-        setIsAutoSpinning(false);
-        setRotate({ x: 0, y: 0 });
-        setGlare((prev) => ({ ...prev, opacity: 0 }));
-      }
-    }, 20);
+  // Mobile Touch Tilt tracking (swipe / drag across the card on phone screen)
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!is3DActive || !cardRef.current || e.touches.length !== 1) return;
+    isTouchActive.current = true;
+    const touch = e.touches[0];
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = -Math.min(Math.max(((y - centerY) / centerY) * 11, -14), 14);
+    const rotateY = Math.min(Math.max(((x - centerX) / centerX) * 11, -14), 14);
+
+    setRotate({ x: rotateX, y: rotateY });
+    setGlare({
+      x: Math.min(Math.max((x / rect.width) * 100, 10), 90),
+      y: Math.min(Math.max((y / rect.height) * 100, 10), 90),
+      opacity: 0.6,
+    });
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!is3DActive || !cardRef.current || e.touches.length !== 1) return;
+    isTouchActive.current = true;
+    const touch = e.touches[0];
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = -Math.min(Math.max(((y - centerY) / centerY) * 11, -14), 14);
+    const rotateY = Math.min(Math.max(((x - centerX) / centerX) * 11, -14), 14);
+
+    setRotate({ x: rotateX, y: rotateY });
+    setGlare({
+      x: Math.min(Math.max((x / rect.width) * 100, 10), 90),
+      y: Math.min(Math.max((y / rect.height) * 100, 10), 90),
+      opacity: 0.6,
+    });
+  };
+
+  const handleTouchEnd = () => {
+    isTouchActive.current = false;
   };
 
   const handleShare = async () => {
@@ -481,43 +535,33 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           <span>Virtual Chamber</span>
           <span>•</span>
           <span className="text-[11px] font-mono text-[#8ab4f8]">
-            {isGyroActive ? "📱 Gyro Motion Active" : "2D Flat View"}
+            {is3DActive ? "✨ 3D Motion Active" : "2D Flat View"}
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
-          {/* 3D Showcase Orbit Button */}
+          {/* 3D Showcase Button (Off by default) */}
           <button
-            onClick={trigger3DShowcase}
-            title={isAutoSpinning ? "Stop 3D Showcase" : "3D Physical Motion Showcase Orbit"}
+            onClick={toggle3DShowcase}
+            title={
+              is3DActive
+                ? "Stop 3D Showcase (Return to 2D flat view)"
+                : "3D Showcase (Touch & Drag, Phone Gyro Tilt, and 3D Orbit)"
+            }
             className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all font-semibold shadow-sm ${
-              isAutoSpinning
-                ? "bg-[#8ab4f8] text-[#0e0e10] font-bold border-[#8ab4f8] shadow-md shadow-[#8ab4f8]/20"
+              is3DActive
+                ? "bg-[#8ab4f8] text-[#0e0e10] font-bold border-[#8ab4f8] shadow-md shadow-[#8ab4f8]/25 ring-2 ring-[#8ab4f8]/30"
                 : isDark
                 ? "bg-[#18191c] hover:bg-[#24272c] text-[#f1f3f4] border-[#2d3139]"
                 : "bg-white hover:bg-slate-100 text-slate-800 border-slate-300"
             }`}
           >
-            <RotateCw className={`w-3.5 h-3.5 ${isAutoSpinning ? "animate-spin text-[#0e0e10]" : "text-[#8ab4f8]"}`} />
-            <span>3D Showcase</span>
-          </button>
-
-          {/* Phone Gyroscope / Motion Toggle (Off by default) */}
-          <button
-            onClick={toggleGyroTilt}
-            title={isGyroActive ? "Turn Gyro Motion off" : "Turn Gyro Motion on (Physical Phone Sensor)"}
-            className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-full border transition-colors ${
-              isGyroActive
-                ? isDark
-                  ? "bg-[#1f293d] border-[#8ab4f8]/40 text-[#8ab4f8] shadow-sm shadow-[#8ab4f8]/10 font-medium"
-                  : "bg-blue-50 border-blue-300 text-blue-600 shadow-sm font-medium"
-                : isDark
-                ? "bg-[#18191c] border-[#2d3139] text-[#9aa0a6]"
-                : "bg-white border-slate-300 text-slate-400"
-            }`}
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span className="text-[11px] font-mono">{isGyroActive ? "Gyro ON" : "Gyro OFF"}</span>
+            <RotateCw
+              className={`w-3.5 h-3.5 ${
+                is3DActive ? "animate-spin text-[#0e0e10]" : "text-[#8ab4f8]"
+              }`}
+            />
+            <span>{is3DActive ? "3D Active (Tap to Stop)" : "3D Showcase"}</span>
           </button>
 
           {/* Theme Toggle Button (Light / Dark) */}
@@ -535,27 +579,31 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </div>
       </div>
 
-      {/* Gyro Toast / Notice Banner for Smartphones */}
-      {gyroNotice && (
-        <div className="w-full max-w-[660px] px-2 mb-2 transition-all">
+      {/* 3D Toast / Notice Banner for Smartphones */}
+      {notice && (
+        <div className="w-full max-w-[660px] px-2 mb-2 transition-all animate-in fade-in slide-in-from-top-2 duration-200">
           <div className="text-center py-1.5 px-4 bg-[#1f293d] border border-[#8ab4f8]/40 text-[#8ab4f8] text-xs font-semibold rounded-full shadow-lg">
-            {gyroNotice}
+            {notice}
           </div>
         </div>
       )}
 
-      {/* ── Main Google Creator-Style Container with Gyroscopic 3D Tilt ───── */}
+      {/* ── Main Google Creator-Style Container with Touch & Gyroscopic 3D Tilt ───── */}
       <div
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         style={{
-          transform: isGyroActive
+          transform: is3DActive
             ? `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) translateZ(0)`
             : "none",
-          transition: isAutoSpinning
+          transition: isTouchActive.current
             ? "none"
             : "transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease",
+          touchAction: "pan-y",
         }}
         className={`relative w-full max-w-[660px] rounded-3xl overflow-hidden border shadow-2xl flex flex-col transition-colors duration-200 select-none ${
           isDark
@@ -564,7 +612,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         }`}
       >
         {/* ── Dynamic Physical Specular Glint Overlay ──────────────────────── */}
-        {isGyroActive && (
+        {is3DActive && (
           <div
             className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-3xl"
             style={{
@@ -635,7 +683,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 src={advocate.photoUrl}
                 alt={advocate.fullName}
                 className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 transition-all duration-300 ${
-                  isGyroActive
+                  is3DActive
                     ? isDark
                       ? "border-[#8ab4f8]/70 shadow-xl ring-2 ring-[#8ab4f8]/30"
                       : "border-blue-500/50 shadow-xl ring-2 ring-blue-400/30"
