@@ -70,7 +70,7 @@ export const ALL_BOXES: BoxMeta[] = [
   { id: "contact", name: "Chamber Contacts", shortDesc: "Mobile, WhatsApp, Email and Landline", category: "Contact" },
   { id: "location", name: "Office Location & Google Maps", shortDesc: "Chamber address, interactive map & 1-tap directions", category: "Location" },
   { id: "news_media", name: "Newspaper & Press Coverage", shortDesc: "Interactive press articles & rulings carousel", category: "Media" },
-  { id: "custom_links", name: "Key Links & Publications", shortDesc: "External case orders, judgment links & websites", category: "Links" },
+  { id: "custom_links", name: "Additional Links & Judgments", shortDesc: "Case orders, judgment citations & articles", category: "Links" },
 ];
 
 // Popular / Common Bar Associations in India

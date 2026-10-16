@@ -1553,9 +1553,23 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                     />
                   );
 
-                case "custom_links":
+                case "custom_links": {
                   if (!advocate.customLinks || advocate.customLinks.length === 0)
                     return null;
+
+                  // Filter out empty or unconfigured dummy links
+                  const validLinks = advocate.customLinks.filter(
+                    (link) =>
+                      link &&
+                      link.title &&
+                      link.title.trim().length > 0 &&
+                      link.url &&
+                      link.url.trim().length > 0 &&
+                      link.url.trim() !== "https://"
+                  );
+
+                  if (validLinks.length === 0) return null;
+
                   return (
                     <div
                       key="box-custom-links"
@@ -1565,15 +1579,33 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                           : "bg-slate-50 border-slate-200"
                       }`}
                     >
-                      <h2
-                        className={`text-sm font-semibold tracking-wide ${
-                          isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                        }`}
-                      >
-                        Key Links & Publications
-                      </h2>
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                          }`}
+                        >
+                          <ExternalLink
+                            className={`w-4 h-4 ${
+                              isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                            }`}
+                          />
+                          <span>Additional Links & Judgments</span>
+                        </h2>
+                        <span
+                          className={`text-xs ${
+                            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                          }`}
+                        >
+                          {validLinks.length}{" "}
+                          {validLinks.length === 1
+                            ? "Citation / Link"
+                            : "Citations / Links"}
+                        </span>
+                      </div>
+
                       <div className="space-y-2">
-                        {advocate.customLinks.map((link) => (
+                        {validLinks.map((link) => (
                           <a
                             key={link.id}
                             href={link.url}
@@ -1615,6 +1647,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                       </div>
                     </div>
                   );
+                }
 
                 default:
                   return null;

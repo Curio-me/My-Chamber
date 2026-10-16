@@ -301,12 +301,12 @@ export default function DashboardPage() {
     }
   };
 
-  // Custom Links
+  // Custom Links / Judgments
   const addCustomLink = () => {
     const newLink = {
       id: Date.now().toString(),
-      title: "Landmark Case Order / Article",
-      url: "https://",
+      title: "",
+      url: "",
     };
     setProfile((prev) => ({
       ...prev,
@@ -1351,12 +1351,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Section 6: Social & Custom Links */}
+          {/* Section 6: Social Profiles & Web Presence */}
           <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
             <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
               <Share2 className="w-4 h-4 text-[#8ab4f8]" />
               <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
-                Social Profiles & Custom Links
+                Social Profiles & Web Presence
               </h2>
             </div>
 
@@ -1413,58 +1413,113 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
+          </div>
 
-            {/* Custom Links Adder */}
-            <div className="pt-3 border-t border-[#2d3139]/60 space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-[#f1f3f4]">Additional Links & Judgments</p>
-                  <p className="text-[11px] text-[#9aa0a6]">Add articles, news mentions, or court orders</p>
-                </div>
+          {/* ── Box: Additional Links & Judgments (Dedicated Box) ─────────── */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+              <div className="flex items-center gap-2">
+                <ExternalLink className="w-4 h-4 text-purple-400" />
+                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                  Additional Links & Judgments
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={addCustomLink}
+                className="inline-flex items-center gap-1.5 bg-[#251f33] hover:bg-[#322847] text-purple-300 text-xs font-semibold px-3 py-1.5 rounded-xl border border-purple-400/30 transition-colors shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Add Link / Judgment
+              </button>
+            </div>
+
+            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+              Add external case orders, reported judgment citations (e.g. SCC / PLR / DLT), legal articles, or publications.
+              <span className="text-amber-300/90 block mt-1 font-medium">
+                🔒 Note: If you do not add any links here, this box remains completely hidden from visitors on your chamber profile.
+              </span>
+            </p>
+
+            {(!profile.customLinks || profile.customLinks.length === 0) ? (
+              <div className="text-center py-6 border border-dashed border-[#343840] rounded-xl text-xs text-[#9aa0a6] space-y-2 bg-[#202227]/40">
+                <ExternalLink className="w-7 h-7 text-[#5f6368] mx-auto" />
+                <p>No additional links or judgments added yet.</p>
+                <p className="text-[11px] text-[#71767c]">
+                  This section is currently hidden from the public.
+                </p>
                 <button
                   type="button"
                   onClick={addCustomLink}
-                  className="inline-flex items-center gap-1 bg-[#24272c] hover:bg-[#2c3138] text-[#8ab4f8] text-xs font-semibold px-3 py-1.5 rounded-lg border border-[#343840] transition-colors"
+                  className="text-purple-400 hover:text-purple-300 hover:underline font-medium pt-1 inline-block"
                 >
-                  <Plus className="w-3.5 h-3.5" />
-                  Add Link
+                  + Add your first case order or judgment link
                 </button>
               </div>
+            ) : (
+              <div className="space-y-3">
+                {profile.customLinks.map((link, idx) => (
+                  <div
+                    key={link.id}
+                    className="bg-[#202227] p-3.5 rounded-xl border border-[#343840] space-y-2.5 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-purple-300 bg-[#251f33] px-2 py-0.5 rounded border border-purple-400/25">
+                        Link #{idx + 1}
+                      </span>
+                      <div className="flex items-center gap-2">
+                        {link.url && link.url.startsWith("http") && (
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[11px] text-[#8ab4f8] hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            Test
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => removeCustomLink(link.id)}
+                          className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1"
+                          title="Remove Link"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
 
-              {profile.customLinks && profile.customLinks.length > 0 && (
-                <div className="space-y-2">
-                  {profile.customLinks.map((link) => (
-                    <div
-                      key={link.id}
-                      className="flex items-center gap-2 bg-[#202227] p-2.5 rounded-xl border border-[#343840]"
-                    >
+                    <div>
+                      <label className="block text-[11px] text-[#9aa0a6] mb-1">
+                        Title / Judgment Citation
+                      </label>
                       <input
                         type="text"
                         value={link.title}
                         onChange={(e) => updateCustomLink(link.id, "title", e.target.value)}
-                        placeholder="Link Title (e.g. Landmark Bail Order 2024)"
-                        className="flex-1 bg-transparent text-xs text-[#f1f3f4] border-b border-transparent focus:border-[#8ab4f8] focus:outline-none px-1 py-1"
+                        placeholder="e.g. Landmark Bail Order 2024 (Supreme Court of India)"
+                        className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-purple-400 placeholder:text-[#5f6368]"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] text-[#9aa0a6] mb-1">
+                        Target Link / Court Order URL
+                      </label>
                       <input
                         type="url"
                         value={link.url}
                         onChange={(e) => updateCustomLink(link.id, "url", e.target.value)}
-                        placeholder="https://..."
-                        className="flex-1 bg-transparent text-xs text-[#8ab4f8] border-b border-transparent focus:border-[#8ab4f8] focus:outline-none px-1 py-1"
+                        placeholder="https://main.sci.gov.in/..."
+                        className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#8ab4f8] focus:outline-none focus:border-purple-400 placeholder:text-[#5f6368]"
                       />
-                      <button
-                        type="button"
-                        onClick={() => removeCustomLink(link.id)}
-                        className="text-[#9aa0a6] hover:text-rose-400 p-1"
-                        title="Delete Link"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Section: Newspaper & Media Coverage Carousel */}
