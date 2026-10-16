@@ -36,7 +36,7 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
           title: "Swiggy told to pay Rs 2,000 over short delivery of oranges to Panchkula resident",
           publication: "The Tribune",
           url: "https://www.tribuneindia.com/news/chandigarh/swiggy-told-to-pay-rs-2000-over-short-delivery-of-oranges-to-panchkula-resident/",
-          imageUrl: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=800&q=80",
+          imageUrl: "https://www.tribuneindia.com/sortd-service/imaginary/v22-01/jpg/large/high?url=dGhldHJpYnVuZS1zb3J0ZC1wcm8tcHJvZC1zb3J0ZC9tZWRpYTU0MTJjMDUwLWJlZDItMTFmMC1iMDY0LWVkNWUyYTYzNDljNy5qcGc=",
           date: "Consumer Order",
         },
         {

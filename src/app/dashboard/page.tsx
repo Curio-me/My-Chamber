@@ -30,6 +30,8 @@ import {
   Briefcase,
   Share2,
   Newspaper,
+  Wand2,
+  Loader2,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -44,6 +46,7 @@ export default function DashboardPage() {
   const [customCourtInput, setCustomCourtInput] = useState("");
   const [courtSearch, setCourtSearch] = useState("");
   const [customLangInput, setCustomLangInput] = useState("");
+  const [extractingNewsId, setExtractingNewsId] = useState<string | null>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -231,6 +234,39 @@ export default function DashboardPage() {
       ...prev,
       newsMedia: (prev.newsMedia || []).filter((item) => item.id !== id),
     }));
+  };
+
+  const handleExtractNews = async (id: string, url: string) => {
+    if (!url || !url.startsWith("http")) return;
+    setExtractingNewsId(id);
+    try {
+      const res = await fetch(`/api/news-metadata?url=${encodeURIComponent(url)}`);
+      if (res.ok) {
+        const data = await res.json();
+        setProfile((prev) => ({
+          ...prev,
+          newsMedia: (prev.newsMedia || []).map((item) => {
+            if (item.id === id) {
+              return {
+                ...item,
+                title:
+                  data.title &&
+                  (!item.title || item.title.startsWith("Landmark Case Order"))
+                    ? data.title
+                    : item.title || data.title,
+                publication: data.publication || item.publication,
+                imageUrl: data.imageUrl || item.imageUrl,
+              };
+            }
+            return item;
+          }),
+        }));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setExtractingNewsId(null);
+    }
   };
 
   const publicUrl =
@@ -1079,30 +1115,64 @@ export default function DashboardPage() {
                         />
                       </div>
 
-                      <div className="sm:col-span-2">
-                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
-                          Target Article URL (Target Link)
-                        </label>
+                      <div className="sm:col-span-2 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <label className="block text-[11px] font-medium text-[#9aa0a6]">
+                            Target Article Link (URL)
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => handleExtractNews(item.id, item.url)}
+                            disabled={!item.url || extractingNewsId === item.id}
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8ab4f8] hover:text-[#aecbfa] disabled:opacity-40 transition-colors"
+                          >
+                            {extractingNewsId === item.id ? (
+                              <>
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                <span>Extracting photo...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Wand2 className="w-3 h-3" />
+                                <span>Auto-Extract Image & Details</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
                         <input
                           type="url"
                           value={item.url}
                           onChange={(e) => updateNewsMedia(item.id, "url", e.target.value)}
-                          placeholder="https://www.tribuneindia.com/..."
+                          onBlur={() => {
+                            if (item.url && item.url.startsWith("http") && (!item.imageUrl || item.imageUrl.includes("unsplash"))) {
+                              handleExtractNews(item.id, item.url);
+                            }
+                          }}
+                          placeholder="Paste article link (e.g. https://www.tribuneindia.com/...)"
                           className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#8ab4f8] focus:outline-none focus:border-[#8ab4f8]"
                         />
                       </div>
 
                       <div className="sm:col-span-2">
                         <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
-                          Clipping / Image URL (Displayed in Carousel)
+                          Article Clipping Image (Extracted automatically from news link)
                         </label>
-                        <input
-                          type="url"
-                          value={item.imageUrl || ""}
-                          onChange={(e) => updateNewsMedia(item.id, "imageUrl", e.target.value)}
-                          placeholder="https://images.unsplash.com/... or paste image link"
-                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
-                        />
+                        <div className="flex items-center gap-3">
+                          {item.imageUrl && (
+                            <img
+                              src={item.imageUrl}
+                              alt="Article thumbnail"
+                              className="w-14 h-14 rounded-xl object-cover border border-[#343840] shrink-0 shadow"
+                            />
+                          )}
+                          <input
+                            type="url"
+                            value={item.imageUrl || ""}
+                            onChange={(e) => updateNewsMedia(item.id, "imageUrl", e.target.value)}
+                            placeholder="Image URL extracted automatically from article or custom link..."
+                            className="flex-1 bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
