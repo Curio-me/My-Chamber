@@ -1035,10 +1035,10 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           <div className="pt-6 pb-2 text-center space-y-3">
             <a
               href="/dashboard"
-              className={`inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-full border transition-colors shadow-sm ${
+              className={`inline-flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-full border transition-all shadow-sm hover:scale-[1.02] ${
                 isDark
-                  ? "bg-[#202227] hover:bg-[#282a30] text-[#c4c7c5] hover:text-white border-[#343840]"
-                  : "bg-white hover:bg-slate-100 text-slate-700 border-slate-300"
+                  ? "bg-[#202227] hover:bg-[#282a30] text-[#f1f3f4] border-[#343840] hover:border-[#8ab4f8]/50"
+                  : "bg-white hover:bg-slate-50 text-slate-800 border-slate-300 shadow-sm"
               }`}
             >
               <Scale
@@ -1046,7 +1046,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                   isDark ? "text-[#8ab4f8]" : "text-blue-600"
                 }`}
               />
-              <span>Manage Virtual Chamber Studio</span>
+              <span>Create Your Own Chamber</span>
             </a>
 
             <p
