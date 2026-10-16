@@ -82,7 +82,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     customLinks: standardLinks,
     newsMedia: newsItems,
     themePreference: row.theme_preference || "dark",
-    enable3d: row.enable_3d !== false,
+    enable3d: row.enable_3d === true,
     isVerified: row.is_verified !== false,
   };
 }
@@ -125,7 +125,7 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
     website_url: advocate.websiteUrl || null,
     custom_links: combinedCustomLinks,
     theme_preference: advocate.themePreference || "dark",
-    enable_3d: advocate.enable3d !== false,
+    enable_3d: advocate.enable3d === true,
     is_verified: advocate.isVerified !== false,
     updated_at: new Date().toISOString(),
   };

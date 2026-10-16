@@ -57,7 +57,7 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
         },
       ],
       themePreference: "dark",
-      enable3d: true,
+      enable3d: false,
       isVerified: true,
     };
   }
@@ -86,7 +86,7 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
     specializations: ["Constitutional Law", "Civil Law", "Criminal Law"],
     languages: ["English", "Hindi"],
     themePreference: "dark",
-    enable3d: true,
+    enable3d: false,
     isVerified: true,
   };
 }

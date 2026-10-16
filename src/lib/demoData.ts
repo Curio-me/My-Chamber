@@ -50,6 +50,6 @@ export const DEMO_ADVOCATE: Advocate = {
   linkedinUrl: "",
   websiteUrl: "",
   themePreference: "dark",
-  enable3d: true,
+  enable3d: false,
   isVerified: true,
 };

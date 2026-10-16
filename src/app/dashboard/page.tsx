@@ -526,7 +526,7 @@ export default function DashboardPage() {
                 </div>
                 <input
                   type="checkbox"
-                  checked={profile.enable3d ?? true}
+                  checked={profile.enable3d ?? false}
                   onChange={(e) => setProfile({ ...profile, enable3d: e.target.checked })}
                   className="w-4 h-4 accent-[#8ab4f8] rounded cursor-pointer"
                 />
