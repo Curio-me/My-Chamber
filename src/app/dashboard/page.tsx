@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Advocate, ALL_SPECIALIZATIONS, ALL_COURTS } from "@/lib/types";
-import { DEMO_ADVOCATE } from "@/lib/demoData";
+import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import {
   Scale,
@@ -53,7 +53,7 @@ const BANNER_PRESETS = [
 ];
 
 export default function DashboardPage() {
-  const [profile, setProfile] = useState<Advocate>(DEMO_ADVOCATE);
+  const [profile, setProfile] = useState<Advocate>(EMPTY_ADVOCATE);
   const [savedStatus, setSavedStatus] = useState<"idle" | "saved">("idle");
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
@@ -66,7 +66,7 @@ export default function DashboardPage() {
   const photoFileInputRef = useRef<HTMLInputElement>(null);
   const bannerFileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load saved profile on mount
+  // Load saved profile on mount if author previously created one
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -74,7 +74,7 @@ export default function DashboardPage() {
         setProfile(JSON.parse(saved));
       }
     } catch {
-      // fallback to DEMO_ADVOCATE
+      // remains EMPTY_ADVOCATE
     }
   }, []);
 
@@ -96,11 +96,18 @@ export default function DashboardPage() {
     }
   };
 
-  // Reset handler
+  // Reset to clean blank form
   const handleReset = () => {
-    if (confirm("Reset profile to sample advocate data? Your current unsaved edits will be replaced.")) {
+    if (confirm("Clear all fields and start fresh with a blank chamber?")) {
+      setProfile(EMPTY_ADVOCATE);
+      localStorage.removeItem(STORAGE_KEY);
+    }
+  };
+
+  // Optional: Fill sample template
+  const handleLoadSample = () => {
+    if (confirm("Load generic sample template to see how a complete profile looks?")) {
       setProfile(DEMO_ADVOCATE);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_ADVOCATE));
     }
   };
 
@@ -301,11 +308,20 @@ export default function DashboardPage() {
 
             <button
               onClick={handleReset}
-              title="Reset to sample data"
-              className="hidden sm:flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-[#f1f3f4] bg-[#202227] hover:bg-[#282a30] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
+              title="Clear all fields and start fresh"
+              className="hidden sm:flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-rose-400 bg-[#202227] hover:bg-[#282a30] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
             >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset</span>
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear All</span>
+            </button>
+
+            <button
+              onClick={handleLoadSample}
+              title="Load generic sample template"
+              className="hidden md:flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-[#8ab4f8] bg-[#202227] hover:bg-[#282a30] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Sample Template</span>
             </button>
 
             <Link

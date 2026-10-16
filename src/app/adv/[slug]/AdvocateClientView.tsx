@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import ProfileCard from "@/components/ProfileCard";
-import { DEMO_ADVOCATE } from "@/lib/demoData";
 import { Advocate } from "@/lib/types";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -17,11 +16,22 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
     : "Advocate";
 
   return {
-    ...DEMO_ADVOCATE,
     id: slug,
     slug,
     fullName: `Adv. ${formattedName}`,
-    bio: `Advocate practicing across Constitutional, Civil, and Criminal matters. Dedicated to accessible legal counsel, fair representation, and courtroom advocacy.`,
+    enrollmentNo: "Bar Council of India",
+    bio: `Advocate practicing across legal domains. Dedicated to client representation, court proceedings, and legal advisory.`,
+    mobile: "",
+    officePhone: "",
+    email: "",
+    officeAddress: "Advocate Chamber, Court Complex",
+    mapUrl: "",
+    yearsExp: 5,
+    courts: ["High Court", "District & Sessions Court"],
+    specializations: ["Constitutional Law", "Civil Law", "Criminal Law"],
+    languages: ["English", "Hindi"],
+    themePreference: "dark",
+    enable3d: true,
     isVerified: true,
   };
 }
