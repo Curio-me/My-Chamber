@@ -105,17 +105,16 @@ export default function AdvocateClientView({ slug }: { slug: string }) {
 
   useEffect(() => {
     try {
-      // 1. Check local storage
+      // 1. Check local storage for instant zero-latency load
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Advocate;
         if (parsed.slug === slug || !parsed.slug) {
           setAdvocate({ ...parsed, slug });
-          return;
         }
       }
 
-      // 2. Fetch from cloud API if available
+      // 2. Fetch live data from Supabase cloud database
       fetch(`/api/profile?slug=${encodeURIComponent(slug)}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
