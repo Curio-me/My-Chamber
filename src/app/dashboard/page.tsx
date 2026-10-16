@@ -361,11 +361,14 @@ export default function DashboardPage() {
                     onChange={(e) =>
                       setProfile({
                         ...profile,
-                        slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, ""),
+                        slug: e.target.value
+                          .toLowerCase()
+                          .replace(/\s+/g, "-")
+                          .replace(/[^a-z0-9-_]/g, ""),
                       })
                     }
-                    placeholder="rajavikrant"
-                    className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1 font-mono"
+                    placeholder="write your name"
+                    className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1 font-mono placeholder:text-[#5f6368]"
                   />
                 </div>
               </div>
