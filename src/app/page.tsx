@@ -381,6 +381,199 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── 3B. Signature 3D Customization Showcase (Matching Site Colors) ───── */}
+      <section className="py-20 px-4 sm:px-6 bg-[#163826] text-[#FAF7F2] relative overflow-hidden">
+        {/* Ambient subtle glow */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-[#214F36]/60 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#0E2318]/70 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center relative z-10">
+          
+          {/* LEFT: 3D Smartphone Card with Popout & Side Badges */}
+          <div className="lg:col-span-6 flex justify-center items-center py-6">
+            <div className="relative w-full max-w-[360px] sm:max-w-[400px] h-[580px] flex items-center justify-center">
+              
+              {/* Floating 3D Gavel Prop (Behind Right Shoulder) */}
+              <div className="absolute -top-3 -left-3 z-0 opacity-80 pointer-events-none drop-shadow-2xl">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#E6D5B8] to-[#9C7F52] flex items-center justify-center text-[#1C160C] font-black shadow-2xl rotate-[-18deg] border-2 border-white/40">
+                  <Gavel className="w-10 h-10 text-[#2B1F11]" />
+                </div>
+              </div>
+
+              {/* 3D Tilted Main Card Container */}
+              <div className="relative w-[280px] sm:w-[305px] h-[520px] sm:h-[550px] animate-float-3d">
+                
+                {/* Main Obsidian/Forest Smartphone Card */}
+                <div className="relative w-full h-full rounded-[40px] p-5 sm:p-6 text-white shadow-2xl border-2 bg-gradient-to-b from-[#1C4530] via-[#132E20] to-[#0A1A12] border-[#2E6B4A]/70 shadow-[0_30px_70px_rgba(0,0,0,0.7)] flex flex-col justify-between overflow-hidden">
+                  
+                  <div>
+                    {/* Top Status & Court Bar */}
+                    <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                      <div className="flex items-center gap-1.5">
+                        <Scale className="w-3.5 h-3.5 text-[#E6D5B8]" />
+                        <span className="text-[10.5px] font-bold tracking-wider uppercase text-white/90">
+                          Supreme Court of India
+                        </span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-white/15 text-[9px] font-mono font-bold text-white">
+                        D/1245/2018
+                      </span>
+                    </div>
+
+                    {/* Headshot & Bold Display Name (Billie / Linktree Style) */}
+                    <div className="pt-4 text-center space-y-2">
+                      <div className="relative w-28 h-28 mx-auto">
+                        <div className="w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center bg-gradient-to-tr from-[#E6D5B8] to-[#163826]">
+                          <div className="w-full h-full rounded-[22px] bg-[#0A0D0B] flex flex-col items-center justify-center text-white overflow-hidden relative">
+                            {/* Legal Robe Band Graphic */}
+                            <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
+                            <span className="font-black text-2xl tracking-wider pt-2">VS</span>
+                          </div>
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 bg-[#E6D5B8] text-[#14231C] font-extrabold p-1 rounded-full shadow-lg border border-white">
+                          <BadgeCheck className="w-4 h-4" />
+                        </div>
+                      </div>
+
+                      <div className="pt-1">
+                        <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md text-[#F4EFEA]">
+                          VIKRANT
+                        </h3>
+                        <p className="text-xs font-semibold text-[#D4DFD8] mt-1">
+                          Adv. Vikrant Sharma
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Tightly Stacked Rounded-Full Action Buttons (6px gap) */}
+                    <div className="space-y-1.5 pt-3">
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer">
+                        ⚖️ Criminal Writs & Bail Matters
+                      </div>
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer">
+                        🏛️ Chamber 402, Supreme Court
+                      </div>
+                      <div className="w-full bg-[#E6D5B8] text-[#14231C] rounded-full py-2 px-3.5 text-center text-[11px] font-black shadow-md cursor-pointer hover:bg-[#d8c5a4] transition-all">
+                        📇 Save Direct Contact (.vcf)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Micro Footer inside Card */}
+                  <div className="pt-2 text-center text-[10px] text-white/60 font-medium">
+                    Verified Bar Council of Delhi Profile
+                  </div>
+                </div>
+
+                {/* Floating Front Popout Card (Like 'June on film' in Billie screenshot) */}
+                <div className="absolute -bottom-6 -left-6 sm:-left-8 w-[210px] sm:w-[230px] z-30 animate-pop-card">
+                  <div className="rounded-3xl bg-white text-[#14231C] p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                        <FileText className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="text-[9px] font-black uppercase tracking-wider text-[#163826]">
+                          Case Milestone
+                        </div>
+                        <div className="text-xs font-extrabold text-[#14231C] leading-tight">
+                          Supreme Court SLP
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-[10px] text-[#526057] leading-snug">
+                      Quashing of Criminal Proceedings under Sec 482 CrPC
+                    </p>
+
+                    <div className="w-full bg-[#163826] text-white py-1.5 rounded-xl text-center text-[10px] font-bold shadow-sm">
+                      Download Case Brief
+                    </div>
+                  </div>
+                </div>
+
+                {/* Floating Column of Circular Badges on Right Edge (Like Billie screenshot) */}
+                <div className="absolute top-16 -right-5 sm:-right-6 flex flex-col gap-2.5 z-20 animate-side-icons">
+                  <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                    <WhatsAppIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                    <Phone className="w-4 h-4" />
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#E6D5B8] text-[#14231C] flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                    <QrCode className="w-4 h-4" />
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+          {/* RIGHT: High-Impact Typography & Action Matching Site Colors */}
+          <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+            <h2 className="text-4xl sm:text-6xl md:text-[62px] font-black tracking-tight leading-[1.05] text-[#E6D5B8]">
+              Create and customize your chamber in minutes
+            </h2>
+
+            <p className="text-base sm:text-lg text-[#D4DFD8] leading-relaxed font-normal max-w-xl mx-auto lg:mx-0">
+              Connect your Bar Council credentials, court appearances, office chambers, printable QR code, and client consultations in one verified link in bio. Customize every detail to match your practice.
+            </p>
+
+            {/* Bullet Features */}
+            <div className="space-y-3 pt-2 text-left max-w-md mx-auto lg:mx-0">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#E6D5B8] text-[#14231C] flex items-center justify-center font-black mt-0.5 shrink-0">
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                </div>
+                <span className="text-sm font-semibold text-white/95">
+                  <strong>1-Tap Direct vCard:</strong> Clients save your mobile and chamber office straight into their phone contact list.
+                </span>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#E6D5B8] text-[#14231C] flex items-center justify-center font-black mt-0.5 shrink-0">
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                </div>
+                <span className="text-sm font-semibold text-white/95">
+                  <strong>High-Resolution QR Studio:</strong> 1000×1200 print-ready QR codes for desk acrylic displays and physical visiting cards.
+                </span>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#E6D5B8] text-[#14231C] flex items-center justify-center font-black mt-0.5 shrink-0">
+                  <Check className="w-3.5 h-3.5 stroke-[3]" />
+                </div>
+                <span className="text-sm font-semibold text-white/95">
+                  <strong>Bar Council Anti-Duplicate Guarantee:</strong> Strictly 1 profile per advocate enrollment number with dispute resolution.
+                </span>
+              </div>
+            </div>
+
+            {/* Big Punchy Action Button (Warm Champagne Gold) */}
+            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <Link
+                href="/login"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#E6D5B8] hover:bg-[#d8c5a4] text-[#14231C] font-black text-base px-9 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5 active:scale-95"
+              >
+                <span>Get started for free</span>
+                <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+              </Link>
+
+              <Link
+                href="/rajavikrant"
+                target="_blank"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-bold text-sm px-6 py-4 rounded-full border border-white/20 transition-colors"
+              >
+                <span>View Sample Profile</span>
+                <ExternalLink className="w-4 h-4 text-white/70" />
+              </Link>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
       {/* ── 4. Bento Feature Grid ───────────────────────────────────────────── */}
       <section id="features" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
