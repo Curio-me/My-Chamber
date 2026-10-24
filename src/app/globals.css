@@ -89,3 +89,48 @@ body {
   animation: sideIconsFloat 5s ease-in-out infinite alternate;
 }
 
+/* 3D 360-Degree Continuous Rotation for Linktree-Style Advocate Cards */
+@keyframes spin360 {
+  0% {
+    transform: rotateX(6deg) rotateY(0deg);
+  }
+  100% {
+    transform: rotateX(6deg) rotateY(360deg);
+  }
+}
+
+.carousel-3d-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+}
+
+.carousel-3d-rotor {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.animate-spin-360 {
+  animation: spin360 16s linear infinite;
+}
+
+.animate-spin-360-paused {
+  animation: spin360 16s linear infinite;
+  animation-play-state: paused;
+}
+
+.card-face-vikrant {
+  transform: rotateY(0deg) translateZ(190px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-face-ananya {
+  transform: rotateY(180deg) translateZ(190px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+

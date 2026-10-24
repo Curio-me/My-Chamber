@@ -50,7 +50,8 @@ export default function Home() {
   const [handleInput, setHandleInput] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [activeAdvocate, setActiveAdvocate] = useState<"vikrant" | "ananya">("vikrant");
+  const [autoRotate, setAutoRotate] = useState(true);
+  const [manualAngle, setManualAngle] = useState(0);
 
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +67,15 @@ export default function Home() {
     navigator.clipboard.writeText("https://my-chamber.vercel.app/rajavikrant");
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  const snapToAdvocate = (target: "vikrant" | "ananya") => {
+    setAutoRotate(false);
+    setManualAngle(target === "vikrant" ? 0 : 180);
+  };
+
+  const resumeAutoRotate = () => {
+    setAutoRotate(true);
   };
 
   return (
@@ -400,176 +410,262 @@ export default function Home() {
 
         <div className="max-w-6xl mx-auto relative z-10">
           
-          {/* Advocate Toggle Switcher */}
-          <div className="flex items-center justify-center mb-10">
-            <div className="inline-flex p-1.5 rounded-full bg-[#0D2970]/70 border border-white/20 backdrop-blur-md shadow-lg">
+          {/* 360° Rotation Controls & Advocate Selector */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-10">
+            <div className="inline-flex p-1.5 rounded-full bg-[#0D2970]/80 border border-white/20 backdrop-blur-md shadow-lg">
               <button
-                onClick={() => setActiveAdvocate("vikrant")}
-                className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
-                  activeAdvocate === "vikrant"
-                    ? "bg-[#D2E823] text-[#0D2970] shadow-md scale-100"
+                onClick={resumeAutoRotate}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  autoRotate
+                    ? "bg-[#D2E823] text-[#0D2970] shadow-md"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                <span>360° Auto-Rotate {autoRotate ? "(Active)" : ""}</span>
+              </button>
+
+              <button
+                onClick={() => snapToAdvocate("vikrant")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  !autoRotate && manualAngle === 0
+                    ? "bg-[#D2E823] text-[#0D2970] shadow-md"
                     : "text-white/80 hover:text-white"
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
-                <span>Adv. Vikrant Sharma (Supreme Court)</span>
+                <span>Adv. Vikrant (Front)</span>
               </button>
 
               <button
-                onClick={() => setActiveAdvocate("ananya")}
-                className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
-                  activeAdvocate === "ananya"
-                    ? "bg-[#D2E823] text-[#0D2970] shadow-md scale-100"
+                onClick={() => snapToAdvocate("ananya")}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all ${
+                  !autoRotate && manualAngle === 180
+                    ? "bg-[#D2E823] text-[#0D2970] shadow-md"
                     : "text-white/80 hover:text-white"
                 }`}
               >
                 <Briefcase className="w-3.5 h-3.5" />
-                <span>Adv. Ananya Deshmukh (Bombay High Court)</span>
+                <span>Adv. Ananya (Reverse)</span>
               </button>
             </div>
+
+            <span className="text-[11px] text-white/70 font-medium">
+              Hover over card to pause • Rotates 360° continuously
+            </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             
-            {/* ── LEFT COLUMN: 3D Rotating & Floating Card System ── */}
+            {/* ── LEFT COLUMN: Continuous 360° Rotating 3D Dual-Card Cylinder ── */}
             <div className="lg:col-span-6 flex justify-center items-center py-6">
-              <div className="relative w-full max-w-[360px] sm:max-w-[420px] h-[520px] flex items-center justify-center">
+              <div className="relative w-full max-w-[360px] sm:max-w-[420px] h-[540px] flex items-center justify-center carousel-3d-stage">
                 
-                {/* Decorative 3D Floating Legal Prop (Gavel & Stand in Perspective) */}
+                {/* Decorative 3D Floating Legal Prop (Gavel & Stand) */}
                 <div className="absolute -top-4 -left-6 z-0 opacity-80 pointer-events-none drop-shadow-2xl">
                   <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#E6D5B8] to-[#8C734B] flex items-center justify-center text-[#1C160C] font-black shadow-2xl rotate-[-18deg] border-2 border-white/40">
                     <Gavel className="w-10 h-10 text-[#2B1F11]" />
                   </div>
                 </div>
 
-                {/* 3D Tilted & Floating Main Profile Container */}
-                <div className="relative w-[280px] sm:w-[310px] animate-float-3d">
+                {/* 360° ROTATING DUAL-CARD ROTOR CYLINDER */}
+                <div
+                  className={`relative w-[280px] sm:w-[310px] h-[480px] carousel-3d-rotor ${
+                    autoRotate ? "animate-spin-360" : "transition-transform duration-700 ease-out"
+                  }`}
+                  style={!autoRotate ? { transform: `rotateX(6deg) rotateY(${manualAngle}deg)` } : undefined}
+                >
                   
-                  {/* MAIN BACK CARD */}
-                  <div
-                    className={`relative rounded-[38px] p-6 text-white shadow-2xl border-2 transition-all duration-500 overflow-hidden ${
-                      activeAdvocate === "vikrant"
-                        ? "bg-gradient-to-b from-[#132B1F] via-[#0E2017] to-[#08140E] border-[#2C6246]/60 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
-                        : "bg-gradient-to-b from-[#8C2433] via-[#6B1724] to-[#450C15] border-[#FF8A9B]/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
-                    }`}
-                  >
-                    {/* Top Status & Court Bar */}
-                    <div className="flex items-center justify-between pb-4 border-b border-white/10">
-                      <div className="flex items-center gap-1.5">
-                        <Scale className="w-4 h-4 text-[#D2E823]" />
-                        <span className="text-[11px] font-bold tracking-wider uppercase text-white/90">
-                          {activeAdvocate === "vikrant"
-                            ? "Supreme Court of India"
-                            : "Bombay High Court & NCLT"}
+                  {/* ═══════════════════════════════════════════════════════════
+                      CARD 1: ADV. VIKRANT SHARMA (FACES 0° - FRONT)
+                      ═══════════════════════════════════════════════════════════ */}
+                  <div className="absolute inset-0 card-face-vikrant">
+                    <div className="relative rounded-[38px] p-6 text-white shadow-2xl border-2 bg-gradient-to-b from-[#132B1F] via-[#0E2017] to-[#08140E] border-[#2C6246]/70 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+                      {/* Top Status & Court Bar */}
+                      <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                        <div className="flex items-center gap-1.5">
+                          <Scale className="w-4 h-4 text-[#D2E823]" />
+                          <span className="text-[11px] font-bold tracking-wider uppercase text-white/90">
+                            Supreme Court of India
+                          </span>
+                        </div>
+                        <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-mono font-bold text-white">
+                          D/1245/2018
                         </span>
                       </div>
-                      <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-mono font-bold text-white">
-                        {activeAdvocate === "vikrant" ? "D/1245/2018" : "MAH/5621/2019"}
-                      </span>
-                    </div>
 
-                    {/* Advocate Visual Cutout / Headshot */}
-                    <div className="pt-4 text-center space-y-2">
-                      <div className="relative w-28 h-28 mx-auto">
-                        <div
-                          className={`w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center transition-all ${
-                            activeAdvocate === "vikrant"
-                              ? "bg-gradient-to-tr from-[#D2E823] to-[#163826]"
-                              : "bg-gradient-to-tr from-[#FFD2A6] to-[#8C2433]"
-                          }`}
-                        >
-                          <div className="w-full h-full rounded-[22px] bg-[#0A0D0B] flex flex-col items-center justify-center text-white overflow-hidden relative">
-                            {/* Legal Robe Band Graphic */}
-                            <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
-                            <span className="font-black text-2xl tracking-wider pt-2">
-                              {activeAdvocate === "vikrant" ? "VS" : "AD"}
-                            </span>
+                      {/* Advocate Visual Cutout / Headshot */}
+                      <div className="pt-4 text-center space-y-2">
+                        <div className="relative w-28 h-28 mx-auto">
+                          <div className="w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center bg-gradient-to-tr from-[#D2E823] to-[#163826]">
+                            <div className="w-full h-full rounded-[22px] bg-[#0A0D0B] flex flex-col items-center justify-center text-white overflow-hidden relative">
+                              <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
+                              <span className="font-black text-2xl tracking-wider pt-2">VS</span>
+                            </div>
+                          </div>
+                          <div className="absolute -bottom-1 -right-1 bg-[#D2E823] text-black font-extrabold p-1 rounded-full shadow-lg border border-white">
+                            <BadgeCheck className="w-4 h-4" />
                           </div>
                         </div>
 
-                        {/* Verified Pill Badge */}
-                        <div className="absolute -bottom-1 -right-1 bg-[#D2E823] text-black font-extrabold p-1 rounded-full shadow-lg border border-white">
-                          <BadgeCheck className="w-4 h-4" />
+                        {/* Typographic Title (Bobby Bakes / Billie Style) */}
+                        <div className="pt-1">
+                          <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md">
+                            VIKRANT
+                          </h3>
+                          <p className="text-xs font-semibold text-white/80 mt-1">
+                            Adv. Vikrant Sharma
+                          </p>
                         </div>
                       </div>
 
-                      {/* Giant Stylized Name (Linktree Hero Style) */}
-                      <div className="pt-1">
-                        <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md">
-                          {activeAdvocate === "vikrant" ? "VIKRANT" : "ANANYA"}
-                        </h3>
-                        <p className="text-xs font-semibold text-white/80 mt-1">
-                          {activeAdvocate === "vikrant"
-                            ? "Adv. Vikrant Sharma"
-                            : "Adv. Ananya Deshmukh"}
+                      {/* Stacked Action Buttons */}
+                      <div className="space-y-2 pt-4 pb-2">
+                        <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm">
+                          ⚖️ Criminal Writs & Bail Matters
+                        </div>
+                        <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm">
+                          🏛️ Chamber 402, Supreme Court
+                        </div>
+                        <div className="w-full bg-[#D2E823] text-[#0E1B13] rounded-2xl py-2.5 px-3.5 text-center text-xs font-black shadow-md">
+                          📇 Save Direct Contact (.vcf)
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Popout Floating Card for Vikrant */}
+                    <div className="absolute -bottom-8 -left-8 w-[220px] z-30 animate-pop-card">
+                      <div className="rounded-3xl bg-white text-[#14231C] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                            <FileText className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-[9px] font-black uppercase text-[#163826]">
+                              Case Milestone
+                            </div>
+                            <div className="text-xs font-extrabold text-[#14231C]">
+                              Supreme Court SLP
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-[#526057] leading-snug">
+                          Quashing of Criminal Proceedings under Sec 482 CrPC
                         </p>
+                        <div className="w-full bg-[#163826] text-white py-1.5 rounded-xl text-center text-[10px] font-bold">
+                          Download Brief
+                        </div>
                       </div>
                     </div>
 
-                    {/* Stacked Linktree-style Pill Buttons */}
-                    <div className="space-y-2 pt-4 pb-2">
-                      <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 cursor-pointer shadow-sm">
-                        {activeAdvocate === "vikrant"
-                          ? "⚖️ Criminal Writs & Bail Matters"
-                          : "📊 IBC Restructuring & NCLT Appeals"}
+                    {/* Side Action Icons for Vikrant */}
+                    <div className="absolute top-16 -right-6 flex flex-col gap-2.5 z-20 animate-side-icons">
+                      <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white">
+                        <WhatsAppIcon className="w-5 h-5 text-white" />
                       </div>
-                      <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 cursor-pointer shadow-sm">
-                        {activeAdvocate === "vikrant"
-                          ? "🏛️ Chamber 402, Supreme Court"
-                          : "🏛️ Chamber 18, High Court Fort"}
+                      <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white">
+                        <Phone className="w-4 h-4" />
                       </div>
-                      <div className="w-full bg-[#D2E823] text-[#0E1B13] rounded-2xl py-2.5 px-3.5 text-center text-xs font-black shadow-md cursor-pointer hover:bg-[#b8cc1c] transition-all">
-                        📇 Save Direct Contact (.vcf)
+                      <div className="w-10 h-10 rounded-full bg-[#D2E823] text-black flex items-center justify-center shadow-xl border-2 border-white">
+                        <QrCode className="w-4 h-4" />
                       </div>
                     </div>
                   </div>
 
-                  {/* ── POPPING OUT FRONT FLOATING CARD (3D Overlap) ── */}
-                  <div className="absolute -bottom-10 -left-10 sm:-left-12 w-[220px] sm:w-[240px] z-30 animate-pop-card">
-                    <div className="rounded-3xl bg-white text-[#14231C] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2.5">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
-                          <FileText className="w-4 h-4" />
+
+                  {/* ═══════════════════════════════════════════════════════════
+                      CARD 2: ADV. ANANYA DESHMUKH (FACES 180° - REVERSE)
+                      ═══════════════════════════════════════════════════════════ */}
+                  <div className="absolute inset-0 card-face-ananya">
+                    <div className="relative rounded-[38px] p-6 text-white shadow-2xl border-2 bg-gradient-to-b from-[#8C2433] via-[#6B1724] to-[#450C15] border-[#FF8A9B]/50 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+                      {/* Top Status & Court Bar */}
+                      <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                        <div className="flex items-center gap-1.5">
+                          <Briefcase className="w-4 h-4 text-[#FFD2A6]" />
+                          <span className="text-[11px] font-bold tracking-wider uppercase text-white/90">
+                            Bombay High Court & NCLT
+                          </span>
                         </div>
-                        <div>
-                          <div className="text-[10px] font-black uppercase tracking-wider text-[#163826]">
-                            {activeAdvocate === "vikrant" ? "Case Milestone" : "Legal Advisory"}
+                        <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-mono font-bold text-white">
+                          MAH/5621/2019
+                        </span>
+                      </div>
+
+                      {/* Advocate Visual Cutout / Headshot */}
+                      <div className="pt-4 text-center space-y-2">
+                        <div className="relative w-28 h-28 mx-auto">
+                          <div className="w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center bg-gradient-to-tr from-[#FFD2A6] to-[#8C2433]">
+                            <div className="w-full h-full rounded-[22px] bg-[#1E0509] flex flex-col items-center justify-center text-white overflow-hidden relative">
+                              <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
+                              <span className="font-black text-2xl tracking-wider pt-2">AD</span>
+                            </div>
                           </div>
-                          <div className="text-xs font-extrabold leading-tight text-[#14231C]">
-                            {activeAdvocate === "vikrant"
-                              ? "Supreme Court SLP"
-                              : "Arbitration Brief"}
+                          <div className="absolute -bottom-1 -right-1 bg-[#FFD2A6] text-[#450C15] font-extrabold p-1 rounded-full shadow-lg border border-white">
+                            <BadgeCheck className="w-4 h-4" />
                           </div>
+                        </div>
+
+                        {/* Typographic Title (Bobby Bakes / Billie Style) */}
+                        <div className="pt-1">
+                          <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md">
+                            ANANYA
+                          </h3>
+                          <p className="text-xs font-semibold text-white/80 mt-1">
+                            Adv. Ananya Deshmukh
+                          </p>
                         </div>
                       </div>
 
-                      <p className="text-[10px] text-[#526057] leading-snug">
-                        {activeAdvocate === "vikrant"
-                          ? "Quashing of Criminal Proceedings under Sec 482 CrPC"
-                          : "Cross-Border Commercial Dispute & Retainer Guidance"}
-                      </p>
-
-                      <div className="w-full bg-[#163826] text-white py-2 px-3 rounded-xl text-center text-[10px] font-bold shadow-sm">
-                        {activeAdvocate === "vikrant" ? "Download Briefing Note" : "Book Advisory Session"}
+                      {/* Stacked Action Buttons */}
+                      <div className="space-y-2 pt-4 pb-2">
+                        <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm">
+                          📊 IBC Restructuring & NCLT Appeals
+                        </div>
+                        <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm">
+                          🏛️ Chamber 18, High Court Fort
+                        </div>
+                        <div className="w-full bg-[#FFD2A6] text-[#3B0D14] rounded-2xl py-2.5 px-3.5 text-center text-xs font-black shadow-md">
+                          📇 Save Direct Contact (.vcf)
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* ── FLOATING 3D ACTION ICONS ON RIGHT (Stacked Pills) ── */}
-                  <div className="absolute top-16 -right-6 sm:-right-8 flex flex-col gap-2.5 z-20 animate-side-icons">
-                    {/* WhatsApp */}
-                    <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
-                      <WhatsAppIcon className="w-5 h-5 text-white" />
+                    {/* Popout Floating Card for Ananya */}
+                    <div className="absolute -bottom-8 -left-8 w-[220px] z-30 animate-pop-card">
+                      <div className="rounded-3xl bg-white text-[#14231C] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-xl bg-[#FFF2F4] flex items-center justify-center text-[#8C2433]">
+                            <BookOpen className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <div className="text-[9px] font-black uppercase text-[#8C2433]">
+                              Legal Advisory
+                            </div>
+                            <div className="text-xs font-extrabold text-[#14231C]">
+                              Arbitration Retainer
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-[#526057] leading-snug">
+                          Cross-Border Commercial Dispute & Tech Contracts
+                        </p>
+                        <div className="w-full bg-[#8C2433] text-white py-1.5 rounded-xl text-center text-[10px] font-bold">
+                          Schedule Retainer
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Direct Call */}
-                    <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
-                      <Phone className="w-4 h-4" />
-                    </div>
-
-                    {/* QR Code */}
-                    <div className="w-10 h-10 rounded-full bg-[#D2E823] text-black flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
-                      <QrCode className="w-4 h-4" />
+                    {/* Side Action Icons for Ananya */}
+                    <div className="absolute top-16 -right-6 flex flex-col gap-2.5 z-20 animate-side-icons">
+                      <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white">
+                        <WhatsAppIcon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white">
+                        <Phone className="w-4 h-4" />
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-[#FFD2A6] text-[#450C15] flex items-center justify-center shadow-xl border-2 border-white">
+                        <QrCode className="w-4 h-4" />
+                      </div>
                     </div>
                   </div>
 
