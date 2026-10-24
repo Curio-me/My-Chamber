@@ -110,43 +110,50 @@ body {
   will-change: transform;
 }
 
-/* Linktree Exact 360 Flip & Resting Float Keyframes */
-@keyframes card360Flip {
-  0% {
-    transform: perspective(1200px) rotateX(6deg) rotateY(-16deg) scale(1);
+/* ── Linktree Dual-Card 360 Flip Loop (Pure CSS 60fps) ───────────── */
+@keyframes linktree360Loop {
+  0%, 40% {
+    /* Card 1 (Vikrant) rests in 3D perspective */
+    transform: perspective(1200px) rotateX(6deg) rotateY(-16deg);
   }
   48% {
-    transform: perspective(1200px) rotateX(0deg) rotateY(164deg) scale(0.9);
+    /* Rapid, smooth 360 flip transition */
+    transform: perspective(1200px) rotateX(1deg) rotateY(164deg) scale(0.92);
   }
-  52% {
-    transform: perspective(1200px) rotateX(0deg) rotateY(164deg) scale(0.9);
+  50%, 90% {
+    /* Card 2 (Ananya) rests in 3D perspective */
+    transform: perspective(1200px) rotateX(6deg) rotateY(164deg);
   }
-  100% {
-    transform: perspective(1200px) rotateX(6deg) rotateY(344deg) scale(1);
-  }
-}
-
-@keyframes restingFloat {
-  0% {
-    transform: perspective(1200px) rotateX(6deg) rotateY(-16deg) translateY(0px);
-  }
-  50% {
-    transform: perspective(1200px) rotateX(4deg) rotateY(-12deg) translateY(-8px);
+  98% {
+    /* Rapid, smooth 360 flip back */
+    transform: perspective(1200px) rotateX(1deg) rotateY(344deg) scale(0.92);
   }
   100% {
-    transform: perspective(1200px) rotateX(6deg) rotateY(-16deg) translateY(0px);
+    /* Seamless wrap around to 0% */
+    transform: perspective(1200px) rotateX(6deg) rotateY(344deg);
   }
 }
 
-.animate-card-360-flip {
-  animation: card360Flip 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+.animate-linktree-360 {
+  animation: linktree360Loop 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   transform-style: preserve-3d;
+  will-change: transform;
 }
 
-.animate-resting-float {
-  animation: restingFloat 5s ease-in-out infinite;
+.card-face-front {
+  transform: rotateY(0deg) translateZ(2px);
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
+
+.card-face-back {
+  transform: rotateY(180deg) translateZ(2px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
 
 
 .card-face-vikrant {
