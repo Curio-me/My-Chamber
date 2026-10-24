@@ -22,6 +22,8 @@ import {
   Clock,
   MapPin,
   ChevronRight,
+  ChevronDown,
+  HelpCircle,
   Share2,
   BadgeCheck,
   Award,
@@ -49,6 +51,25 @@ export default function Home() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [currentAdvocate, setCurrentAdvocate] = useState<0 | 1>(0);
   const [rotationAngle, setRotationAngle] = useState(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      question: "Is My Chamber compliant with Bar Council of India (BCI) rules?",
+      answer:
+        "Yes, completely. Under Rule 36 of the Bar Council of India Rules, advocates are prohibited from commercial solicitation and advertising, but are permitted to publish factual professional particulars online (such as name, qualifications, chamber address, courts of practice, contact info, and Bar Council enrollment number). My Chamber strictly operates as a factual, professional orientation portal and digital business card—never a lawyer marketplace or solicitation engine.",
+    },
+    {
+      question: "Is creating and maintaining a digital chamber profile 100% free?",
+      answer:
+        "Yes, 100% free forever. There are no monthly fees, hidden charges, or paid paywalls. Every advocate receives their dedicated custom chamber handle (my-chamber.com/adv/your-handle), high-resolution desk QR code generator, interactive court of practice badges, and client orientation links at zero cost.",
+    },
+    {
+      question: "How does State Bar enrollment verification protect against impersonation?",
+      answer:
+        "To protect the integrity of the legal profession, every advocate chamber requires your official State Bar Council enrollment number (e.g. D/1234/2018 or MAH/5678/2020). Each enrollment number is strictly unique across our network, preventing unauthorized parties from creating duplicate profiles or impersonating verified advocates.",
+    },
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -107,6 +128,9 @@ export default function Home() {
             <a href="#how-it-works" className="hover:text-[#14231C] transition-colors">
               How It Works
             </a>
+            <a href="#faq" className="hover:text-[#14231C] transition-colors">
+              FAQ
+            </a>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EBF3ED] text-[#163826] text-[11px] font-bold">
               100% Free
             </span>
@@ -154,6 +178,13 @@ export default function Home() {
               className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
             >
               How It Works
+            </Link>
+            <Link
+              href="#faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
+            >
+              FAQ
             </Link>
             <Link
               href="/login"
@@ -890,6 +921,60 @@ export default function Home() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── 5. Frequently Asked Questions Section ───────────────────────────── */}
+      <section id="faq" className="py-20 px-4 sm:px-6 max-w-4xl mx-auto scroll-mt-24">
+        <div className="text-center space-y-3 mb-12">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EBF3ED] text-[#163826] text-xs font-bold tracking-wide uppercase">
+            <HelpCircle className="w-3.5 h-3.5" />
+            Frequently Asked Questions
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-[#14231C] tracking-tight">
+            Clear answers for advocates & chambers
+          </h2>
+          <p className="text-sm sm:text-base text-[#526057] max-w-xl mx-auto">
+            Everything you need to know about compliance, pricing, and digital chamber identity.
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          {faqs.map((faq, index) => {
+            const isOpen = openFaq === index;
+            return (
+              <div
+                key={index}
+                className="bg-white border border-[#E7E0D5] rounded-2xl overflow-hidden transition-all duration-200 shadow-sm hover:border-[#163826]/30"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? null : index)}
+                  className="w-full text-left px-6 py-5 flex items-center justify-between gap-4 focus:outline-none"
+                  aria-expanded={isOpen}
+                >
+                  <span className="font-bold text-base sm:text-lg text-[#14231C]">
+                    {faq.question}
+                  </span>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                      isOpen
+                        ? "bg-[#163826] text-[#FAF7F2] rotate-180"
+                        : "bg-[#F3EFE6] text-[#526057]"
+                    }`}
+                  >
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </button>
+
+                {isOpen && (
+                  <div className="px-6 pb-6 pt-1 text-sm sm:text-base text-[#526057] leading-relaxed border-t border-[#F0ECE4]">
+                    {faq.answer}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </section>
 
