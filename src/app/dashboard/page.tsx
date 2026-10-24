@@ -740,12 +740,12 @@ export default function DashboardPage() {
           
           {/* Error Banner if Bar Council or Validation Fails */}
           {saveErrorMessage && (
-            <div className="bg-rose-950/80 border border-rose-500/50 p-4 rounded-2xl text-xs text-rose-200 flex flex-col sm:flex-row sm:items-start justify-between gap-3 shadow-lg animate-in fade-in">
+            <div className="bg-[#FDF2F2] border border-rose-300 p-4 rounded-2xl text-xs text-rose-800 flex flex-col sm:flex-row sm:items-start justify-between gap-3 shadow-sm animate-in fade-in">
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-bold text-rose-100">Cannot Save Chamber Profile</p>
-                  <p className="leading-relaxed">{saveErrorMessage}</p>
+                  <p className="font-bold text-rose-900">Cannot Save Chamber Profile</p>
+                  <p className="leading-relaxed font-medium">{saveErrorMessage}</p>
                 </div>
               </div>
               {saveErrorMessage.includes("already registered") && (
@@ -755,9 +755,9 @@ export default function DashboardPage() {
                     setClaimStatus("idle");
                     setShowClaimModal(true);
                   }}
-                  className="shrink-0 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md transition-all active:scale-95"
+                  className="shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs shadow-sm transition-all active:scale-95"
                 >
-                  <ShieldCheck className="w-4 h-4 text-black" />
+                  <ShieldCheck className="w-4 h-4 text-[#E6D5B8]" />
                   <span>Claim Ownership / Dispute</span>
                 </button>
               )}
@@ -1046,14 +1046,14 @@ export default function DashboardPage() {
                   {(profile.barAssociations || []).map((assoc) => (
                     <span
                       key={assoc}
-                      className="inline-flex items-center gap-1.5 bg-[#FAF4EB] border border-[#C8A86B]/40 text-[#8B6B23] text-xs font-medium px-3 py-1 rounded-full shadow-sm"
+                      className="inline-flex items-center gap-1.5 bg-[#FAF4EB] border border-[#C8A86B]/40 text-[#7A5B18] text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm"
                     >
-                      <Landmark className="w-3 h-3 text-amber-400 shrink-0" />
+                      <Landmark className="w-3.5 h-3.5 text-[#A37D28] shrink-0" />
                       <span>{assoc}</span>
                       <button
                         type="button"
                         onClick={() => removeBarAssociation(assoc)}
-                        className="text-amber-400/70 hover:text-rose-400 font-bold ml-1 text-sm leading-none"
+                        className="text-[#A37D28] hover:text-rose-600 font-bold ml-1 text-sm leading-none"
                         title="Remove Bar Association"
                       >
                         ×
@@ -1076,12 +1076,12 @@ export default function DashboardPage() {
                     }
                   }}
                   placeholder="Type Bar Association name (e.g. Panchkula Bar Association, Punjab and Haryana High Court Bar Association)..."
-                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:outline-none focus:border-amber-400 placeholder:text-[#8C9890]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826] placeholder:text-[#8C9890]"
                 />
                 <button
                   type="button"
                   onClick={() => addBarAssociation()}
-                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-semibold border border-amber-400/30 transition-colors shadow-sm"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
                 >
                   Add Association
                 </button>
@@ -1099,10 +1099,10 @@ export default function DashboardPage() {
                         type="button"
                         disabled={alreadyAdded}
                         onClick={() => addBarAssociation(assoc)}
-                        className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                        className={`text-[11px] px-3 py-1 rounded-full border transition-all ${
                           alreadyAdded
-                            ? "bg-[#1c1f26] border-[#E7E0D5] text-[#8C9890] cursor-default"
-                            : "bg-white hover:bg-[#F3EFE6] border-[#E7E0D5] text-amber-200/90 hover:border-amber-400/40"
+                            ? "bg-[#FAF4EB] border-[#C8A86B]/40 text-[#7A5B18] font-bold cursor-default shadow-sm"
+                            : "bg-white hover:bg-[#FAF4EB] border-[#E7E0D5] hover:border-[#C8A86B]/50 text-[#526057] hover:text-[#7A5B18] font-medium"
                         }`}
                       >
                         {alreadyAdded ? "✓ " : "+ "}
@@ -1500,7 +1500,7 @@ export default function DashboardPage() {
 
             {/* Degrees / Qualifications */}
             <div className="pt-2 border-t border-[#F0ECE4] space-y-2">
-              <label className="block text-xs font-medium text-[#526057]">
+              <label className="block text-xs font-semibold text-[#14231C]">
                 Law Degrees & Certifications
               </label>
 
@@ -1510,14 +1510,14 @@ export default function DashboardPage() {
                   {profile.qualifications.map((deg) => (
                     <span
                       key={deg}
-                      className="inline-flex items-center gap-1.5 bg-[#FAF8F5] border border-indigo-400/30 text-xs text-indigo-200 px-3 py-1 rounded-lg"
+                      className="inline-flex items-center gap-1.5 bg-[#EBF3ED] border border-[#163826]/30 text-xs font-bold text-[#163826] px-3.5 py-1.5 rounded-full shadow-sm"
                     >
-                      <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
-                      {deg}
+                      <GraduationCap className="w-3.5 h-3.5 text-[#163826] shrink-0" />
+                      <span>{deg}</span>
                       <button
                         type="button"
                         onClick={() => removeQualification(deg)}
-                        className="text-indigo-400/70 hover:text-rose-400 font-bold ml-1 text-sm leading-none"
+                        className="text-[#163826]/60 hover:text-rose-600 font-bold ml-1 text-sm leading-none"
                         title="Remove Degree"
                       >
                         ×
@@ -1540,12 +1540,12 @@ export default function DashboardPage() {
                     }
                   }}
                   placeholder="Type qualification (e.g. B.A. LL.B. (Hons.), LL.M. Constitutional Law)..."
-                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:outline-none focus:border-indigo-400 placeholder:text-[#8C9890]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826] placeholder:text-[#8C9890]"
                 />
                 <button
                   type="button"
                   onClick={() => addQualification()}
-                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-semibold border border-indigo-400/30 transition-colors shadow-sm"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
                 >
                   Add Degree
                 </button>
@@ -1563,10 +1563,10 @@ export default function DashboardPage() {
                         type="button"
                         disabled={alreadyAdded}
                         onClick={() => addQualification(deg)}
-                        className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
+                        className={`text-[11px] px-3 py-1 rounded-full border transition-all ${
                           alreadyAdded
-                            ? "bg-[#1c1f26] border-[#E7E0D5] text-[#8C9890] cursor-default"
-                            : "bg-white hover:bg-[#F3EFE6] border-[#E7E0D5] text-indigo-200/90 hover:border-indigo-400/40"
+                            ? "bg-[#EBF3ED] border border-[#163826]/30 text-[#163826] font-bold cursor-default shadow-sm"
+                            : "bg-white hover:bg-[#F3EFE6] border-[#E7E0D5] hover:border-[#163826]/40 text-[#526057] hover:text-[#14231C] font-semibold"
                         }`}
                       >
                         {alreadyAdded ? "✓ " : "+ "}
@@ -1809,7 +1809,7 @@ export default function DashboardPage() {
 
             <p className="text-xs text-[#526057] leading-relaxed">
               Add external case orders, reported judgment citations (e.g. SCC / PLR / DLT), legal articles, or publications.
-              <span className="text-amber-300/90 block mt-1 font-medium">
+              <span className="text-[#7A5B18] block mt-1 font-semibold">
                 🔒 Note: If you do not add any links here, this box remains completely hidden from visitors on your chamber profile.
               </span>
             </p>
