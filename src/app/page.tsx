@@ -743,7 +743,83 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Feature 4: Single Profile Protection */}
+          {/* Feature 4: All Your Social Media Links (Requested) */}
+          <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                <Share2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#14231C]">
+                All Your Social Media Links
+              </h3>
+              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
+                Consolidate your professional LinkedIn, X (Twitter), YouTube legal discussions, law review articles, and legal commentaries in one verified, uncluttered digital bio.
+              </p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
+              <span>LinkedIn, X, YouTube & Media</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Feature 5: Newspaper & Press Coverage (Requested) */}
+          <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                <Newspaper className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#14231C]">
+                Newspaper & Press Coverage
+              </h3>
+              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
+                Showcase landmark cases and appearances reported on LiveLaw, Bar & Bench, Times of India, and national media with rich metadata previews, publication dates, and article links.
+              </p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
+              <span>LiveLaw, Bar & Bench, National Press</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Feature 6: Chamber Google Map Location (Requested) */}
+          <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                <MapPin className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#14231C]">
+                Chamber Google Map Location
+              </h3>
+              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
+                Direct instructing solicitors, clients, and colleagues straight to your office chamber door with 1-tap Google Maps directions, court complex room numbers, and consultation hours.
+              </p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
+              <span>1-Tap Maps & Navigation</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Feature 7: Courts of Practice (Requested) */}
+          <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                <Landmark className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-bold text-[#14231C]">
+                Courts of Practice
+              </h3>
+              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
+                Highlight your designated appearance jurisdictions across the Supreme Court of India, State High Courts, NCLT, NGT, Consumer Forums, and District & Sessions Courts.
+              </p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
+              <span>Supreme Court, High Courts & Tribunals</span>
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </div>
+
+          {/* Feature 8: Single Profile Protection */}
           <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
@@ -753,7 +829,7 @@ export default function Home() {
                 1 Advocate = 1 Profile
               </h3>
               <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
-                Strict mandatory Bar Council Enrollment verification. No duplicates or impersonation allowed. Built-in ownership claim & dispute queue to protect your reputation.
+                Strict mandatory Bar Council Enrollment verification. No duplicates or impersonation allowed. Built-in ownership claim & dispute queue to protect your professional reputation.
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
@@ -762,7 +838,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Feature 5: Google Knowledge Panel & SEO */}
+          {/* Feature 9: Google Knowledge Panel & SEO */}
           <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
@@ -777,25 +853,6 @@ export default function Home() {
             </div>
             <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
               <span>Rich search results</span>
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </div>
-
-          {/* Feature 6: Chambers & Practice Areas */}
-          <div className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
-                <Landmark className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-[#14231C]">
-                Courts & Practice Jurisdictions
-              </h3>
-              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
-                Highlight your appearances across the Supreme Court of India, High Courts, NCLT, NGT, and District Courts with verified court hall chambers & office locations.
-              </p>
-            </div>
-            <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
-              <span>Transparent credentials</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
