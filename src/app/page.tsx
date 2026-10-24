@@ -104,12 +104,6 @@ export default function Home() {
             <a href="#features" className="hover:text-[#14231C] transition-colors">
               Features
             </a>
-            <a href="#qr-studio" className="hover:text-[#14231C] transition-colors">
-              QR Studio
-            </a>
-            <Link href="/find" className="hover:text-[#14231C] transition-colors">
-              Find Advocate
-            </Link>
             <a href="#how-it-works" className="hover:text-[#14231C] transition-colors">
               How It Works
             </a>
@@ -155,18 +149,11 @@ export default function Home() {
               Features
             </Link>
             <Link
-              href="#qr-studio"
+              href="#how-it-works"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
             >
-              QR Code Studio
-            </Link>
-            <Link
-              href="/find"
-              onClick={() => setMobileMenuOpen(false)}
-              className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
-            >
-              Find Advocate
+              How It Works
             </Link>
             <Link
               href="/login"
