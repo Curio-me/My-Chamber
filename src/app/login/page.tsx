@@ -15,6 +15,7 @@ import {
   KeyRound,
   FileBadge,
   Loader2,
+  LogOut,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
@@ -216,6 +217,54 @@ export default function LoginPage() {
     }
   };
 
+  // ── Forgot Password Request ────────────────────────────────────────────────
+  const handleForgotPassword = async () => {
+    if (!identifier) {
+      setMessage({
+        type: "error",
+        text: "Please enter your email in the field above, then click 'Forgot Password?'.",
+      });
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const resolvedEmail = await resolveEmailFromInput(identifier);
+      if (!resolvedEmail.includes("@")) {
+        setMessage({
+          type: "error",
+          text: "Please enter a valid email address to receive password reset instructions.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      const redirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/login`
+          : "https://my-chamber.vercel.app/login";
+
+      const { error } = await supabase.auth.resetPasswordForEmail(resolvedEmail, {
+        redirectTo,
+      });
+
+      if (error) {
+        setMessage({ type: "error", text: error.message });
+      } else {
+        setMessage({
+          type: "success",
+          text: `Password reset link sent to ${resolvedEmail}! Check your inbox.`,
+        });
+      }
+    } catch (err: any) {
+      setMessage({ type: "error", text: err.message || "Failed to send reset link." });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // ── 4. Sign Up / Register New Chamber ──────────────────────────────────────
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -316,9 +365,10 @@ export default function LoginPage() {
 
                 <button
                   onClick={handleSignOut}
-                  className="w-full text-xs text-[#9aa0a6] hover:text-rose-400 py-2 transition-colors"
+                  className="w-full flex items-center justify-center gap-2 bg-[#202227] hover:bg-[#2c282d] text-rose-300 hover:text-rose-200 border border-rose-500/30 hover:border-rose-500/50 text-xs font-semibold py-3 rounded-xl transition-all"
                 >
-                  Sign Out of Account
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out of Chamber Account</span>
                 </button>
               </div>
             ) : (
@@ -479,9 +529,18 @@ export default function LoginPage() {
                     </div>
 
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5">
-                        Password
-                      </label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="text-[#c4c7c5] text-xs font-semibold">
+                          Password
+                        </label>
+                        <button
+                          type="button"
+                          onClick={handleForgotPassword}
+                          className="text-[11px] text-[#8ab4f8] hover:text-[#aecbfa] hover:underline transition-colors"
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
                       <div className="relative">
                         <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
                         <input

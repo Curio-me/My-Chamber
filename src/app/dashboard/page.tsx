@@ -14,7 +14,7 @@ import {
 } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
-import { upsertAdvocateProfile } from "@/lib/supabase";
+import { upsertAdvocateProfile, supabase } from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Scale,
@@ -55,6 +55,7 @@ import {
   UserPlus,
   MessageSquare,
   CheckCircle2,
+  LogOut,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -412,6 +413,15 @@ export default function DashboardPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDashboardSignOut = async () => {
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      // ignore
+    }
+    window.location.href = "/login";
+  };
+
   const testVCardDownload = () => {
     const cleanMobileNum = (profile.mobile || "").replace(/[^0-9+]/g, "");
     const cleanOfficeNum = profile.officePhone ? profile.officePhone.replace(/[^0-9+]/g, "") : "";
@@ -621,6 +631,15 @@ export default function DashboardPage() {
                   <span>Save Profile</span>
                 </>
               )}
+            </button>
+
+            <button
+              onClick={handleDashboardSignOut}
+              title="Sign out of Chamber session"
+              className="flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-rose-400 bg-[#202227] hover:bg-[#2c282d] px-3 py-2 rounded-xl border border-[#343840] hover:border-rose-500/30 transition-colors"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
 
