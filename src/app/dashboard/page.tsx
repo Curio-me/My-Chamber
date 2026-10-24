@@ -93,9 +93,13 @@ export default function DashboardPage() {
   const claimProofFileInputRef = useRef<HTMLInputElement>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
+  const [origin, setOrigin] = useState("https://my-chamber.vercel.app");
 
   // Load saved profile on mount if author previously created one
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
@@ -487,10 +491,7 @@ export default function DashboardPage() {
     }
   };
 
-  const publicUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/${profile.slug}`
-      : `https://my-chamber.vercel.app/${profile.slug}`;
+  const publicUrl = `${origin}/${profile.slug}`;
 
   const copyPublicLink = () => {
     navigator.clipboard.writeText(publicUrl);
@@ -2063,7 +2064,7 @@ export default function DashboardPage() {
 
             <div className="bg-[#FAF8F5] p-5 rounded-2xl border border-[#E7E0D5] flex flex-col sm:flex-row items-center gap-5">
               {/* High Contrast QR Code Canvas */}
-              <div className="p-4 bg-white rounded-2xl shadow-xl border border-slate-200 shrink-0 flex flex-col items-center text-center">
+              <div suppressHydrationWarning className="p-4 bg-white rounded-2xl shadow-xl border border-slate-200 shrink-0 flex flex-col items-center text-center">
                 <QRCodeSVG
                   id="dashboard-qr-svg"
                   value={publicUrl}
@@ -2085,7 +2086,10 @@ export default function DashboardPage() {
                   <p className="text-xs text-[#526057]">
                     Bar Council: {profile.enrollmentNo || "Registered Advocate"}
                   </p>
-                  <p className="text-[11px] text-[#163826] font-mono mt-0.5 truncate max-w-[280px]">
+                  <p
+                    suppressHydrationWarning
+                    className="text-[11px] text-[#163826] font-mono mt-0.5 truncate max-w-[280px]"
+                  >
                     {publicUrl}
                   </p>
                 </div>

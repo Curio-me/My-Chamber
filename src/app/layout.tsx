@@ -12,17 +12,17 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "Virtual Chamber — Digital Profiles for Indian Advocates",
-    template: "%s | Virtual Chamber",
+    default: "My Chamber — Digital Profiles for Indian Advocates",
+    template: "%s | My Chamber",
   },
   description:
-    "Virtual Chamber is a digital profile platform for advocates in India. Showcase office contact, bar enrollment, specializations, and office location.",
-  keywords: ["advocate", "lawyer", "virtual chamber", "High Court", "legal", "India"],
+    "My Chamber is a distinguished digital chamber infrastructure for advocates in India. Showcase office contact, bar enrollment, specializations, and office location.",
+  keywords: ["advocate", "lawyer", "my chamber", "virtual chamber", "High Court", "legal", "India"],
   openGraph: {
-    title: "Virtual Chamber — Digital Profiles for Indian Advocates",
+    title: "My Chamber — Digital Profiles for Indian Advocates",
     description:
       "Every advocate deserves a digital presence. Shareable chamber profile with practice areas, direct contact, and map location.",
-    siteName: "Virtual Chamber",
+    siteName: "My Chamber",
   },
 };
 
@@ -32,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${plusJakartaSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-[#0e0e10] text-[#f1f3f4] font-sans">
+    <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} h-full antialiased`}>
+      <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#FAF7F2] text-[#14231C] font-sans">
         {children}
       </body>
     </html>

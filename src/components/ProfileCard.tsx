@@ -407,8 +407,15 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const profileUrl =
-    typeof window !== "undefined" ? window.location.href : "https://virtualchamber.in";
+  const [profileUrl, setProfileUrl] = useState(
+    `https://my-chamber.vercel.app/${advocate.slug || ""}`
+  );
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setProfileUrl(window.location.href);
+    }
+  }, []);
 
   const cleanMobile = advocate.mobile.replace(/[^0-9]/g, "");
   const defaultWhatsAppMsg =
@@ -1096,7 +1103,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                     Advocate • {advocate.enrollmentNo || "Bar Council Registered"}
                   </p>
 
-                  <div className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
+                  <div suppressHydrationWarning className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
                     <QRCodeSVG
                       id="profile-qr-svg"
                       value={profileUrl}

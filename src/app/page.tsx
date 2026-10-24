@@ -1025,7 +1025,7 @@ export default function Home() {
           The distinguished link in bio & digital chamber infrastructure for advocates in India. Bar Council compliant, mobile-first, and duplicate-proof.
         </p>
 
-        <p className="text-[11px] text-[#8C9890] pt-2">
+        <p suppressHydrationWarning className="text-[11px] text-[#8C9890] pt-2">
           © {new Date().getFullYear()} My Chamber • न्याय सबके लिए
         </p>
       </footer>
