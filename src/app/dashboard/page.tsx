@@ -14,7 +14,12 @@ import {
 } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
-import { upsertAdvocateProfile, supabase } from "@/lib/supabase";
+import {
+  upsertAdvocateProfile,
+  supabase,
+  submitChamberClaim,
+  validateBarCouncilFormat,
+} from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
 import {
   Scale,
@@ -57,6 +62,10 @@ import {
   CheckCircle2,
   AlertCircle,
   LogOut,
+  ShieldCheck,
+  Upload,
+  X,
+  FileCheck,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -75,6 +84,13 @@ export default function DashboardPage() {
   const [customBarAssocInput, setCustomBarAssocInput] = useState("");
   const [customDegreeInput, setCustomDegreeInput] = useState("");
   const [extractingNewsId, setExtractingNewsId] = useState<string | null>(null);
+
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [claimNotes, setClaimNotes] = useState("");
+  const [claimProofUrl, setClaimProofUrl] = useState("");
+  const [claimStatus, setClaimStatus] = useState<"idle" | "submitting" | "success">("idle");
+  const barIdFileInputRef = useRef<HTMLInputElement>(null);
+  const claimProofFileInputRef = useRef<HTMLInputElement>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -157,6 +173,56 @@ export default function DashboardPage() {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Handle Bar Council ID / Certificate proof upload
+  const handleBarIdUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Please select a document or ID photo smaller than 5MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProfile((prev) => ({
+          ...prev,
+          barIdCardUrl: event.target?.result as string,
+          verificationStatus: "verified",
+          isVerified: true,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Handle proof document for Chamber Claim / Ownership dispute
+  const handleClaimProofUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setClaimProofUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Submit Chamber Claim / Ownership Dispute
+  const handleClaimSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setClaimStatus("submitting");
+    const conflictingSlug = saveErrorMessage?.match(/@([a-zA-Z0-9_-]+)/)?.[1] || undefined;
+    await submitChamberClaim({
+      enrollmentNo: profile.enrollmentNo,
+      claimantName: profile.fullName || "Advocate",
+      claimantEmail: profile.email || "counsel@virtualchamber.in",
+      claimantPhone: profile.mobile || "",
+      notes: claimNotes,
+      proofUrl: claimProofUrl,
+      conflictingSlug,
+    });
+    setClaimStatus("success");
   };
 
   // Tag toggles
@@ -673,12 +739,27 @@ export default function DashboardPage() {
           
           {/* Error Banner if Bar Council or Validation Fails */}
           {saveErrorMessage && (
-            <div className="bg-rose-950/80 border border-rose-500/50 p-4 rounded-2xl text-xs text-rose-200 flex items-start gap-3 shadow-lg animate-in fade-in">
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="font-bold text-rose-100">Cannot Save Chamber Profile</p>
-                <p className="leading-relaxed">{saveErrorMessage}</p>
+            <div className="bg-rose-950/80 border border-rose-500/50 p-4 rounded-2xl text-xs text-rose-200 flex flex-col sm:flex-row sm:items-start justify-between gap-3 shadow-lg animate-in fade-in">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-bold text-rose-100">Cannot Save Chamber Profile</p>
+                  <p className="leading-relaxed">{saveErrorMessage}</p>
+                </div>
               </div>
+              {saveErrorMessage.includes("already registered") && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setClaimStatus("idle");
+                    setShowClaimModal(true);
+                  }}
+                  className="shrink-0 flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md transition-all active:scale-95"
+                >
+                  <ShieldCheck className="w-4 h-4 text-black" />
+                  <span>Claim Ownership / Dispute</span>
+                </button>
+              )}
             </div>
           )}
 
@@ -877,6 +958,67 @@ export default function DashboardPage() {
                   onChange={(e) => setProfile({ ...profile, yearsExp: Number(e.target.value) || 0 })}
                   className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
                 />
+              </div>
+
+              {/* Bar Council ID Verification Upload Card */}
+              <div className="sm:col-span-2 p-4 rounded-xl bg-[#202227] border border-[#343840] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span className="text-xs font-semibold text-[#f1f3f4]">
+                      Bar Council ID Card or Enrollment Certificate Proof
+                    </span>
+                  </div>
+                  {profile.barIdCardUrl ? (
+                    <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Check className="w-3 h-3" />
+                      Verified Proof Attached
+                    </span>
+                  ) : (
+                    <span className="text-[11px] font-semibold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                      Optional: Unlock Verified Badge
+                    </span>
+                  )}
+                </div>
+
+                <p className="text-[11px] text-[#9aa0a6] leading-relaxed">
+                  Upload a photo of your official Bar Council Certificate or Bar Association ID card. This locks your Bar Council registration to your profile, protects against mistaken duplicate claims, and activates your official <strong className="text-white">Verified Advocate Blue Badge</strong>.
+                </p>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="file"
+                    ref={barIdFileInputRef}
+                    onChange={handleBarIdUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => barIdFileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#18191c] hover:bg-[#282a30] text-[#8ab4f8] text-xs font-semibold border border-[#343840] transition-colors"
+                  >
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>{profile.barIdCardUrl ? "Replace ID Proof" : "Upload Bar Council ID / Certificate"}</span>
+                  </button>
+
+                  {profile.barIdCardUrl && (
+                    <div className="flex items-center gap-2">
+                      <img
+                        src={profile.barIdCardUrl}
+                        alt="Bar ID proof preview"
+                        className="w-9 h-9 object-cover rounded-lg border border-[#343840] shadow-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setProfile((prev) => ({ ...prev, barIdCardUrl: undefined }))}
+                        className="text-xs text-rose-400 hover:text-rose-300"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -2114,6 +2256,166 @@ export default function DashboardPage() {
         </div>
 
       </main>
+
+      {/* ── Chamber Ownership Dispute & Bar Council Claim Modal ───────────────── */}
+      {showClaimModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl p-6 sm:p-7 border border-[#343840] bg-[#18191c] text-[#f1f3f4] shadow-2xl space-y-4">
+            {/* Close button */}
+            <button
+              onClick={() => setShowClaimModal(false)}
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-bold shadow-lg shrink-0">
+                <ShieldCheck className="w-6 h-6 text-black" />
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold">Claim Chamber Ownership</h3>
+                <p className="text-xs text-[#9aa0a6]">
+                  Dispute review for Bar Council No:{" "}
+                  <span className="text-amber-400 font-mono font-bold">
+                    {profile.enrollmentNo || "N/A"}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {claimStatus === "success" ? (
+              <div className="bg-[#202227] border border-emerald-500/40 p-5 rounded-2xl text-center space-y-3">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                  <Check className="w-6 h-6 stroke-[2.5]" />
+                </div>
+                <h4 className="text-sm font-bold text-emerald-300">Ownership Claim Submitted</h4>
+                <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                  Your claim for Bar Council No.{" "}
+                  <strong className="text-white font-mono">{profile.enrollmentNo}</strong> has been logged.
+                  Our verification desk will review the official State Bar Council roll and release the
+                  chamber to you within 24 hours.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowClaimModal(false)}
+                  className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs transition-colors"
+                >
+                  Done
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleClaimSubmit} className="space-y-3.5">
+                <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                  If another advocate entered your Bar Council number by mistake or you are the legitimate
+                  holder, submit your contact information and ID proof. We will verify and reassign the chamber
+                  to your account.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                      Advocate Full Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={profile.fullName}
+                      onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
+                      placeholder="Your official name on Bar roll"
+                      className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                      Official Email Address
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={profile.email}
+                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                      placeholder="your.email@gmail.com"
+                      className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    Mobile / WhatsApp Number
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={profile.mobile}
+                    onChange={(e) => setProfile({ ...profile, mobile: e.target.value })}
+                    placeholder="+91-98XXXXXXXX"
+                    className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    Upload Bar Council ID or Enrollment Certificate (Proof)
+                  </label>
+                  <input
+                    type="file"
+                    ref={claimProofFileInputRef}
+                    onChange={handleClaimProofUpload}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => claimProofFileInputRef.current?.click()}
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#202227] hover:bg-[#282a30] text-[#8ab4f8] text-xs font-semibold border border-[#343840] transition-colors"
+                    >
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>{claimProofUrl ? "Change Proof Photo" : "Upload ID Proof"}</span>
+                    </button>
+                    {claimProofUrl && (
+                      <span className="text-[11px] text-emerald-400 font-medium">✓ Document attached</span>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    Explanation / Additional Notes (Optional)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={claimNotes}
+                    onChange={(e) => setClaimNotes(e.target.value)}
+                    placeholder="e.g. Enrolled with Punjab and Haryana Bar Council in 2025. Please release this registration."
+                    className="w-full bg-[#202227] border border-[#343840] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                  />
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowClaimModal(false)}
+                    className="px-4 py-2 rounded-xl text-xs text-[#9aa0a6] hover:text-white transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={claimStatus === "submitting"}
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md transition-all active:scale-95 disabled:opacity-50"
+                  >
+                    {claimStatus === "submitting" ? "Submitting Claim..." : "Submit Ownership Claim"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -40,6 +40,8 @@ export interface Advocate {
   themePreference?: "dark" | "light";
   enable3d?: boolean;
   isVerified: boolean;
+  barIdCardUrl?: string; // Uploaded Bar Council Certificate or ID proof
+  verificationStatus?: "unverified" | "pending" | "verified";
   boxOrder?: string[]; // Custom arrangement of profile boxes e.g. ["qualifications", "about", ...]
 }
 
@@ -48,6 +50,19 @@ export interface BoxMeta {
   name: string;
   shortDesc: string;
   category: string;
+}
+
+export interface ChamberClaimRequest {
+  id?: string;
+  enrollmentNo: string;
+  claimantName: string;
+  claimantEmail: string;
+  claimantPhone?: string;
+  notes?: string;
+  proofUrl?: string;
+  conflictingSlug?: string;
+  status?: "pending" | "approved" | "rejected";
+  createdAt?: string;
 }
 
 export const DEFAULT_BOX_ORDER: string[] = [

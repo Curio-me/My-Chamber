@@ -100,3 +100,24 @@ insert into public.advocate_profiles (
 create unique index if not exists idx_unique_advocate_enrollment_no 
   on public.advocate_profiles (lower(regexp_replace(trim(enrollment_no), '[^a-zA-Z0-9]', '', 'g')));
 
+-- 8. Table for Bar Council Enrollment Disputes & Ownership Claims
+create table if not exists public.chamber_claims (
+  id uuid default gen_random_uuid() primary key,
+  enrollment_no text not null,
+  claimant_name text not null,
+  claimant_email text not null,
+  claimant_phone text,
+  conflicting_slug text,
+  proof_url text,
+  notes text,
+  status text default 'pending', -- 'pending', 'approved', 'rejected'
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+alter table public.chamber_claims enable row level security;
+drop policy if exists "Allow insert claims" on public.chamber_claims;
+create policy "Allow insert claims" on public.chamber_claims for insert with check (true);
+drop policy if exists "Allow public select claims" on public.chamber_claims;
+create policy "Allow public select claims" on public.chamber_claims for select using (true);
+
+
