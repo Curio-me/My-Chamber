@@ -1199,8 +1199,17 @@ export default function DashboardPage() {
                     className="w-16 h-16 rounded-full object-cover border-2 border-[#163826] shadow-md"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E7E0D5] flex items-center justify-center text-xs text-[#526057] font-semibold">
-                    Initials
+                  <div className="w-16 h-16 rounded-full bg-[#EBF3ED] border-2 border-[#163826]/20 flex items-center justify-center text-sm text-[#163826] font-bold shadow-sm">
+                    {profile.fullName
+                      ? profile.fullName
+                          .replace(/^Adv\.\s*/i, "")
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join("")
+                          .toUpperCase() || "Adv"
+                      : "Adv"}
                   </div>
                 )}
 
@@ -1216,18 +1225,18 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => photoFileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#24272c] hover:bg-[#2c3138] text-[#14231C] px-3 py-2 rounded-xl border border-[#E7E0D5] transition-colors"
+                      className="inline-flex items-center gap-2 text-xs font-bold bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2.5 rounded-full shadow-sm transition-all active:scale-95"
                     >
-                      <Camera className="w-3.5 h-3.5 text-[#163826]" />
-                      Upload Portrait Photo
+                      <Camera className="w-3.5 h-3.5 text-[#E6D5B8]" />
+                      <span>Upload Portrait Photo</span>
                     </button>
                     {profile.photoUrl && (
                       <button
                         type="button"
                         onClick={() => setProfile({ ...profile, photoUrl: undefined })}
-                        className="text-xs text-rose-400 hover:text-rose-300 px-2 py-2"
+                        className="text-xs text-rose-700 hover:text-rose-800 bg-[#FDF2F2] hover:bg-[#FEE2E2] px-3.5 py-2 rounded-full border border-rose-200 font-semibold transition-colors"
                       >
-                        Remove
+                        Remove Photo
                       </button>
                     )}
                   </div>
@@ -2085,9 +2094,9 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={downloadDashboardQrPng}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#163826] hover:bg-[#1E4A33] text-[#0e0e10] font-bold text-xs shadow-md transition-all active:scale-95"
+                    className="flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs shadow-sm transition-all active:scale-95"
                   >
-                    <Download className="w-4 h-4" />
+                    <Download className="w-4 h-4 text-[#E6D5B8]" />
                     <span>Download High-Res PNG</span>
                   </button>
 
@@ -2197,9 +2206,9 @@ export default function DashboardPage() {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="bg-[#163826] hover:bg-[#1E4A33] text-[#0e0e10] font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs px-6 py-2.5 rounded-full shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
               >
-                <Save className="w-4 h-4" />
+                <Save className="w-4 h-4 text-[#E6D5B8]" />
                 Save & Update Profile
               </button>
             </div>
