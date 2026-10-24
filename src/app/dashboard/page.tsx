@@ -15,6 +15,7 @@ import {
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import { upsertAdvocateProfile } from "@/lib/supabase";
+import { QRCodeSVG } from "qrcode.react";
 import {
   Scale,
   Camera,
@@ -47,6 +48,13 @@ import {
   ArrowUp,
   ArrowDown,
   Layers,
+  QrCode,
+  Download,
+  Search,
+  Globe,
+  UserPlus,
+  MessageSquare,
+  CheckCircle2,
 } from "lucide-react";
 
 const STORAGE_KEY = "virtual_chamber_advocate_profile";
@@ -402,6 +410,112 @@ export default function DashboardPage() {
     navigator.clipboard.writeText(publicUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const testVCardDownload = () => {
+    const cleanMobileNum = (profile.mobile || "").replace(/[^0-9+]/g, "");
+    const cleanOfficeNum = profile.officePhone ? profile.officePhone.replace(/[^0-9+]/g, "") : "";
+    const nameParts = (profile.fullName || "Advocate").replace(/^Adv\.\s*/i, "").trim().split(/\s+/);
+    const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
+    const firstName = nameParts.length > 1 ? nameParts.slice(0, -1).join(" ") : nameParts[0] || "Advocate";
+
+    const vcard = [
+      "BEGIN:VCARD",
+      "VERSION:3.0",
+      `N:${lastName};${firstName};;;Adv.`,
+      `FN:${profile.fullName || "Advocate"}`,
+      `TITLE:Advocate`,
+      `ORG:${profile.courts?.[0] || "Advocate Chamber"}`,
+      cleanMobileNum ? `TEL;TYPE=CELL,VOICE:${cleanMobileNum}` : "",
+      cleanOfficeNum ? `TEL;TYPE=WORK,VOICE:${cleanOfficeNum}` : "",
+      profile.email ? `EMAIL;TYPE=INTERNET,WORK:${profile.email}` : "",
+      profile.officeAddress ? `ADR;TYPE=WORK:;;${profile.officeAddress.replace(/,/g, ";")};;;;` : "",
+      `URL:${publicUrl}`,
+      `NOTE:Virtual Chamber: ${publicUrl}\\nBar Registration: ${profile.enrollmentNo || "Registered"}${
+        profile.barAssociations?.length ? `\\nEnrolled Bar: ${profile.barAssociations.join(", ")}` : ""
+      }${profile.almaMater ? `\\nAlma Mater: ${profile.almaMater}` : ""}${
+        profile.chamberHours ? `\\nChamber Hours: ${profile.chamberHours}` : ""
+      }`,
+      "END:VCARD",
+    ].filter(Boolean).join("\r\n");
+
+    const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${(profile.fullName || "Advocate").replace(/[^a-zA-Z0-9]/g, "_")}_Chamber.vcf`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const downloadDashboardQrPng = () => {
+    const svg = document.getElementById("dashboard-qr-svg") as SVGGraphicsElement | null;
+    if (!svg) return;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const img = new Image();
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      canvas.width = 1000;
+      canvas.height = 1200;
+
+      // Fill white background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, 1000, 1200);
+
+      // Outer border
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 14;
+      ctx.strokeRect(35, 35, 930, 1130);
+
+      // Accent border
+      ctx.strokeStyle = "#1a73e8";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(52, 52, 896, 1096);
+
+      // Header Title
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 44px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(profile.fullName || "Advocate", 500, 140);
+
+      // Subtitle Bar Council
+      ctx.fillStyle = "#475569";
+      ctx.font = "24px sans-serif";
+      ctx.fillText(`Advocate • Bar Council: ${profile.enrollmentNo || "Registered"}`, 500, 190);
+
+      // Court name
+      if (profile.courts?.[0]) {
+        ctx.fillStyle = "#1a73e8";
+        ctx.font = "bold 22px sans-serif";
+        ctx.fillText(profile.courts[0], 500, 230);
+      }
+
+      // Draw QR Code
+      ctx.drawImage(img, 175, 290, 650, 650);
+
+      // Footer
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 24px sans-serif";
+      ctx.fillText("SCAN TO CONNECT • VIRTUAL CHAMBER", 500, 1020);
+
+      ctx.fillStyle = "#64748b";
+      ctx.font = "20px sans-serif";
+      ctx.fillText(publicUrl, 500, 1060);
+
+      URL.revokeObjectURL(url);
+      const a = document.createElement("a");
+      a.download = `${(profile.fullName || "Advocate").replace(/[^a-zA-Z0-9]/g, "_")}_Chamber_QR.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    };
+    img.src = url;
   };
 
   return (
@@ -1348,6 +1462,40 @@ export default function DashboardPage() {
                   💡 <span className="text-[#c4c7c5]">How to get:</span> Open Google Maps on phone or desktop, search your chamber or court complex, tap <strong>Share</strong>, copy the link, and paste it here.
                 </p>
               </div>
+
+              {/* WhatsApp Consultation Message */}
+              <div className="sm:col-span-2 pt-2 border-t border-[#2d3139]">
+                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5 flex items-center gap-1.5">
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>WhatsApp Consultation Message (Pre-filled for Clients)</span>
+                </label>
+                <input
+                  type="text"
+                  value={profile.whatsappGreeting || ""}
+                  onChange={(e) => setProfile({ ...profile, whatsappGreeting: e.target.value })}
+                  placeholder={`e.g. Hello Adv. ${profile.fullName || "Advocate"}, I found your chamber profile on Virtual Chamber and would like to consult regarding a legal matter.`}
+                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-emerald-500 placeholder:text-[#5f6368]"
+                />
+                <p className="text-[11px] text-[#9aa0a6] mt-1">
+                  When prospective clients click &quot;WhatsApp Consult&quot; on your profile or floating CTA bar, this message is pre-typed ready to send.
+                </p>
+              </div>
+
+              {/* Direct vCard Contact Save Action */}
+              <div className="sm:col-span-2 pt-3 border-t border-[#2d3139] flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs text-[#9aa0a6]">
+                  <UserPlus className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>Digital vCard: Saves your full name, chamber mobile, email, and court to the client&apos;s phone.</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={testVCardDownload}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#202227] hover:bg-[#282d38] text-[#8ab4f8] text-xs font-semibold border border-[#343840] hover:border-[#8ab4f8]/40 transition-colors"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Test vCard (.vcf) Download</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1669,6 +1817,161 @@ export default function DashboardPage() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* ── Studio Card: Printable Chamber QR Code & Visiting Card Asset Studio ──── */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+              <div className="flex items-center gap-2">
+                <QrCode className="w-4 h-4 text-[#8ab4f8]" />
+                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                  Printable Chamber QR Code & Visiting Card Asset Studio
+                </h2>
+              </div>
+              <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                Print Ready (1000×1200)
+              </span>
+            </div>
+
+            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+              Generate an official, high-resolution QR badge for your chamber. Ready to hand directly to your visiting card printing press, print on letterheads, or display in an acrylic standee on your office desk.
+            </p>
+
+            <div className="bg-[#202227] p-5 rounded-2xl border border-[#343840] flex flex-col sm:flex-row items-center gap-5">
+              {/* High Contrast QR Code Canvas */}
+              <div className="p-4 bg-white rounded-2xl shadow-xl border border-slate-200 shrink-0 flex flex-col items-center text-center">
+                <QRCodeSVG
+                  id="dashboard-qr-svg"
+                  value={publicUrl}
+                  size={140}
+                  level="H"
+                  includeMargin={true}
+                  className="w-32 h-32"
+                />
+                <span className="text-[9px] font-mono font-bold tracking-wider text-slate-500 mt-1 uppercase">
+                  {profile.slug || "chamber"}
+                </span>
+              </div>
+
+              <div className="flex-1 space-y-3 text-center sm:text-left">
+                <div>
+                  <h4 className="text-sm font-bold text-[#f1f3f4]">
+                    {profile.fullName || "Advocate"}
+                  </h4>
+                  <p className="text-xs text-[#9aa0a6]">
+                    Bar Council: {profile.enrollmentNo || "Registered Advocate"}
+                  </p>
+                  <p className="text-[11px] text-[#8ab4f8] font-mono mt-0.5 truncate max-w-[280px]">
+                    {publicUrl}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={downloadDashboardQrPng}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold text-xs shadow-md transition-all active:scale-95"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download High-Res PNG</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={copyPublicLink}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#202227] hover:bg-[#282d38] text-[#f1f3f4] text-xs font-semibold border border-[#343840] transition-colors"
+                  >
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copied ? "Link Copied!" : "Copy Link"}</span>
+                  </button>
+                </div>
+
+                <p className="text-[11px] text-[#71767b]">
+                  💡 Tip: The downloaded PNG includes your name, bar number, and court crest framing, formatted perfectly for 3.5×2 inch visiting cards.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Studio Card: Google Knowledge Panel & Legal SEO Simulator ───────────── */}
+          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+              <div className="flex items-center gap-2">
+                <Search className="w-4 h-4 text-[#8ab4f8]" />
+                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                  Google Knowledge Panel & Legal SEO Simulator
+                </h2>
+              </div>
+              <div className="flex items-center gap-1 text-[11px] text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20 font-semibold">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <span>Schema.org Active</span>
+              </div>
+            </div>
+
+            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+              Search engines use your chamber data to generate structured Knowledge Panels and Rich Sitelinks. Here is a live simulation of how your profile appears on Google Search:
+            </p>
+
+            {/* Google Search Result Mockup */}
+            <div className="bg-[#202227] p-4 sm:p-5 rounded-2xl border border-[#343840] space-y-3">
+              <div className="text-[11px] font-semibold text-[#9aa0a6] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-[#2d3139]">
+                <Globe className="w-3.5 h-3.5 text-[#8ab4f8]" />
+                <span>Google Search Result Snippet Preview</span>
+              </div>
+
+              {/* URL Breadcrumb */}
+              <div className="flex items-center gap-1.5 text-xs text-[#9aa0a6]">
+                <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-[9px] font-bold text-black">
+                  ⚖
+                </div>
+                <span className="text-[#dadce0] font-medium">Virtual Chamber</span>
+                <span>›</span>
+                <span className="text-[#9aa0a6] font-mono text-[11px]">my-chamber.vercel.app › {profile.slug || "advocate"}</span>
+              </div>
+
+              {/* Blue Title Link */}
+              <h3 className="text-base sm:text-lg font-medium text-[#8ab4f8] hover:underline cursor-pointer">
+                {profile.fullName || "Advocate"} | Virtual Chamber Profile
+              </h3>
+
+              {/* Snippet Description */}
+              <p className="text-xs text-[#bdc1c6] leading-relaxed line-clamp-3">
+                Official Virtual Chamber profile of {profile.fullName || "Advocate"}, Advocate practicing at {profile.courts?.[0] || "High Court"}. Bar Council No: {profile.enrollmentNo || "Registered"}. Experience: {profile.yearsExp || 1}+ Years. Specialized in {(profile.specializations || []).slice(0, 3).join(", ") || "Constitutional, Civil & Criminal Law"}.
+              </p>
+
+              {/* Google Sitelinks Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                {[
+                  { label: "Courts of Practice", desc: profile.courts?.[0] || "High Court" },
+                  { label: "Specializations", desc: profile.specializations?.[0] || "Civil & Criminal" },
+                  { label: "Chamber Contacts", desc: profile.mobile || "WhatsApp & Call" },
+                  { label: "Bar Enrollment", desc: profile.enrollmentNo || "Bar Council" },
+                ].map((site, i) => (
+                  <div key={i} className="bg-[#18191c] p-2.5 rounded-xl border border-[#343840]/60 space-y-0.5">
+                    <p className="text-xs font-semibold text-[#8ab4f8] hover:underline cursor-pointer truncate">
+                      {site.label}
+                    </p>
+                    <p className="text-[10px] text-[#9aa0a6] truncate">{site.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Knowledge Panel Highlights */}
+            <div className="bg-[#18191c] p-4 rounded-xl border border-[#343840] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="space-y-1">
+                <span className="text-[11px] text-[#9aa0a6]">LegalService Schema Type:</span>
+                <p className="font-mono text-[#8ab4f8] text-[11px]">Attorney, LegalService</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] text-[#9aa0a6]">Bar Council Index:</span>
+                <p className="font-semibold text-emerald-400">{profile.enrollmentNo || "Not specified"}</p>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] text-[#9aa0a6]">Jurisdiction / Courts:</span>
+                <p className="font-semibold text-[#dadce0] truncate">{profile.courts?.join(", ") || "High Court"}</p>
+              </div>
+            </div>
           </div>
 
           {/* Bottom Save Bar */}

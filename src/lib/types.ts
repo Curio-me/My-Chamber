@@ -35,6 +35,7 @@ export interface Advocate {
   linkedinUrl?: string;
   websiteUrl?: string;
   customLinks?: { id: string; title: string; url: string }[];
+  whatsappGreeting?: string;
   newsMedia?: NewsMediaItem[];
   themePreference?: "dark" | "light";
   enable3d?: boolean;

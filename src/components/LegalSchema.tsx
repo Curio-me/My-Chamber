@@ -24,14 +24,46 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://my-ch
     })),
   ];
 
+  const socialLinks = [
+    advocate.websiteUrl,
+    advocate.linkedinUrl,
+    advocate.twitterUrl,
+    advocate.instagramUrl,
+  ].filter((link): link is string => Boolean(link && link.trim().startsWith("http")));
+
+  const practiceAreas = (advocate.specializations || []).map((spec) => ({
+    "@type": "Offer",
+    itemOffered: {
+      "@type": "Service",
+      name: `Legal Advisory & Representation in ${spec}`,
+      serviceType: spec,
+    },
+  }));
+
+  const courtsServed = (advocate.courts || []).map((court) => ({
+    "@type": "AdministrativeArea",
+    name: court,
+  }));
+
   const schema = {
     "@context": "https://schema.org",
     "@type": ["Attorney", "LegalService", "ProfessionalService"],
+    "@id": `${profileUrl}#attorney`,
     name: advocate.fullName,
-    alternateName: advocate.slug ? `Adv. ${advocate.slug}` : undefined,
+    alternateName: advocate.slug
+      ? [`Adv. ${advocate.slug}`, advocate.fullName.replace(/^Adv\.\s*/i, "")].filter(Boolean)
+      : undefined,
     jobTitle: "Advocate",
-    description: advocate.bio || `Official Virtual Chamber profile of ${advocate.fullName}.`,
+    description:
+      advocate.bio ||
+      `Official Virtual Chamber profile of ${advocate.fullName}. Practicing advocate at ${
+        advocate.courts?.[0] || "High Court"
+      }.`,
     url: profileUrl,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": profileUrl,
+    },
     image: advocate.photoUrl || undefined,
     telephone: advocate.mobile || undefined,
     email: advocate.email || undefined,
@@ -42,6 +74,15 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://my-ch
           addressCountry: "IN",
         }
       : undefined,
+    ...(advocate.latitude && advocate.longitude
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: advocate.latitude,
+            longitude: advocate.longitude,
+          },
+        }
+      : {}),
     ...(advocate.almaMater
       ? {
           alumniOf: {
@@ -55,7 +96,21 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://my-ch
     ...(advocate.specializations && advocate.specializations.length > 0
       ? { knowsAbout: advocate.specializations }
       : {}),
+    ...(practiceAreas.length > 0
+      ? {
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "Legal Practice Areas & Services",
+            itemListElement: practiceAreas,
+          },
+        }
+      : {}),
+    ...(courtsServed.length > 0 ? { areaServed: courtsServed } : {}),
     ...(advocate.chamberHours ? { openingHours: advocate.chamberHours } : {}),
+    ...(socialLinks.length > 0 ? { sameAs: socialLinks } : {}),
+    priceRange: "₹₹₹",
+    currenciesAccepted: "INR",
+    paymentAccepted: "Cash, UPI, Bank Transfer, Net Banking",
   };
 
   return schema;

@@ -26,21 +26,69 @@ export async function generateMetadata({
     return { title: "Virtual Chamber" };
   }
 
+  // Fetch actual data or fallback
+  const advocate = await fetchAdvocateBySlug(slug);
+
+  if (advocate) {
+    const title = `${advocate.fullName} | Virtual Chamber`;
+    const desc = advocate.bio
+      ? advocate.bio.slice(0, 160)
+      : `Official Virtual Chamber profile of ${advocate.fullName}, practicing at ${
+          advocate.courts?.[0] || "High Court"
+        }. Bar Council: ${advocate.enrollmentNo || "Registered"}.`;
+    return {
+      title,
+      description: desc,
+      keywords: [
+        advocate.fullName,
+        ...(advocate.specializations || []),
+        ...(advocate.courts || []),
+        ...(advocate.barAssociations || []),
+        "Advocate",
+        "Virtual Chamber",
+        "Legal Counsel",
+        "High Court",
+      ],
+      openGraph: {
+        title: `${advocate.fullName} | Virtual Chamber`,
+        description: desc,
+        type: "profile",
+        siteName: "Virtual Chamber",
+        images: advocate.photoUrl ? [{ url: advocate.photoUrl }] : undefined,
+      },
+      twitter: {
+        card: "summary",
+        title: `${advocate.fullName} | Virtual Chamber`,
+        description: desc,
+        images: advocate.photoUrl ? [advocate.photoUrl] : undefined,
+      },
+    };
+  }
+
   if (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv") {
-    const title = "Adv. RajaVikrant Sharma";
+    const title = "Adv. RajaVikrant Sharma | Virtual Chamber";
     const description = "Official Virtual Chamber profile of Adv. RajaVikrant Sharma, Advocate practicing at the Punjab and Haryana High Court. Bar Council No: PH//7797//2025.";
     return {
       title,
       description,
+      keywords: [
+        "Adv. RajaVikrant Sharma",
+        "Punjab and Haryana High Court",
+        "Panchkula Bar Association",
+        "Constitutional Law",
+        "Consumer Law",
+        "Cyber Law",
+        "Civil Law",
+      ],
       openGraph: {
-        title: `${title} | Virtual Chamber`,
+        title,
         description,
         type: "profile",
         siteName: "Virtual Chamber",
       },
       twitter: {
         card: "summary",
-        title: `${title} | Virtual Chamber`,
+        title,
         description,
       },
     };
