@@ -282,10 +282,10 @@ export async function upsertAdvocateProfile(
     }
 
     const cleanSlug = (advocate.slug || "").trim().toLowerCase();
-    if (!cleanSlug || cleanSlug.length < 4) {
+    if (!cleanSlug || cleanSlug.length < 4 || cleanSlug.length > 20) {
       return {
         success: false,
-        error: "Chamber unique handle must be at least 4 characters long (e.g. /yourname).",
+        error: "Chamber unique handle must be between 4 and 20 characters long (e.g. /yourname).",
       };
     }
 

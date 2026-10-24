@@ -92,13 +92,17 @@ export default function Home() {
 
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault();
-    const clean = handleInput.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "");
+    const clean = handleInput.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
     if (!clean) {
       router.push("/dashboard");
       return;
     }
     if (clean.length < 4) {
       setHandleError("Chamber handle must be at least 4 characters long (e.g. /yourname)");
+      return;
+    }
+    if (clean.length > 20) {
+      setHandleError("Chamber handle cannot exceed 20 characters");
       return;
     }
     setHandleError(null);
@@ -246,9 +250,10 @@ export default function Home() {
                   <input
                     type="text"
                     minLength={4}
+                    maxLength={20}
                     value={handleInput}
                     onChange={(e) => {
-                      setHandleInput(e.target.value);
+                      setHandleInput(e.target.value.slice(0, 20));
                       if (handleError) setHandleError(null);
                     }}
                     placeholder="yourname"
@@ -918,7 +923,7 @@ export default function Home() {
               </div>
               <h4 className="text-base font-bold text-[#14231C]">Claim Your Name</h4>
               <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
-                Sign in with Google 1-Tap or your email. Choose your unique profile handle of at least 4 characters (e.g. `mychamber.in/advocate_name`).
+                Sign in with Google 1-Tap or your email. Choose your unique profile handle between 4 to 20 characters (e.g. `mychamber.in/advocate_name`).
               </p>
             </div>
 

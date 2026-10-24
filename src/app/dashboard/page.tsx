@@ -122,12 +122,12 @@ export default function DashboardPage() {
       return;
     }
 
-    // 2. Mandatory check: Chamber unique handle must be at least 4 characters
+    // 2. Mandatory check: Chamber unique handle must be between 4 and 20 characters
     const cleanSlug = (profile.slug || "").trim().toLowerCase();
-    if (!cleanSlug || cleanSlug.length < 4) {
-      const msg = "Chamber unique handle must be at least 4 characters long (e.g. /yourname).";
+    if (!cleanSlug || cleanSlug.length < 4 || cleanSlug.length > 20) {
+      const msg = "Chamber unique handle must be between 4 and 20 characters long (e.g. /yourname).";
       setSaveErrorMessage(msg);
-      alert("⚠️ Chamber handle too short!\n\nYour chamber unique handle must be at least 4 characters long.");
+      alert("⚠️ Chamber handle length invalid!\n\nYour chamber unique handle must be between 4 and 20 characters long.");
       return;
     }
 
@@ -902,17 +902,20 @@ export default function DashboardPage() {
                   </label>
                   <span
                     className={`text-[10px] font-mono font-semibold ${
-                      (profile.slug || "").length >= 4 ? "text-[#163826]" : "text-amber-600"
+                      (profile.slug || "").length >= 4 && (profile.slug || "").length <= 20
+                        ? "text-[#163826]"
+                        : "text-amber-600"
                     }`}
                   >
-                    {(profile.slug || "").length >= 4
-                      ? "✓ Valid (≥ 4 chars)"
-                      : `${(profile.slug || "").length}/4 chars min`}
+                    {(profile.slug || "").length >= 4 && (profile.slug || "").length <= 20
+                      ? `✓ Valid (${(profile.slug || "").length}/20 chars)`
+                      : `${(profile.slug || "").length}/20 chars (min 4)`}
                   </span>
                 </div>
                 <div
                   className={`flex items-center bg-[#FAF8F5] border rounded-xl px-3 py-2.5 text-sm transition-all focus-within:bg-white ${
-                    (profile.slug || "").length > 0 && (profile.slug || "").length < 4
+                    (profile.slug || "").length > 0 &&
+                    ((profile.slug || "").length < 4 || (profile.slug || "").length > 20)
                       ? "border-amber-400 focus-within:border-amber-500"
                       : "border-[#E7E0D5] focus-within:border-[#163826]"
                   }`}
@@ -921,6 +924,7 @@ export default function DashboardPage() {
                   <input
                     type="text"
                     minLength={4}
+                    maxLength={20}
                     value={profile.slug}
                     onChange={(e) => {
                       setProfile({
@@ -928,7 +932,8 @@ export default function DashboardPage() {
                         slug: e.target.value
                           .toLowerCase()
                           .replace(/\s+/g, "-")
-                          .replace(/[^a-z0-9-_]/g, ""),
+                          .replace(/[^a-z0-9-_]/g, "")
+                          .slice(0, 20),
                       });
                       if (saveErrorMessage) setSaveErrorMessage(null);
                     }}
@@ -939,6 +944,11 @@ export default function DashboardPage() {
                 {(profile.slug || "").length > 0 && (profile.slug || "").length < 4 && (
                   <p className="text-[10px] text-amber-600 mt-1 font-medium">
                     ⚠️ Unique handle must be at least 4 characters long.
+                  </p>
+                )}
+                {(profile.slug || "").length >= 20 && (
+                  <p className="text-[10px] text-[#526057] mt-1 font-medium">
+                    Maximum 20 characters limit reached.
                   </p>
                 )}
               </div>
