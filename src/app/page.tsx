@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -47,6 +47,26 @@ export default function Home() {
   const [handleInput, setHandleInput] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [currentAdvocate, setCurrentAdvocate] = useState<0 | 1>(0);
+  const [rotationAngle, setRotationAngle] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRotationAngle((prev) => prev + 360);
+      setTimeout(() => {
+        setCurrentAdvocate((prev) => (prev === 0 ? 1 : 0));
+      }, 350);
+    }, 3800);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const triggerManualRotation = () => {
+    setRotationAngle((prev) => prev + 360);
+    setTimeout(() => {
+      setCurrentAdvocate((prev) => (prev === 0 ? 1 : 0));
+    }, 350);
+  };
 
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault();
@@ -400,60 +420,96 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* 3D Tilted Main Card Container */}
-              <div className="relative w-[280px] sm:w-[305px] h-[520px] sm:h-[550px] animate-float-3d">
+              {/* 3D Tilted Main Card Container with 360° Continuous Flip Rotation */}
+              <div
+                className="relative w-[280px] sm:w-[305px] h-[520px] sm:h-[550px] cursor-pointer select-none"
+                style={{
+                  transform: `perspective(1000px) rotateX(8deg) rotateY(${rotationAngle - 18}deg)`,
+                  transition: "transform 750ms cubic-bezier(0.4, 0, 0.2, 1)",
+                }}
+                onClick={triggerManualRotation}
+                title="Click to spin 360°"
+              >
                 
-                {/* Main Obsidian/Forest Smartphone Card */}
-                <div className="relative w-full h-full rounded-[40px] p-5 sm:p-6 text-white shadow-2xl border-2 bg-gradient-to-b from-[#1C4530] via-[#132E20] to-[#0A1A12] border-[#2E6B4A]/70 shadow-[0_30px_70px_rgba(0,0,0,0.7)] flex flex-col justify-between overflow-hidden">
+                {/* Main Obsidian/Forest Smartphone Card (Swaps at mid-spin) */}
+                <div
+                  className={`relative w-full h-full rounded-[40px] p-5 sm:p-6 text-white shadow-2xl border-2 flex flex-col justify-between overflow-hidden transition-colors duration-300 ${
+                    currentAdvocate === 0
+                      ? "bg-gradient-to-b from-[#1C4530] via-[#132E20] to-[#0A1A12] border-[#2E6B4A]/70 shadow-[0_30px_70px_rgba(0,0,0,0.7)]"
+                      : "bg-gradient-to-b from-[#4A1620] via-[#2F0B13] to-[#170408] border-[#FF8A9B]/60 shadow-[0_30px_70px_rgba(0,0,0,0.7)]"
+                  }`}
+                >
                   
                   <div>
                     {/* Top Status & Court Bar */}
                     <div className="flex items-center justify-between pb-3 border-b border-white/10">
                       <div className="flex items-center gap-1.5">
-                        <Scale className="w-3.5 h-3.5 text-[#E6D5B8]" />
+                        <Scale className={`w-3.5 h-3.5 ${currentAdvocate === 0 ? "text-[#E6D5B8]" : "text-[#FFD2A6]"}`} />
                         <span className="text-[10.5px] font-bold tracking-wider uppercase text-white/90">
-                          Supreme Court of India
+                          {currentAdvocate === 0 ? "Supreme Court of India" : "High Court & Cyber Tribunal"}
                         </span>
                       </div>
                       <span className="px-2 py-0.5 rounded-full bg-white/15 text-[9px] font-mono font-bold text-white">
-                        D/1245/2018
+                        {currentAdvocate === 0 ? "D/1245/2018" : "MAH/5621/2019"}
                       </span>
                     </div>
 
                     {/* Headshot & Bold Display Name (Billie / Linktree Style) */}
                     <div className="pt-4 text-center space-y-2">
                       <div className="relative w-28 h-28 mx-auto">
-                        <div className="w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center bg-gradient-to-tr from-[#E6D5B8] to-[#163826]">
-                          <div className="w-full h-full rounded-[22px] bg-[#0A0D0B] flex flex-col items-center justify-center text-white overflow-hidden relative">
+                        <div
+                          className={`w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center ${
+                            currentAdvocate === 0
+                              ? "bg-gradient-to-tr from-[#E6D5B8] to-[#163826]"
+                              : "bg-gradient-to-tr from-[#FFD2A6] to-[#8C2433]"
+                          }`}
+                        >
+                          <div
+                            className={`w-full h-full rounded-[22px] flex flex-col items-center justify-center text-white overflow-hidden relative ${
+                              currentAdvocate === 0 ? "bg-[#0A0D0B]" : "bg-[#1E0509]"
+                            }`}
+                          >
                             {/* Legal Robe Band Graphic */}
                             <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
-                            <span className="font-black text-2xl tracking-wider pt-2">VS</span>
+                            <span className="font-black text-2xl tracking-wider pt-2">
+                              {currentAdvocate === 0 ? "VS" : "AD"}
+                            </span>
                           </div>
                         </div>
-                        <div className="absolute -bottom-1 -right-1 bg-[#E6D5B8] text-[#14231C] font-extrabold p-1 rounded-full shadow-lg border border-white">
+                        <div
+                          className={`absolute -bottom-1 -right-1 font-extrabold p-1 rounded-full shadow-lg border border-white ${
+                            currentAdvocate === 0 ? "bg-[#E6D5B8] text-[#14231C]" : "bg-[#FFD2A6] text-[#450C15]"
+                          }`}
+                        >
                           <BadgeCheck className="w-4 h-4" />
                         </div>
                       </div>
 
                       <div className="pt-1">
                         <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md text-[#F4EFEA]">
-                          VIKRANT
+                          {currentAdvocate === 0 ? "VIKRANT" : "ANANYA"}
                         </h3>
                         <p className="text-xs font-semibold text-[#D4DFD8] mt-1">
-                          Adv. Vikrant Sharma
+                          {currentAdvocate === 0 ? "Adv. Vikrant Sharma" : "Adv. Ananya Deshmukh"}
                         </p>
                       </div>
                     </div>
 
                     {/* Tightly Stacked Rounded-Full Action Buttons (6px gap) */}
                     <div className="space-y-1.5 pt-3">
-                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer">
-                        ⚖️ Criminal Writs & Bail Matters
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer truncate">
+                        {currentAdvocate === 0 ? "⚖️ Constitutional Writs & Appeals" : "🛡️ Cyber Law & Tech Litigation"}
                       </div>
-                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer">
-                        🏛️ Chamber 402, Supreme Court
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-full py-2 px-3.5 text-center text-[11px] font-bold hover:bg-white/20 transition-all border border-white/15 shadow-sm cursor-pointer truncate">
+                        {currentAdvocate === 0 ? "🏛️ Chamber 402, Supreme Court" : "🏛️ Chamber 18, High Court Fort"}
                       </div>
-                      <div className="w-full bg-[#E6D5B8] text-[#14231C] rounded-full py-2 px-3.5 text-center text-[11px] font-black shadow-md cursor-pointer hover:bg-[#d8c5a4] transition-all">
+                      <div
+                        className={`w-full rounded-full py-2 px-3.5 text-center text-[11px] font-black shadow-md cursor-pointer transition-all truncate ${
+                          currentAdvocate === 0
+                            ? "bg-[#E6D5B8] text-[#14231C] hover:bg-[#d8c5a4]"
+                            : "bg-[#FFD2A6] text-[#3B0D14] hover:bg-[#f0c294]"
+                        }`}
+                      >
                         📇 Save Direct Contact (.vcf)
                       </div>
                     </div>
@@ -461,38 +517,44 @@ export default function Home() {
 
                   {/* Micro Footer inside Card */}
                   <div className="pt-2 text-center text-[10px] text-white/60 font-medium">
-                    Verified Bar Council of Delhi Profile
+                    {currentAdvocate === 0 ? "Verified Bar Council of Delhi Profile" : "Verified Bar Council of Maharashtra Profile"}
                   </div>
                 </div>
 
-                {/* Floating Front Popout Card (Like 'June on film' in Billie screenshot) */}
-                <div className="absolute -bottom-6 -left-6 sm:-left-8 w-[210px] sm:w-[230px] z-30 animate-pop-card">
-                  <div className="rounded-3xl bg-white text-[#14231C] p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
-                        <FileText className="w-4 h-4" />
+                {/* Floating Front Popout Card (Modeled after 'June on film', displaying Specialized in Law: Constitutional Law, Cyber Law) */}
+                <div className="absolute -bottom-7 -left-6 sm:-left-8 w-[225px] sm:w-[250px] z-30 animate-pop-card">
+                  <div className="rounded-3xl bg-white text-[#14231C] p-3.5 shadow-[0_25px_50px_rgba(0,0,0,0.55)] border-2 border-white/90 space-y-2.5">
+                    {/* Media Banner Header with Circle Icon (June on film preview style) */}
+                    <div className="relative h-18 rounded-2xl bg-gradient-to-tr from-[#163826] via-[#245239] to-[#C9A84C] p-2 flex items-center justify-center overflow-hidden shadow-inner">
+                      <div className="w-8 h-8 rounded-full bg-white/95 text-[#163826] flex items-center justify-center shadow-md">
+                        <Scale className="w-4 h-4 text-[#163826]" />
                       </div>
-                      <div>
-                        <div className="text-[9px] font-black uppercase tracking-wider text-[#163826]">
-                          Case Milestone
-                        </div>
-                        <div className="text-xs font-extrabold text-[#14231C] leading-tight">
-                          Supreme Court SLP
-                        </div>
-                      </div>
+                      <span className="absolute bottom-1 left-2.5 text-[8px] font-bold tracking-wider uppercase text-white/90 drop-shadow">
+                        Legal Practice Focus
+                      </span>
                     </div>
 
-                    <p className="text-[10px] text-[#526057] leading-snug">
-                      Quashing of Criminal Proceedings under Sec 482 CrPC
-                    </p>
+                    {/* Popout Text Content */}
+                    <div className="space-y-1">
+                      <span className="inline-block text-[8.5px] font-black uppercase tracking-wider text-[#163826] bg-[#EBF3ED] px-2 py-0.5 rounded-full">
+                        Specialized in Law
+                      </span>
+                      <h4 className="text-xs sm:text-[13px] font-extrabold text-[#14231C] leading-snug">
+                        Constitutional Law, Cyber Law
+                      </h4>
+                      <p className="text-[9.5px] text-[#526057] leading-tight">
+                        Supreme Court Writs, Data Protection & Cyber Appellate Matters
+                      </p>
+                    </div>
 
-                    <div className="w-full bg-[#163826] text-white py-1.5 rounded-xl text-center text-[10px] font-bold shadow-sm">
-                      Download Case Brief
+                    {/* Consultation Action Button */}
+                    <div className="w-full bg-[#163826] hover:bg-[#1E4A33] text-white py-1.5 rounded-xl text-center text-[10px] font-bold shadow-sm transition-colors cursor-pointer">
+                      Consult on Legal Matter
                     </div>
                   </div>
                 </div>
 
-                {/* Floating Column of Circular Badges on Right Edge (Like Billie screenshot) */}
+                {/* Floating Column of Circular Badges on Right Edge */}
                 <div className="absolute top-16 -right-5 sm:-right-6 flex flex-col gap-2.5 z-20 animate-side-icons">
                   <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
                     <WhatsAppIcon className="w-5 h-5 text-white" />
@@ -500,7 +562,11 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
                     <Phone className="w-4 h-4" />
                   </div>
-                  <div className="w-10 h-10 rounded-full bg-[#E6D5B8] text-[#14231C] flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform ${
+                      currentAdvocate === 0 ? "bg-[#E6D5B8] text-[#14231C]" : "bg-[#FFD2A6] text-[#3B0D14]"
+                    }`}
+                  >
                     <QrCode className="w-4 h-4" />
                   </div>
                 </div>
