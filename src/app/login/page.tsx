@@ -379,53 +379,53 @@ export default function LoginPage() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-[#0e0e10] text-[#f1f3f4] flex items-center justify-center px-4 pt-24 pb-12 font-sans">
+      <main className="min-h-screen bg-[#FAF7F2] text-[#14231C] flex items-center justify-center px-4 pt-28 pb-16 font-sans">
         <div className="w-full max-w-md">
           
           {/* Main Container Card */}
-          <div className="bg-[#18191c] border border-[#2d3139] rounded-3xl p-6 sm:p-8 shadow-2xl">
+          <div className="bg-white border border-[#E7E0D5] rounded-[32px] p-6 sm:p-9 shadow-sm">
             
             {/* Header */}
             <div className="text-center mb-6">
-              <div className="w-13 h-13 sm:w-14 sm:h-14 bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] rounded-2xl flex items-center justify-center mx-auto mb-3.5 shadow-lg shadow-[#1a73e8]/20 text-[#0e0e10]">
-                <Scale className="w-7 h-7 font-bold" />
+              <div className="w-14 h-14 bg-[#163826] rounded-2xl flex items-center justify-center mx-auto mb-3.5 shadow-sm text-[#E6D5B8]">
+                <Scale className="w-7 h-7" />
               </div>
-              <h1 className="text-2xl font-bold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-[#14231C] tracking-tight">
                 {currentUser ? "Chamber Session Active" : "Advocate Portal"}
               </h1>
-              <p className="text-[#9aa0a6] text-xs sm:text-sm mt-1">
+              <p className="text-[#526057] text-xs sm:text-sm mt-1.5 leading-relaxed">
                 {currentUser
                   ? `Signed in as ${currentUser.email}`
-                  : "Sign in to manage your Virtual Chamber profile & judgments"}
+                  : "Sign in to manage your digital chamber profile, QR codes & practice links"}
               </p>
             </div>
 
             {/* ── If User is Already Logged In ─────────────────────────────────── */}
             {currentUser ? (
               <div className="space-y-4">
-                <div className="bg-[#202227] border border-[#343840] rounded-2xl p-4 text-center">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2">
+                <div className="bg-[#FAF8F5] border border-[#E7E0D5] rounded-2xl p-4 text-center">
+                  <div className="w-10 h-10 rounded-full bg-[#EBF3ED] text-[#163826] flex items-center justify-center mx-auto mb-2">
                     <Check className="w-5 h-5 stroke-[2.5]" />
                   </div>
-                  <p className="text-white text-sm font-semibold">{currentUser.email}</p>
-                  <p className="text-xs text-emerald-400 font-medium mt-1">
+                  <p className="text-[#14231C] text-sm font-bold">{currentUser.email}</p>
+                  <p className="text-xs text-[#163826] font-semibold mt-1">
                     ✓ Verified Advocate Authentication
                   </p>
                 </div>
 
                 <button
                   onClick={() => router.push("/dashboard")}
-                  className="w-full flex items-center justify-center gap-2 bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold py-3.5 rounded-xl transition-all shadow-md active:scale-95"
+                  className="w-full flex items-center justify-center gap-2 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold py-3.5 rounded-full transition-all shadow-sm active:scale-95"
                 >
-                  <Sparkles className="w-4 h-4" />
+                  <Sparkles className="w-4 h-4 text-[#E6D5B8]" />
                   <span>Open Advocate Studio / Dashboard</span>
                 </button>
 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center justify-center gap-2 bg-[#202227] hover:bg-[#2c282d] text-rose-300 hover:text-rose-200 border border-rose-500/30 hover:border-rose-500/50 text-xs font-semibold py-3 rounded-xl transition-all"
+                  className="w-full flex items-center justify-center gap-2 bg-[#FDF2F2] hover:bg-[#FEE2E2] text-rose-700 border border-rose-200 text-xs font-semibold py-3 rounded-full transition-all"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" />
                   <span>Sign Out of Chamber Account</span>
                 </button>
               </div>
@@ -438,7 +438,7 @@ export default function LoginPage() {
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 active:bg-slate-200 text-[#1f2937] font-semibold text-sm py-3 px-4 rounded-xl shadow-md transition-all active:scale-[0.98] border border-slate-200 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#F3EFE6] active:bg-[#EBE4D8] text-[#14231C] font-semibold text-sm py-3 px-4 rounded-full shadow-sm transition-all active:scale-[0.98] border border-[#E7E0D5] disabled:opacity-50"
                 >
                   <GoogleIcon className="w-5 h-5 shrink-0" />
                   <span>Continue with Google</span>
@@ -446,8 +446,8 @@ export default function LoginPage() {
 
                 {/* Divider */}
                 <div className="relative flex items-center justify-center">
-                  <div className="border-t border-[#2d3139] w-full" />
-                  <span className="bg-[#18191c] px-3 text-[11px] uppercase tracking-wider text-[#9aa0a6] font-medium shrink-0">
+                  <div className="border-t border-[#E7E0D5] w-full" />
+                  <span className="bg-white px-3 text-[11px] uppercase tracking-wider text-[#6B7870] font-bold shrink-0">
                     or with Email / Bar Council ID
                   </span>
                 </div>
@@ -455,19 +455,19 @@ export default function LoginPage() {
                 {/* Status Message Notification */}
                 {message && (
                   <div
-                    className={`p-3.5 rounded-xl text-xs space-y-2.5 ${
+                    className={`p-3.5 rounded-2xl text-xs space-y-2.5 ${
                       message.type === "success"
-                        ? "bg-emerald-950/70 border border-emerald-500/40 text-emerald-300"
-                        : "bg-rose-950/70 border border-rose-500/40 text-rose-300"
+                        ? "bg-[#EBF3ED] border border-[#163826]/30 text-[#163826]"
+                        : "bg-[#FDF2F2] border border-rose-300 text-rose-800"
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
                       {message.type === "success" ? (
-                        <Check className="w-4 h-4 shrink-0 text-emerald-400" />
+                        <Check className="w-4 h-4 shrink-0 text-[#163826]" />
                       ) : (
-                        <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                        <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
                       )}
-                      <span className="leading-relaxed">{message.text}</span>
+                      <span className="leading-relaxed font-medium">{message.text}</span>
                     </div>
 
                     {message.text.includes("already registered") && (
@@ -477,9 +477,9 @@ export default function LoginPage() {
                           setClaimStatus("idle");
                           setShowClaimModal(true);
                         }}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md transition-all active:scale-95"
+                        className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs shadow-sm transition-all active:scale-95"
                       >
-                        <ShieldCheck className="w-3.5 h-3.5 text-black" />
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#E6D5B8]" />
                         <span>Is this your Bar Council ID? Claim Chamber</span>
                       </button>
                     )}
@@ -487,17 +487,17 @@ export default function LoginPage() {
                 )}
 
                 {/* Sub-Tabs: Magic Link vs Password vs Sign Up */}
-                <div className="flex bg-[#202227] p-1 rounded-xl border border-[#343840] text-xs font-semibold">
+                <div className="flex bg-[#F4EFEA] p-1.5 rounded-full border border-[#E7E0D5] text-xs font-semibold">
                   <button
                     type="button"
                     onClick={() => {
                       setTab("magic");
                       setMessage(null);
                     }}
-                    className={`flex-1 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-2 rounded-full transition-all flex items-center justify-center gap-1.5 ${
                       tab === "magic"
-                        ? "bg-[#8ab4f8] text-[#0e0e10] shadow-sm font-bold"
-                        : "text-[#9aa0a6] hover:text-white"
+                        ? "bg-[#163826] text-[#FAF7F2] shadow-sm font-bold"
+                        : "text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
@@ -510,10 +510,10 @@ export default function LoginPage() {
                       setTab("password");
                       setMessage(null);
                     }}
-                    className={`flex-1 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-2 rounded-full transition-all flex items-center justify-center gap-1.5 ${
                       tab === "password"
-                        ? "bg-[#8ab4f8] text-[#0e0e10] shadow-sm font-bold"
-                        : "text-[#9aa0a6] hover:text-white"
+                        ? "bg-[#163826] text-[#FAF7F2] shadow-sm font-bold"
+                        : "text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
                     <KeyRound className="w-3.5 h-3.5" />
@@ -526,10 +526,10 @@ export default function LoginPage() {
                       setTab("signup");
                       setMessage(null);
                     }}
-                    className={`flex-1 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    className={`flex-1 py-2 rounded-full transition-all flex items-center justify-center gap-1.5 ${
                       tab === "signup"
-                        ? "bg-[#8ab4f8] text-[#0e0e10] shadow-sm font-bold"
-                        : "text-[#9aa0a6] hover:text-white"
+                        ? "bg-[#163826] text-[#FAF7F2] shadow-sm font-bold"
+                        : "text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
                     <span>Register</span>
@@ -540,21 +540,21 @@ export default function LoginPage() {
                 {tab === "magic" && (
                   <form onSubmit={handleMagicLink} className="space-y-4">
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5">
                         Email Address
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#163826]" />
                         <input
                           type="email"
                           required
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
                           placeholder="advocate@chamber.in or @gmail.com"
-                          className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-[#8ab4f8] text-sm"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 pl-10 focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] text-sm transition-all"
                         />
                       </div>
-                      <p className="text-[11px] text-[#9aa0a6] mt-1.5 leading-relaxed">
+                      <p className="text-[11px] text-[#526057] mt-1.5 leading-relaxed">
                         ✦ No password required. We will email you a secure 1-click link to log in directly on your phone or laptop.
                       </p>
                     </div>
@@ -562,17 +562,17 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full flex items-center justify-center gap-2 bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold py-3.5 rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold py-3.5 rounded-full transition-all shadow-sm active:scale-95 disabled:opacity-50"
                     >
                       {loading ? (
                         <span className="flex items-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
                           Sending Magic Link...
                         </span>
                       ) : (
                         <>
                           <span>Send 1-Click Magic Link</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 text-[#E6D5B8]" />
                         </>
                       )}
                     </button>
@@ -583,50 +583,50 @@ export default function LoginPage() {
                 {tab === "password" && (
                   <form onSubmit={handlePasswordAuth} className="space-y-4">
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5 flex items-center justify-between">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5 flex items-center justify-between">
                         <span>Email or Bar Council ID</span>
-                        <span className="text-[10px] text-[#8ab4f8] font-normal font-mono">
+                        <span className="text-[10px] text-[#163826] font-semibold font-mono bg-[#EBF3ED] px-2 py-0.5 rounded-full border border-[#163826]/20">
                           e.g. PH/7797/2025
                         </span>
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#163826]" />
                         <input
                           type="text"
                           required
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
                           placeholder="Email or Bar Council No."
-                          className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-[#8ab4f8] text-sm"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 pl-10 focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] text-sm transition-all"
                         />
                       </div>
                     </div>
 
                     <div>
                       <div className="flex items-center justify-between mb-1.5">
-                        <label className="text-[#c4c7c5] text-xs font-semibold">
+                        <label className="text-[#14231C] text-xs font-semibold">
                           Password
                         </label>
                         <button
                           type="button"
                           onClick={handleForgotPassword}
-                          className="text-[11px] text-[#8ab4f8] hover:text-[#aecbfa] hover:underline transition-colors"
+                          className="text-[11px] text-[#163826] hover:underline font-semibold transition-colors"
                         >
                           Forgot Password?
                         </button>
                       </div>
                       <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#163826]" />
                         <input
                           type="password"
                           required
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="••••••••••••"
-                          className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-[#8ab4f8] text-sm"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 pl-10 focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] text-sm transition-all"
                         />
                       </div>
-                      <p className="text-[11px] text-[#71767b] mt-1">
+                      <p className="text-[11px] text-[#6B7870] mt-1">
                         🔒 Compatible with Apple iCloud Keychain & Android Autofill (Face ID / Touch ID).
                       </p>
                     </div>
@@ -634,17 +634,17 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full flex items-center justify-center gap-2 bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold py-3.5 rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold py-3.5 rounded-full transition-all shadow-sm active:scale-95 disabled:opacity-50"
                     >
                       {loading ? (
                         <span className="flex items-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
                           Authenticating...
                         </span>
                       ) : (
                         <>
                           <span>Sign In to Chamber</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 text-[#E6D5B8]" />
                         </>
                       )}
                     </button>
@@ -655,7 +655,7 @@ export default function LoginPage() {
                 {tab === "signup" && (
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5">
                         Advocate Full Name
                       </label>
                       <input
@@ -663,14 +663,14 @@ export default function LoginPage() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="e.g. Adv. RajaVikrant Sharma"
-                        className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8ab4f8]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] transition-all"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5 flex items-center justify-between">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5 flex items-center justify-between">
                         <span>Bar Council Enrollment Number</span>
-                        <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] text-[#163826] font-bold bg-[#EBF3ED] border border-[#163826]/30 px-2 py-0.5 rounded-full">
                           * Mandatory
                         </span>
                       </label>
@@ -680,36 +680,36 @@ export default function LoginPage() {
                         value={enrollmentNo}
                         onChange={(e) => setEnrollmentNo(e.target.value)}
                         placeholder="e.g. PH/7797/2025 or D/1234/2020"
-                        className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8ab4f8]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 text-sm focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] transition-all"
                       />
-                      <p className="text-[10px] text-[#9aa0a6] mt-1">
+                      <p className="text-[10px] text-[#6B7870] mt-1">
                         Strictly unique. Each advocate is permitted only 1 profile per Bar Council registration.
                       </p>
                     </div>
 
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5">
                         Official Email Address
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
+                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#163826]" />
                         <input
                           type="email"
                           required
                           value={identifier}
                           onChange={(e) => setIdentifier(e.target.value)}
                           placeholder="advocate@chamber.in or @gmail.com"
-                          className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-[#8ab4f8] text-sm"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 pl-10 focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] text-sm transition-all"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5">
+                      <label className="block text-[#14231C] text-xs font-semibold mb-1.5">
                         Set Chamber Password
                       </label>
                       <div className="relative">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8ab4f8]" />
+                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#163826]" />
                         <input
                           type="password"
                           required
@@ -717,7 +717,7 @@ export default function LoginPage() {
                           value={password}
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="At least 6 characters"
-                          className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 pl-10 focus:outline-none focus:border-[#8ab4f8] text-sm"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] text-[#14231C] placeholder-[#8C9890] rounded-xl px-4 py-3 pl-10 focus:bg-white focus:outline-none focus:border-[#163826] focus:ring-1 focus:ring-[#163826] text-sm transition-all"
                         />
                       </div>
                     </div>
@@ -725,17 +725,17 @@ export default function LoginPage() {
                     <button
                       type="submit"
                       disabled={loading}
-                      className="w-full flex items-center justify-center gap-2 bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold py-3.5 rounded-xl transition-all shadow-md active:scale-95 disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-2 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold py-3.5 rounded-full transition-all shadow-sm active:scale-95 disabled:opacity-50"
                     >
                       {loading ? (
                         <span className="flex items-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
                           Creating Chamber...
                         </span>
                       ) : (
                         <>
                           <span>Create Free Chamber Account</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 text-[#E6D5B8]" />
                         </>
                       )}
                     </button>
@@ -743,15 +743,15 @@ export default function LoginPage() {
                 )}
 
                 {/* Footer Security Badges */}
-                <div className="pt-2 text-center flex items-center justify-center gap-3 text-[11px] text-[#71767b]">
+                <div className="pt-2 text-center flex items-center justify-center gap-3 text-[11px] text-[#6B7870] font-medium">
                   <span className="flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#163826]" />
                     256-bit Encrypted
                   </span>
                   <span>•</span>
                   <span>Free Forever</span>
                   <span>•</span>
-                  <span>Bar Council of India</span>
+                  <span>Bar Council Compliant</span>
                 </div>
 
               </div>
@@ -760,9 +760,9 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <Link
                 href="/"
-                className="text-xs text-[#9aa0a6] hover:text-white transition-colors"
+                className="text-xs text-[#526057] hover:text-[#14231C] font-semibold transition-colors"
               >
-                ← Return to Virtual Chamber Home
+                ← Return to My Chamber Home
               </Link>
             </div>
 
@@ -771,26 +771,26 @@ export default function LoginPage() {
 
         {/* ── Chamber Ownership Dispute & Bar Council Claim Modal ───────────────── */}
         {showClaimModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="relative w-full max-w-lg rounded-3xl p-6 sm:p-7 border border-[#343840] bg-[#18191c] text-[#f1f3f4] shadow-2xl space-y-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+            <div className="relative w-full max-w-lg rounded-3xl p-6 sm:p-7 border border-[#E7E0D5] bg-white text-[#14231C] shadow-2xl space-y-4">
               {/* Close button */}
               <button
                 onClick={() => setShowClaimModal(false)}
-                className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-[#F3EFE6] text-[#6B7870] hover:text-[#14231C] transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
 
               {/* Header */}
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-black font-bold shadow-lg shrink-0">
-                  <ShieldCheck className="w-6 h-6 text-black" />
+                <div className="w-11 h-11 rounded-2xl bg-[#163826] flex items-center justify-center text-[#E6D5B8] font-bold shadow-sm shrink-0">
+                  <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold">Claim Chamber Ownership</h3>
-                  <p className="text-xs text-[#9aa0a6]">
+                  <h3 className="text-base sm:text-lg font-bold text-[#14231C]">Claim Chamber Ownership</h3>
+                  <p className="text-xs text-[#526057]">
                     Dispute review for Bar Council No:{" "}
-                    <span className="text-amber-400 font-mono font-bold">
+                    <span className="text-[#163826] font-mono font-bold">
                       {enrollmentNo || "N/A"}
                     </span>
                   </p>
@@ -798,28 +798,28 @@ export default function LoginPage() {
               </div>
 
               {claimStatus === "success" ? (
-                <div className="bg-[#202227] border border-emerald-500/40 p-5 rounded-2xl text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
+                <div className="bg-[#EBF3ED] border border-[#163826]/30 p-5 rounded-2xl text-center space-y-3">
+                  <div className="w-12 h-12 rounded-full bg-[#163826] text-[#FAF7F2] flex items-center justify-center mx-auto">
                     <Check className="w-6 h-6 stroke-[2.5]" />
                   </div>
-                  <h4 className="text-sm font-bold text-emerald-300">Ownership Claim Submitted</h4>
-                  <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                  <h4 className="text-sm font-bold text-[#163826]">Ownership Claim Submitted</h4>
+                  <p className="text-xs text-[#3F4D45] leading-relaxed">
                     Your claim for Bar Council No.{" "}
-                    <strong className="text-white font-mono">{enrollmentNo}</strong> has been logged.
+                    <strong className="text-[#14231C] font-mono">{enrollmentNo}</strong> has been logged.
                     Our legal verification desk will check the official State Bar Council enrollment roll and
                     resolve this within 24 hours.
                   </p>
                   <button
                     type="button"
                     onClick={() => setShowClaimModal(false)}
-                    className="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-xs transition-colors"
+                    className="px-6 py-2.5 rounded-full bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs transition-colors shadow-sm"
                   >
                     Done
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleClaimSubmit} className="space-y-3.5">
-                  <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                  <p className="text-xs text-[#526057] leading-relaxed">
                     If another person mistakenly entered your Bar Council number or you are the legitimate
                     advocate, submit your contact information and ID proof. We will verify and release the chamber
                     to you.
@@ -827,7 +827,7 @@ export default function LoginPage() {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                      <label className="block text-[11px] font-semibold text-[#3F4D45] mb-1">
                         Advocate Full Name
                       </label>
                       <input
@@ -836,11 +836,11 @@ export default function LoginPage() {
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         placeholder="Your official name on Bar roll"
-                        className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826]"
                       />
                     </div>
                     <div>
-                      <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                      <label className="block text-[11px] font-semibold text-[#3F4D45] mb-1">
                         Official Email Address
                       </label>
                       <input
@@ -849,13 +849,13 @@ export default function LoginPage() {
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
                         placeholder="your.email@gmail.com"
-                        className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    <label className="block text-[11px] font-semibold text-[#3F4D45] mb-1">
                       Mobile / WhatsApp Number
                     </label>
                     <input
@@ -864,12 +864,12 @@ export default function LoginPage() {
                       value={claimPhone}
                       onChange={(e) => setClaimPhone(e.target.value)}
                       placeholder="+91-98XXXXXXXX"
-                      className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                      className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    <label className="block text-[11px] font-semibold text-[#3F4D45] mb-1">
                       Upload Bar Council ID or Enrollment Certificate (Proof)
                     </label>
                     <input
@@ -883,19 +883,19 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => claimProofFileInputRef.current?.click()}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#202227] hover:bg-[#282a30] text-[#8ab4f8] text-xs font-semibold border border-[#343840] transition-colors"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] transition-colors"
                       >
                         <Upload className="w-3.5 h-3.5" />
                         <span>{claimProofUrl ? "Change Proof Photo" : "Upload ID Proof"}</span>
                       </button>
                       {claimProofUrl && (
-                        <span className="text-[11px] text-emerald-400 font-medium">✓ Document attached</span>
+                        <span className="text-[11px] text-[#163826] font-semibold">✓ Document attached</span>
                       )}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    <label className="block text-[11px] font-semibold text-[#3F4D45] mb-1">
                       Explanation / Additional Notes (Optional)
                     </label>
                     <textarea
@@ -903,7 +903,7 @@ export default function LoginPage() {
                       value={claimNotes}
                       onChange={(e) => setClaimNotes(e.target.value)}
                       placeholder="e.g. Enrolled with Punjab and Haryana Bar Council in 2025. Please release this registration."
-                      className="w-full bg-[#202227] border border-[#343840] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                      className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl p-2.5 text-xs text-[#14231C] focus:bg-white focus:outline-none focus:border-[#163826]"
                     />
                   </div>
 
@@ -911,14 +911,14 @@ export default function LoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowClaimModal(false)}
-                      className="px-4 py-2 rounded-xl text-xs text-[#9aa0a6] hover:text-white transition-colors"
+                      className="px-4 py-2 rounded-full text-xs text-[#526057] hover:text-[#14231C] transition-colors font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
                       disabled={claimStatus === "submitting"}
-                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-bold text-xs shadow-md transition-all active:scale-95 disabled:opacity-50"
+                      className="px-5 py-2.5 rounded-full bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs shadow-sm transition-all active:scale-95 disabled:opacity-50"
                     >
                       {claimStatus === "submitting" ? "Submitting Claim..." : "Submit Ownership Claim"}
                     </button>

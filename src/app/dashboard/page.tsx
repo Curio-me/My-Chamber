@@ -373,7 +373,7 @@ export default function DashboardPage() {
   const getBoxIcon = (id: string) => {
     switch (id) {
       case "about":
-        return <FileText className="w-4 h-4 text-[#8ab4f8]" />;
+        return <FileText className="w-4 h-4 text-[#163826]" />;
       case "specializations":
         return <Briefcase className="w-4 h-4 text-blue-400" />;
       case "courts":
@@ -391,7 +391,7 @@ export default function DashboardPage() {
       case "custom_links":
         return <ExternalLink className="w-4 h-4 text-purple-400" />;
       default:
-        return <Layers className="w-4 h-4 text-[#8ab4f8]" />;
+        return <Layers className="w-4 h-4 text-[#163826]" />;
     }
   };
 
@@ -565,29 +565,29 @@ export default function DashboardPage() {
       ctx.fillRect(0, 0, 1000, 1200);
 
       // Outer border
-      ctx.strokeStyle = "#e2e8f0";
+      ctx.strokeStyle = "#E7E0D5";
       ctx.lineWidth = 14;
       ctx.strokeRect(35, 35, 930, 1130);
 
       // Accent border
-      ctx.strokeStyle = "#1a73e8";
+      ctx.strokeStyle = "#163826";
       ctx.lineWidth = 4;
       ctx.strokeRect(52, 52, 896, 1096);
 
       // Header Title
-      ctx.fillStyle = "#0f172a";
+      ctx.fillStyle = "#14231C";
       ctx.font = "bold 44px sans-serif";
       ctx.textAlign = "center";
       ctx.fillText(profile.fullName || "Advocate", 500, 140);
 
       // Subtitle Bar Council
-      ctx.fillStyle = "#475569";
+      ctx.fillStyle = "#526057";
       ctx.font = "24px sans-serif";
       ctx.fillText(`Advocate • Bar Council: ${profile.enrollmentNo || "Registered"}`, 500, 190);
 
       // Court name
       if (profile.courts?.[0]) {
-        ctx.fillStyle = "#1a73e8";
+        ctx.fillStyle = "#163826";
         ctx.font = "bold 22px sans-serif";
         ctx.fillText(profile.courts[0], 500, 230);
       }
@@ -596,11 +596,11 @@ export default function DashboardPage() {
       ctx.drawImage(img, 175, 290, 650, 650);
 
       // Footer
-      ctx.fillStyle = "#0f172a";
+      ctx.fillStyle = "#14231C";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("SCAN TO CONNECT • VIRTUAL CHAMBER", 500, 1020);
+      ctx.fillText("SCAN TO CONNECT • MY CHAMBER", 500, 1020);
 
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = "#6B7870";
       ctx.font = "20px sans-serif";
       ctx.fillText(publicUrl, 500, 1060);
 
@@ -614,51 +614,51 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0e0e10] text-[#f1f3f4] flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAF7F2] text-[#14231C] flex flex-col font-sans">
       
       {/* ── Top Navigation Bar ────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-[#16171b]/95 backdrop-blur-md border-b border-[#2d3139] px-4 sm:px-6 py-3">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E7E0D5] px-4 sm:px-6 py-3 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           
           {/* Logo & Status */}
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-[#0e0e10]">
-                <Scale className="w-4 h-4 font-bold" />
+              <div className="w-8 h-8 rounded-full bg-[#163826] text-[#F3EFE6] flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
+                <Scale className="w-4 h-4 text-[#E6D5B8]" />
               </div>
-              <span className="font-bold text-sm tracking-tight hidden sm:inline">
-                Virtual<span className="text-[#8ab4f8]">Chamber</span>
+              <span className="font-extrabold text-[#14231C] text-base tracking-tight hidden sm:inline">
+                My Chamber<span className="text-[#163826] font-normal">✦</span>
               </span>
             </Link>
-            <span className="text-xs text-[#9aa0a6] hidden md:inline">|</span>
-            <span className="text-xs font-medium text-[#c4c7c5] bg-[#202227] px-2.5 py-1 rounded-md border border-[#343840] hidden md:inline">
+            <span className="text-xs text-[#D5CFC5] hidden md:inline">|</span>
+            <span className="text-xs font-bold text-[#163826] bg-[#EBF3ED] px-3 py-1 rounded-full border border-[#163826]/20 hidden md:inline">
               Advocate Studio
             </span>
           </div>
 
           {/* Quick URL preview & copy */}
-          <div className="hidden lg:flex items-center gap-2 bg-[#202227] px-3 py-1.5 rounded-full border border-[#343840] text-xs">
-            <span className="text-[#9aa0a6]">Your Chamber:</span>
-            <span className="text-[#8ab4f8] font-mono font-medium max-w-[220px] truncate">
+          <div className="hidden lg:flex items-center gap-2 bg-[#FAF8F5] px-3.5 py-1.5 rounded-full border border-[#E7E0D5] text-xs">
+            <span className="text-[#526057] font-medium">Your Chamber:</span>
+            <span className="text-[#163826] font-mono font-bold max-w-[220px] truncate">
               /{profile.slug}
             </span>
             <button
               onClick={copyPublicLink}
-              className="text-[#c4c7c5] hover:text-white transition-colors ml-1"
+              className="text-[#6B7870] hover:text-[#14231C] transition-colors ml-1"
               title="Copy URL"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-[#163826]" /> : <Copy className="w-3.5 h-3.5" />}
             </button>
           </div>
 
           {/* Action buttons */}
           <div className="flex items-center gap-2">
             {/* Mobile Tab Switcher */}
-            <div className="flex lg:hidden bg-[#202227] p-1 rounded-full border border-[#343840]">
+            <div className="flex lg:hidden bg-[#F4EFEA] p-1 rounded-full border border-[#E7E0D5]">
               <button
                 onClick={() => setActiveTab("edit")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                  activeTab === "edit" ? "bg-[#8ab4f8] text-[#0e0e10]" : "text-[#9aa0a6]"
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  activeTab === "edit" ? "bg-[#163826] text-[#FAF7F2] shadow-sm" : "text-[#526057]"
                 }`}
               >
                 <Edit3 className="w-3.5 h-3.5 inline mr-1" />
@@ -666,8 +666,8 @@ export default function DashboardPage() {
               </button>
               <button
                 onClick={() => setActiveTab("preview")}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
-                  activeTab === "preview" ? "bg-[#8ab4f8] text-[#0e0e10]" : "text-[#9aa0a6]"
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${
+                  activeTab === "preview" ? "bg-[#163826] text-[#FAF7F2] shadow-sm" : "text-[#526057]"
                 }`}
               >
                 <Eye className="w-3.5 h-3.5 inline mr-1" />
@@ -678,7 +678,7 @@ export default function DashboardPage() {
             <button
               onClick={handleReset}
               title="Clear all fields and start fresh"
-              className="hidden sm:flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-rose-400 bg-[#202227] hover:bg-[#282a30] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs text-[#526057] hover:text-rose-600 bg-white hover:bg-[#F3EFE6] px-3 py-2 rounded-full border border-[#E7E0D5] transition-colors font-semibold"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
@@ -687,32 +687,32 @@ export default function DashboardPage() {
             <button
               onClick={handleLoadSample}
               title="Load generic sample template"
-              className="hidden md:flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-[#8ab4f8] bg-[#202227] hover:bg-[#282a30] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
+              className="hidden md:flex items-center gap-1.5 text-xs text-[#163826] hover:text-[#1E4A33] bg-white hover:bg-[#F3EFE6] px-3 py-2 rounded-full border border-[#E7E0D5] transition-colors font-semibold"
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-[#C8A86B]" />
               <span>Sample Template</span>
             </button>
 
             <Link
               href={`/${profile.slug}`}
               target="_blank"
-              className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-[#8ab4f8] hover:text-[#aecbfa] bg-[#1a2333] hover:bg-[#212c40] px-3.5 py-2 rounded-xl border border-[#8ab4f8]/30 transition-colors"
+              className="hidden sm:flex items-center gap-1.5 text-xs font-bold text-[#163826] hover:text-[#1E4A33] bg-[#EBF3ED] hover:bg-[#DEECE1] px-4 py-2 rounded-full border border-[#163826]/20 transition-colors"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>View Public Card</span>
             </Link>
             <button
               onClick={handleSave}
-              className="flex items-center gap-1.5 bg-[#8ab4f8] hover:bg-[#aecbfa] active:bg-[#729ee6] text-[#0e0e10] font-bold text-xs px-4 py-2 rounded-xl shadow-md transition-all"
+              className="flex items-center gap-1.5 bg-[#163826] hover:bg-[#1E4A33] active:scale-95 text-[#FAF7F2] font-bold text-xs px-5 py-2.5 rounded-full shadow-sm transition-all"
             >
               {savedStatus === "saved" ? (
                 <>
-                  <Check className="w-4 h-4 text-emerald-900" />
+                  <Check className="w-4 h-4 text-[#E6D5B8]" />
                   <span>Saved!</span>
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
+                  <Save className="w-4 h-4 text-[#E6D5B8]" />
                   <span>Save Profile</span>
                 </>
               )}
@@ -721,9 +721,9 @@ export default function DashboardPage() {
             <button
               onClick={handleDashboardSignOut}
               title="Sign out of Chamber session"
-              className="flex items-center gap-1.5 text-xs text-[#9aa0a6] hover:text-rose-400 bg-[#202227] hover:bg-[#2c282d] px-3 py-2 rounded-xl border border-[#343840] hover:border-rose-500/30 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-rose-700 hover:text-rose-800 bg-[#FDF2F2] hover:bg-[#FEE2E2] px-3.5 py-2 rounded-full border border-rose-200 transition-colors font-semibold"
             >
-              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <LogOut className="w-3.5 h-3.5 text-rose-500" />
               <span className="hidden sm:inline">Sign Out</span>
             </button>
           </div>
@@ -764,18 +764,18 @@ export default function DashboardPage() {
           )}
 
           {/* ── Chamber Box Mover & Layout Organizer ──────────────────────── */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-indigo-500/30 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
                 <Layers className="w-4 h-4 text-indigo-400" />
-                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Chamber Box Mover & Layout Organizer
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={resetBoxOrder}
-                className="text-[11px] text-[#9aa0a6] hover:text-white flex items-center gap-1 transition-colors bg-[#202227] hover:bg-[#282a30] px-2.5 py-1 rounded-lg border border-[#343840]"
+                className="text-[11px] text-[#526057] hover:text-white flex items-center gap-1 transition-colors bg-[#FAF8F5] hover:bg-[#F3EFE6] px-2.5 py-1 rounded-lg border border-[#E7E0D5]"
                 title="Reset boxes to default order"
               >
                 <RotateCcw className="w-3 h-3" />
@@ -783,7 +783,7 @@ export default function DashboardPage() {
               </button>
             </div>
 
-            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+            <p className="text-xs text-[#526057] leading-relaxed">
               Rearrange the order of your profile boxes. Use the <strong className="text-white">↑ Move Up</strong> and <strong className="text-white">↓ Move Down</strong> arrows to position boxes in any sequence (e.g. place <span className="text-indigo-300 font-medium">Academic Qualifications</span> above About, or feature <span className="text-blue-300 font-medium">Specialized in Law</span> at the top).
             </p>
 
@@ -810,18 +810,18 @@ export default function DashboardPage() {
                   return (
                     <div
                       key={boxId}
-                      className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-[#202227] border border-[#343840] hover:border-indigo-400/40 transition-all shadow-sm"
+                      className="flex items-center justify-between p-2.5 sm:p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5] hover:border-indigo-400/40 transition-all shadow-sm"
                     >
                       <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <span className="w-6 h-6 rounded-lg bg-[#18191c] text-[#8ab4f8] text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-[#2d3139]">
+                        <span className="w-6 h-6 rounded-lg bg-[#FAF8F5] text-[#163826] text-[11px] font-mono font-bold flex items-center justify-center shrink-0 border border-[#E7E0D5]">
                           #{idx + 1}
                         </span>
                         <div className="shrink-0">{getBoxIcon(boxId)}</div>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold text-[#f1f3f4] truncate">
+                          <p className="text-xs font-semibold text-[#14231C] truncate">
                             {meta.name}
                           </p>
-                          <p className="text-[11px] text-[#9aa0a6] truncate hidden sm:block">
+                          <p className="text-[11px] text-[#526057] truncate hidden sm:block">
                             {meta.shortDesc}
                           </p>
                         </div>
@@ -835,8 +835,8 @@ export default function DashboardPage() {
                           title={`Move ${meta.name} Up`}
                           className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all ${
                             isFirst
-                              ? "opacity-30 cursor-not-allowed border-transparent text-[#5f6368]"
-                              : "bg-[#282d38] hover:bg-indigo-600 border-[#3b4252] text-white hover:border-indigo-500 shadow-sm"
+                              ? "opacity-30 cursor-not-allowed border-transparent text-[#8C9890]"
+                              : "bg-white hover:bg-[#163826] hover:text-[#FAF7F2] border-[#E7E0D5] text-[#14231C] shadow-sm"
                           }`}
                         >
                           <ArrowUp className="w-3.5 h-3.5" />
@@ -848,8 +848,8 @@ export default function DashboardPage() {
                           title={`Move ${meta.name} Down`}
                           className={`w-7 h-7 rounded-lg border flex items-center justify-center transition-all ${
                             isLast
-                              ? "opacity-30 cursor-not-allowed border-transparent text-[#5f6368]"
-                              : "bg-[#282d38] hover:bg-indigo-600 border-[#3b4252] text-white hover:border-indigo-500 shadow-sm"
+                              ? "opacity-30 cursor-not-allowed border-transparent text-[#8C9890]"
+                              : "bg-white hover:bg-[#163826] hover:text-[#FAF7F2] border-[#E7E0D5] text-[#14231C] shadow-sm"
                           }`}
                         >
                           <ArrowDown className="w-3.5 h-3.5" />
@@ -863,17 +863,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 1: Basic Identity & Bar Details */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <Scale className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <Scale className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Advocate Identity & Enrollment
               </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Full Name (with Prefix)
                 </label>
                 <input
@@ -881,16 +881,16 @@ export default function DashboardPage() {
                   value={profile.fullName}
                   onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
                   placeholder="e.g. Adv. Your Full Name"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Chamber URL Slug
                 </label>
-                <div className="flex items-center bg-[#202227] border border-[#343840] rounded-xl px-3 py-2.5 text-sm focus-within:border-[#8ab4f8]">
-                  <span className="text-[#9aa0a6] text-xs font-mono">/</span>
+                <div className="flex items-center bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2.5 text-sm focus-within:border-[#163826]">
+                  <span className="text-[#526057] text-xs font-mono">/</span>
                   <input
                     type="text"
                     value={profile.slug}
@@ -904,20 +904,20 @@ export default function DashboardPage() {
                       })
                     }
                     placeholder="write your name"
-                    className="w-full bg-transparent text-sm text-[#f1f3f4] focus:outline-none pl-1 font-mono placeholder:text-[#5f6368]"
+                    className="w-full bg-transparent text-sm text-[#14231C] focus:outline-none pl-1 font-mono placeholder:text-[#8C9890]"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-semibold text-[#f1f3f4] flex items-center gap-1.5">
+                  <label className="text-xs font-semibold text-[#14231C] flex items-center gap-1.5">
                     <span>Bar Council Enrollment Number</span>
                     <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
                       * Mandatory
                     </span>
                   </label>
-                  <span className="text-[10px] text-[#8ab4f8] font-mono">1 Profile / Bar No.</span>
+                  <span className="text-[10px] text-[#163826] font-mono">1 Profile / Bar No.</span>
                 </div>
                 <input
                   type="text"
@@ -928,10 +928,10 @@ export default function DashboardPage() {
                     if (saveErrorMessage) setSaveErrorMessage(null);
                   }}
                   placeholder="e.g. PH/7797/2025 or D/1234/2020"
-                  className={`w-full bg-[#202227] border rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none transition-colors ${
+                  className={`w-full bg-[#FAF8F5] border rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none transition-colors ${
                     !profile.enrollmentNo?.trim()
                       ? "border-amber-500/60 focus:border-amber-400"
-                      : "border-[#343840] focus:border-[#8ab4f8]"
+                      : "border-[#E7E0D5] focus:border-[#163826]"
                   }`}
                 />
                 {!profile.enrollmentNo?.trim() ? (
@@ -940,14 +940,14 @@ export default function DashboardPage() {
                     <span>Every advocate must have a registered Bar Council number to save.</span>
                   </p>
                 ) : (
-                  <p className="text-[11px] text-[#9aa0a6] mt-1">
+                  <p className="text-[11px] text-[#526057] mt-1">
                     ✓ Strictly unique. Duplicate profiles with the same Bar Council number are prohibited.
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Years of Experience
                 </label>
                 <input
@@ -956,16 +956,16 @@ export default function DashboardPage() {
                   max="70"
                   value={profile.yearsExp}
                   onChange={(e) => setProfile({ ...profile, yearsExp: Number(e.target.value) || 0 })}
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               {/* Bar Council ID Verification Upload Card */}
-              <div className="sm:col-span-2 p-4 rounded-xl bg-[#202227] border border-[#343840] space-y-3">
+              <div className="sm:col-span-2 p-4 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5] space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                    <span className="text-xs font-semibold text-[#f1f3f4]">
+                    <span className="text-xs font-semibold text-[#14231C]">
                       Bar Council ID Card or Enrollment Certificate Proof
                     </span>
                   </div>
@@ -981,7 +981,7 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <p className="text-[11px] text-[#9aa0a6] leading-relaxed">
+                <p className="text-[11px] text-[#526057] leading-relaxed">
                   Upload a photo of your official Bar Council Certificate or Bar Association ID card. This locks your Bar Council registration to your profile, protects against mistaken duplicate claims, and activates your official <strong className="text-white">Verified Advocate Blue Badge</strong>.
                 </p>
 
@@ -996,7 +996,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => barIdFileInputRef.current?.click()}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#18191c] hover:bg-[#282a30] text-[#8ab4f8] text-xs font-semibold border border-[#343840] transition-colors"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] transition-colors"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     <span>{profile.barIdCardUrl ? "Replace ID Proof" : "Upload Bar Council ID / Certificate"}</span>
@@ -1007,7 +1007,7 @@ export default function DashboardPage() {
                       <img
                         src={profile.barIdCardUrl}
                         alt="Bar ID proof preview"
-                        className="w-9 h-9 object-cover rounded-lg border border-[#343840] shadow-sm"
+                        className="w-9 h-9 object-cover rounded-lg border border-[#E7E0D5] shadow-sm"
                       />
                       <button
                         type="button"
@@ -1023,14 +1023,14 @@ export default function DashboardPage() {
             </div>
 
             {/* Enrolled Bar Associations Subsection */}
-            <div className="pt-3 border-t border-[#2d3139]/60 space-y-2.5">
+            <div className="pt-3 border-t border-[#F0ECE4] space-y-2.5">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="flex items-center gap-1.5 text-xs font-semibold text-[#f1f3f4]">
+                  <label className="flex items-center gap-1.5 text-xs font-semibold text-[#14231C]">
                     <Landmark className="w-3.5 h-3.5 text-amber-400" />
                     <span>Enrolled with which Bar Association(s)?</span>
                   </label>
-                  <p className="text-[11px] text-[#9aa0a6] mt-0.5">
+                  <p className="text-[11px] text-[#526057] mt-0.5">
                     Add the Bar Associations where you are enrolled or hold membership (e.g. Panchkula Bar Association, Punjab and Haryana High Court Bar Association)
                   </p>
                 </div>
@@ -1041,11 +1041,11 @@ export default function DashboardPage() {
 
               {/* Active Bar Associations Chips */}
               {(profile.barAssociations || []).length > 0 && (
-                <div className="flex flex-wrap gap-1.5 p-2.5 bg-[#202227] rounded-xl border border-[#343840]/70">
+                <div className="flex flex-wrap gap-1.5 p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]/70">
                   {(profile.barAssociations || []).map((assoc) => (
                     <span
                       key={assoc}
-                      className="inline-flex items-center gap-1.5 bg-[#2a303c] border border-amber-400/30 text-amber-200 text-xs font-medium px-3 py-1 rounded-full shadow-sm"
+                      className="inline-flex items-center gap-1.5 bg-[#FAF4EB] border border-[#C8A86B]/40 text-[#8B6B23] text-xs font-medium px-3 py-1 rounded-full shadow-sm"
                     >
                       <Landmark className="w-3 h-3 text-amber-400 shrink-0" />
                       <span>{assoc}</span>
@@ -1075,12 +1075,12 @@ export default function DashboardPage() {
                     }
                   }}
                   placeholder="Type Bar Association name (e.g. Panchkula Bar Association, Punjab and Haryana High Court Bar Association)..."
-                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-xs text-[#f1f3f4] focus:outline-none focus:border-amber-400 placeholder:text-[#5f6368]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:outline-none focus:border-amber-400 placeholder:text-[#8C9890]"
                 />
                 <button
                   type="button"
                   onClick={() => addBarAssociation()}
-                  className="bg-[#2a303c] hover:bg-[#343c4c] text-amber-300 px-4 py-2 rounded-xl text-xs font-semibold border border-amber-400/30 transition-colors shadow-sm"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-semibold border border-amber-400/30 transition-colors shadow-sm"
                 >
                   Add Association
                 </button>
@@ -1088,7 +1088,7 @@ export default function DashboardPage() {
 
               {/* Quick suggestion pills */}
               <div className="space-y-1">
-                <p className="text-[11px] text-[#9aa0a6]">Popular Suggestions (Click to Add):</p>
+                <p className="text-[11px] text-[#526057]">Popular Suggestions (Click to Add):</p>
                 <div className="flex flex-wrap gap-1.5">
                   {COMMON_BAR_ASSOCIATIONS.map((assoc) => {
                     const alreadyAdded = (profile.barAssociations || []).includes(assoc);
@@ -1100,8 +1100,8 @@ export default function DashboardPage() {
                         onClick={() => addBarAssociation(assoc)}
                         className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
                           alreadyAdded
-                            ? "bg-[#1c1f26] border-[#2d3139] text-[#5f6368] cursor-default"
-                            : "bg-[#202227] hover:bg-[#282d38] border-[#343840] text-amber-200/90 hover:border-amber-400/40"
+                            ? "bg-[#1c1f26] border-[#E7E0D5] text-[#8C9890] cursor-default"
+                            : "bg-white hover:bg-[#F3EFE6] border-[#E7E0D5] text-amber-200/90 hover:border-amber-400/40"
                         }`}
                       >
                         {alreadyAdded ? "✓ " : "+ "}
@@ -1114,12 +1114,12 @@ export default function DashboardPage() {
             </div>
 
             {/* Verified toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-[#202227] border border-[#343840]/60">
+            <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60">
               <div className="flex items-center gap-2.5">
-                <BadgeCheck className="w-4 h-4 text-[#8ab4f8]" />
+                <BadgeCheck className="w-4 h-4 text-[#163826]" />
                 <div>
-                  <p className="text-xs font-semibold text-[#f1f3f4]">Bar Council Verified Badge</p>
-                  <p className="text-[11px] text-[#9aa0a6]">Display official advocate verification mark</p>
+                  <p className="text-xs font-semibold text-[#14231C]">Bar Council Verified Badge</p>
+                  <p className="text-[11px] text-[#526057]">Display official advocate verification mark</p>
                 </div>
               </div>
               <input
@@ -1131,18 +1131,18 @@ export default function DashboardPage() {
             </div>
 
             {/* Theme & 3D Settings */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#2d3139]/60">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#F0ECE4]">
               {/* Default Theme */}
-              <div className="p-3 rounded-xl bg-[#202227] border border-[#343840]/60 space-y-2">
-                <p className="text-xs font-semibold text-[#f1f3f4]">Default Chamber Theme</p>
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60 space-y-2">
+                <p className="text-xs font-semibold text-[#14231C]">Default Chamber Theme</p>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setProfile({ ...profile, themePreference: "dark" })}
                     className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
                       profile.themePreference !== "light"
-                        ? "bg-[#283244] border-[#8ab4f8] text-[#d3e3fd]"
-                        : "bg-[#18191c] border-[#343840] text-[#9aa0a6]"
+                        ? "bg-[#163826] border-[#163826] text-[#FAF7F2]"
+                        : "bg-white border-[#E7E0D5] text-[#526057]"
                     }`}
                   >
                     🌙 Dark Obsidian
@@ -1152,8 +1152,8 @@ export default function DashboardPage() {
                     onClick={() => setProfile({ ...profile, themePreference: "light" })}
                     className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
                       profile.themePreference === "light"
-                        ? "bg-slate-100 border-blue-500 text-slate-900"
-                        : "bg-[#18191c] border-[#343840] text-[#9aa0a6]"
+                        ? "bg-[#EBF3ED] border-[#163826] text-[#163826] font-bold"
+                        : "bg-white border-[#E7E0D5] text-[#526057]"
                     }`}
                   >
                     ☀️ Clean Light
@@ -1162,10 +1162,10 @@ export default function DashboardPage() {
               </div>
 
               {/* 3D Tilt Enable */}
-              <div className="p-3 rounded-xl bg-[#202227] border border-[#343840]/60 flex items-center justify-between">
+              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-[#f1f3f4]">3D Parallax Rotation</p>
-                  <p className="text-[11px] text-[#9aa0a6]">3D tilt & specular glare on hover</p>
+                  <p className="text-xs font-semibold text-[#14231C]">3D Parallax Rotation</p>
+                  <p className="text-[11px] text-[#526057]">3D tilt & specular glare on hover</p>
                 </div>
                 <input
                   type="checkbox"
@@ -1178,17 +1178,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 2: Visuals (Photo & Cover Banner) */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-5">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <ImageIcon className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-5 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <ImageIcon className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Advocate Profile Photo
               </h2>
             </div>
 
             {/* Profile Photo */}
             <div>
-              <p className="text-xs text-[#9aa0a6] mb-3">
+              <p className="text-xs text-[#526057] mb-3">
                 Upload a professional portrait or passport-style photo. A clean circular portrait is displayed with your Bar Council verification seal.
               </p>
               <div className="flex items-center gap-4">
@@ -1196,10 +1196,10 @@ export default function DashboardPage() {
                   <img
                     src={profile.photoUrl}
                     alt="Advocate Photo"
-                    className="w-16 h-16 rounded-full object-cover border-2 border-[#8ab4f8] shadow-md"
+                    className="w-16 h-16 rounded-full object-cover border-2 border-[#163826] shadow-md"
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-[#202227] border border-[#343840] flex items-center justify-center text-xs text-[#9aa0a6] font-semibold">
+                  <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E7E0D5] flex items-center justify-center text-xs text-[#526057] font-semibold">
                     Initials
                   </div>
                 )}
@@ -1216,9 +1216,9 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => photoFileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#24272c] hover:bg-[#2c3138] text-[#f1f3f4] px-3 py-2 rounded-xl border border-[#343840] transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium bg-[#24272c] hover:bg-[#2c3138] text-[#14231C] px-3 py-2 rounded-xl border border-[#E7E0D5] transition-colors"
                     >
-                      <Camera className="w-3.5 h-3.5 text-[#8ab4f8]" />
+                      <Camera className="w-3.5 h-3.5 text-[#163826]" />
                       Upload Portrait Photo
                     </button>
                     {profile.photoUrl && (
@@ -1236,7 +1236,7 @@ export default function DashboardPage() {
                     value={profile.photoUrl || ""}
                     onChange={(e) => setProfile({ ...profile, photoUrl: e.target.value })}
                     placeholder="Or paste image URL (https://...)"
-                    className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                    className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                   />
                 </div>
               </div>
@@ -1244,16 +1244,16 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 3: About & Bio */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-3">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <FileText className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-3 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <FileText className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Professional Bio (About Section)
               </h2>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+              <label className="block text-xs font-medium text-[#526057] mb-1.5">
                 Chamber Introduction & Practice Overview
               </label>
               <textarea
@@ -1261,19 +1261,19 @@ export default function DashboardPage() {
                 value={profile.bio}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                 placeholder="Write a brief introduction about your chamber, areas of legal expertise, and courtroom advocacy..."
-                className="w-full bg-[#202227] border border-[#343840] rounded-xl p-3.5 text-sm text-[#f1f3f4] leading-relaxed focus:outline-none focus:border-[#8ab4f8]"
+                className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl p-3.5 text-sm text-[#14231C] leading-relaxed focus:outline-none focus:border-[#163826]"
               />
-              <p className="text-[11px] text-[#9aa0a6] mt-1 text-right">
+              <p className="text-[11px] text-[#526057] mt-1 text-right">
                 {profile.bio.length} characters
               </p>
             </div>
           </div>
 
           {/* Section 4: Practice Areas & Courts */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-5">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <Briefcase className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-5 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <Briefcase className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Specialized in Law & Courts
               </h2>
             </div>
@@ -1281,15 +1281,15 @@ export default function DashboardPage() {
             {/* Specializations selection */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-medium text-[#9aa0a6]">
+                <label className="text-xs font-medium text-[#526057]">
                   Select Practice Areas (Click to Toggle)
                 </label>
-                <span className="text-[11px] text-[#8ab4f8] font-semibold">
+                <span className="text-[11px] text-[#163826] font-semibold">
                   {profile.specializations.length} Selected
                 </span>
               </div>
 
-              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-[#202227] rounded-xl border border-[#343840]">
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]">
                 {ALL_SPECIALIZATIONS.map((spec) => {
                   const selected = profile.specializations.includes(spec);
                   return (
@@ -1299,8 +1299,8 @@ export default function DashboardPage() {
                       onClick={() => toggleSpecialization(spec)}
                       className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
                         selected
-                          ? "bg-[#8ab4f8] text-[#0e0e10] font-semibold"
-                          : "bg-[#292c33] text-[#c4c7c5] hover:bg-[#343840]"
+                          ? "bg-[#163826] text-[#FAF7F2] font-semibold"
+                          : "bg-white text-[#526057] border border-[#E7E0D5] hover:border-[#163826]/40 hover:text-[#14231C]"
                       }`}
                     >
                       {selected ? "✓ " : "+ "}
@@ -1318,12 +1318,12 @@ export default function DashboardPage() {
                   onChange={(e) => setCustomTagInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomSpecialization())}
                   placeholder="Add custom practice area (e.g. Armed Forces Tribunal, Insolvency...)"
-                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
                 <button
                   type="button"
                   onClick={addCustomSpecialization}
-                  className="bg-[#24272c] hover:bg-[#2c3138] text-[#8ab4f8] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#343840]"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#E7E0D5]"
                 >
                   Add
                 </button>
@@ -1331,30 +1331,30 @@ export default function DashboardPage() {
             </div>
 
             {/* Courts selection */}
-            <div className="pt-2 border-t border-[#2d3139]/60">
+            <div className="pt-2 border-t border-[#F0ECE4]">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-medium text-[#9aa0a6]">
+                <label className="text-xs font-medium text-[#526057]">
                   Courts of Practice (All High Courts & Tribunals)
                 </label>
-                <span className="text-[11px] text-[#8ab4f8] font-semibold">
+                <span className="text-[11px] text-[#163826] font-semibold">
                   {profile.courts.length} Selected
                 </span>
               </div>
 
               {/* Selected courts badges */}
               {profile.courts.length > 0 && (
-                <div className="mb-2.5 flex flex-wrap gap-1.5 p-2 bg-[#202227] rounded-xl border border-[#343840]/60">
-                  <span className="text-[11px] text-[#9aa0a6] py-1 self-center mr-1">Active:</span>
+                <div className="mb-2.5 flex flex-wrap gap-1.5 p-2 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]/60">
+                  <span className="text-[11px] text-[#526057] py-1 self-center mr-1">Active:</span>
                   {profile.courts.map((court) => (
                     <span
                       key={court}
-                      className="inline-flex items-center gap-1.5 bg-[#8ab4f8] text-[#0e0e10] text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm"
+                      className="inline-flex items-center gap-1.5 bg-[#163826] text-[#FAF7F2] text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm"
                     >
                       {court}
                       <button
                         type="button"
                         onClick={() => toggleCourt(court)}
-                        className="hover:text-rose-900 font-bold ml-0.5"
+                        className="hover:text-rose-600 font-bold ml-0.5"
                         title="Remove Court"
                       >
                         ×
@@ -1371,12 +1371,12 @@ export default function DashboardPage() {
                   value={courtSearch}
                   onChange={(e) => setCourtSearch(e.target.value)}
                   placeholder="🔍 Filter High Courts (e.g. Punjab, Delhi, Bombay, Madras...)"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               {/* Scrollable list of ALL 25 High Courts & Tribunals */}
-              <div className="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto p-2.5 bg-[#202227] rounded-xl border border-[#343840] scrollbar-thin">
+              <div className="flex flex-wrap gap-1.5 max-h-56 overflow-y-auto p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5] scrollbar-thin">
                 {Array.from(new Set([...ALL_COURTS, ...profile.courts]))
                   .filter((court) =>
                     courtSearch.trim()
@@ -1392,8 +1392,8 @@ export default function DashboardPage() {
                         onClick={() => toggleCourt(court)}
                         className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
                           selected
-                            ? "bg-[#8ab4f8] text-[#0e0e10] font-semibold ring-1 ring-[#8ab4f8]"
-                            : "bg-[#292c33] text-[#c4c7c5] hover:bg-[#343840] hover:text-white"
+                            ? "bg-[#163826] text-[#FAF7F2] font-semibold ring-1 ring-[#163826]"
+                            : "bg-white text-[#526057] border border-[#E7E0D5] hover:border-[#163826]/40 hover:text-[#14231C] hover:text-white"
                         }`}
                       >
                         {selected ? "✓ " : "+ "}
@@ -1411,12 +1411,12 @@ export default function DashboardPage() {
                   onChange={(e) => setCustomCourtInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomCourt())}
                   placeholder="Or type custom court (e.g. Patiala House District Court, NCLT...)"
-                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
                 <button
                   type="button"
                   onClick={addCustomCourt}
-                  className="bg-[#24272c] hover:bg-[#2c3138] text-[#8ab4f8] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#343840]"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#E7E0D5]"
                 >
                   Add Court
                 </button>
@@ -1424,21 +1424,21 @@ export default function DashboardPage() {
             </div>
 
             {/* Languages */}
-            <div className="pt-2 border-t border-[#2d3139]/60">
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-2">
+            <div className="pt-2 border-t border-[#F0ECE4]">
+              <label className="block text-xs font-medium text-[#526057] mb-2">
                 Languages Spoken
               </label>
               <div className="flex flex-wrap gap-1.5 mb-2">
                 {profile.languages.map((lang) => (
                   <span
                     key={lang}
-                    className="inline-flex items-center gap-1.5 bg-[#202227] border border-[#343840] text-xs text-[#f1f3f4] px-3 py-1 rounded-lg"
+                    className="inline-flex items-center gap-1.5 bg-[#FAF8F5] border border-[#E7E0D5] text-xs text-[#14231C] px-3 py-1 rounded-lg"
                   >
                     {lang}
                     <button
                       type="button"
                       onClick={() => removeLanguage(lang)}
-                      className="text-[#9aa0a6] hover:text-rose-400"
+                      className="text-[#526057] hover:text-rose-400"
                     >
                       ×
                     </button>
@@ -1452,12 +1452,12 @@ export default function DashboardPage() {
                   onChange={(e) => setCustomLangInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomLanguage())}
                   placeholder="Add language (e.g. Hindi, English, Gujarati...)"
-                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
                 <button
                   type="button"
                   onClick={addCustomLanguage}
-                  className="bg-[#24272c] hover:bg-[#2c3138] text-[#8ab4f8] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#343840]"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-3.5 py-2 rounded-xl text-xs font-semibold border border-[#E7E0D5]"
                 >
                   Add
                 </button>
@@ -1466,17 +1466,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Section: Academic Credentials & Alma Mater */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
               <GraduationCap className="w-4 h-4 text-indigo-400" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Academic Qualifications & Alma Mater
               </h2>
             </div>
 
             {/* Alma Mater / University */}
             <div>
-              <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+              <label className="block text-xs font-medium text-[#526057] mb-1.5">
                 Alma Mater (University / Law Faculty / Law School)
               </label>
               <input
@@ -1484,13 +1484,13 @@ export default function DashboardPage() {
                 value={profile.almaMater || ""}
                 onChange={(e) => setProfile({ ...profile, almaMater: e.target.value })}
                 placeholder="e.g. Department of Laws, Panjab University, Chandigarh / NLSIU Bangalore"
-                className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-indigo-400"
+                className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-indigo-400"
               />
             </div>
 
             {/* Degrees / Qualifications */}
-            <div className="pt-2 border-t border-[#2d3139]/60 space-y-2">
-              <label className="block text-xs font-medium text-[#9aa0a6]">
+            <div className="pt-2 border-t border-[#F0ECE4] space-y-2">
+              <label className="block text-xs font-medium text-[#526057]">
                 Law Degrees & Certifications
               </label>
 
@@ -1500,7 +1500,7 @@ export default function DashboardPage() {
                   {profile.qualifications.map((deg) => (
                     <span
                       key={deg}
-                      className="inline-flex items-center gap-1.5 bg-[#202227] border border-indigo-400/30 text-xs text-indigo-200 px-3 py-1 rounded-lg"
+                      className="inline-flex items-center gap-1.5 bg-[#FAF8F5] border border-indigo-400/30 text-xs text-indigo-200 px-3 py-1 rounded-lg"
                     >
                       <GraduationCap className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
                       {deg}
@@ -1530,12 +1530,12 @@ export default function DashboardPage() {
                     }
                   }}
                   placeholder="Type qualification (e.g. B.A. LL.B. (Hons.), LL.M. Constitutional Law)..."
-                  className="flex-1 bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-xs text-[#f1f3f4] focus:outline-none focus:border-indigo-400 placeholder:text-[#5f6368]"
+                  className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-xs text-[#14231C] focus:outline-none focus:border-indigo-400 placeholder:text-[#8C9890]"
                 />
                 <button
                   type="button"
                   onClick={() => addQualification()}
-                  className="bg-[#242735] hover:bg-[#2c3044] text-indigo-300 px-4 py-2 rounded-xl text-xs font-semibold border border-indigo-400/30 transition-colors shadow-sm"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2 rounded-xl text-xs font-semibold border border-indigo-400/30 transition-colors shadow-sm"
                 >
                   Add Degree
                 </button>
@@ -1543,7 +1543,7 @@ export default function DashboardPage() {
 
               {/* Quick suggestions */}
               <div className="space-y-1">
-                <p className="text-[11px] text-[#9aa0a6]">Popular Degrees (Click to Add):</p>
+                <p className="text-[11px] text-[#526057]">Popular Degrees (Click to Add):</p>
                 <div className="flex flex-wrap gap-1.5">
                   {COMMON_QUALIFICATIONS.map((deg) => {
                     const alreadyAdded = (profile.qualifications || []).includes(deg);
@@ -1555,8 +1555,8 @@ export default function DashboardPage() {
                         onClick={() => addQualification(deg)}
                         className={`text-[11px] px-2.5 py-1 rounded-full border transition-all ${
                           alreadyAdded
-                            ? "bg-[#1c1f26] border-[#2d3139] text-[#5f6368] cursor-default"
-                            : "bg-[#202227] hover:bg-[#282d38] border-[#343840] text-indigo-200/90 hover:border-indigo-400/40"
+                            ? "bg-[#1c1f26] border-[#E7E0D5] text-[#8C9890] cursor-default"
+                            : "bg-white hover:bg-[#F3EFE6] border-[#E7E0D5] text-indigo-200/90 hover:border-indigo-400/40"
                         }`}
                       >
                         {alreadyAdded ? "✓ " : "+ "}
@@ -1570,17 +1570,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 5: Contact Channels & Location */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <Phone className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <Phone className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Chamber Contact & Maps Location
               </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Mobile Number (WhatsApp Enabled)
                 </label>
                 <input
@@ -1588,12 +1588,12 @@ export default function DashboardPage() {
                   value={profile.mobile}
                   onChange={(e) => setProfile({ ...profile, mobile: e.target.value })}
                   placeholder="e.g. +91-98XXXXXXXX"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Chamber Landline / Office Phone (Optional)
                 </label>
                 <input
@@ -1601,12 +1601,12 @@ export default function DashboardPage() {
                   value={profile.officePhone || ""}
                   onChange={(e) => setProfile({ ...profile, officePhone: e.target.value })}
                   placeholder="e.g. 011-XXXXXXXX (Optional)"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Official Email Address
                 </label>
                 <input
@@ -1614,13 +1614,13 @@ export default function DashboardPage() {
                   value={profile.email}
                   onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                   placeholder="e.g. advocate@yourchamber.in"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5 flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-[#8ab4f8]" />
+                <label className="block text-xs font-medium text-[#526057] mb-1.5 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-[#163826]" />
                   <span>Chamber Office Hours & Consultation Policy</span>
                 </label>
                 <input
@@ -1628,15 +1628,15 @@ export default function DashboardPage() {
                   value={profile.chamberHours || ""}
                   onChange={(e) => setProfile({ ...profile, chamberHours: e.target.value })}
                   placeholder="e.g. Mon – Sat: 10:00 AM – 7:30 PM (Consultations by Prior Appointment)"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
-                <p className="text-[11px] text-[#9aa0a6] mt-1">
+                <p className="text-[11px] text-[#526057] mt-1">
                   Displays live availability status on your chamber profile and indexes in Google Search knowledge panels.
                 </p>
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5">
                   Chamber Office Address
                 </label>
                 <textarea
@@ -1644,14 +1644,14 @@ export default function DashboardPage() {
                   value={profile.officeAddress}
                   onChange={(e) => setProfile({ ...profile, officeAddress: e.target.value })}
                   placeholder="e.g. Chamber No. __, Lawyers' Block, Court Complex, City"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl p-3 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl p-3 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div className="sm:col-span-2">
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-medium text-[#9aa0a6] flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[#8ab4f8]" />
+                  <label className="text-xs font-medium text-[#526057] flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-[#163826]" />
                     Google Maps Location Link
                   </label>
                   {profile.mapUrl && (
@@ -1659,7 +1659,7 @@ export default function DashboardPage() {
                       href={profile.mapUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] text-[#8ab4f8] hover:underline flex items-center gap-1"
+                      className="text-[11px] text-[#163826] hover:underline flex items-center gap-1"
                     >
                       <ExternalLink className="w-3 h-3" />
                       Test Link
@@ -1671,16 +1671,16 @@ export default function DashboardPage() {
                   value={profile.mapUrl || ""}
                   onChange={(e) => setProfile({ ...profile, mapUrl: e.target.value })}
                   placeholder="Paste Google Maps share link (e.g. https://maps.app.goo.gl/... or https://maps.google.com/?q=...)"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
-                <p className="text-[11px] text-[#9aa0a6] mt-1.5 leading-relaxed">
-                  💡 <span className="text-[#c4c7c5]">How to get:</span> Open Google Maps on phone or desktop, search your chamber or court complex, tap <strong>Share</strong>, copy the link, and paste it here.
+                <p className="text-[11px] text-[#526057] mt-1.5 leading-relaxed">
+                  💡 <span className="text-[#3F4D45]">How to get:</span> Open Google Maps on phone or desktop, search your chamber or court complex, tap <strong>Share</strong>, copy the link, and paste it here.
                 </p>
               </div>
 
               {/* WhatsApp Consultation Message */}
-              <div className="sm:col-span-2 pt-2 border-t border-[#2d3139]">
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5 flex items-center gap-1.5">
+              <div className="sm:col-span-2 pt-2 border-t border-[#F0ECE4]">
+                <label className="block text-xs font-medium text-[#526057] mb-1.5 flex items-center gap-1.5">
                   <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
                   <span>WhatsApp Consultation Message (Pre-filled for Clients)</span>
                 </label>
@@ -1689,23 +1689,23 @@ export default function DashboardPage() {
                   value={profile.whatsappGreeting || ""}
                   onChange={(e) => setProfile({ ...profile, whatsappGreeting: e.target.value })}
                   placeholder={`e.g. Hello Adv. ${profile.fullName || "Advocate"}, I found your chamber profile on Virtual Chamber and would like to consult regarding a legal matter.`}
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-emerald-500 placeholder:text-[#5f6368]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-emerald-500 placeholder:text-[#8C9890]"
                 />
-                <p className="text-[11px] text-[#9aa0a6] mt-1">
+                <p className="text-[11px] text-[#526057] mt-1">
                   When prospective clients click &quot;WhatsApp Consult&quot; on your profile or floating CTA bar, this message is pre-typed ready to send.
                 </p>
               </div>
 
               {/* Direct vCard Contact Save Action */}
-              <div className="sm:col-span-2 pt-3 border-t border-[#2d3139] flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-xs text-[#9aa0a6]">
+              <div className="sm:col-span-2 pt-3 border-t border-[#F0ECE4] flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-2 text-xs text-[#526057]">
                   <UserPlus className="w-4 h-4 text-emerald-400 shrink-0" />
                   <span>Digital vCard: Saves your full name, chamber mobile, email, and court to the client&apos;s phone.</span>
                 </div>
                 <button
                   type="button"
                   onClick={testVCardDownload}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#202227] hover:bg-[#282d38] text-[#8ab4f8] text-xs font-semibold border border-[#343840] hover:border-[#8ab4f8]/40 transition-colors"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] hover:border-[#163826]/40 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
                   <span>Test vCard (.vcf) Download</span>
@@ -1715,17 +1715,17 @@ export default function DashboardPage() {
           </div>
 
           {/* Section 6: Social Profiles & Web Presence */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[#2d3139]">
-              <Share2 className="w-4 h-4 text-[#8ab4f8]" />
-              <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center gap-2 pb-2 border-b border-[#F0ECE4]">
+              <Share2 className="w-4 h-4 text-[#163826]" />
+              <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                 Social Profiles & Web Presence
               </h2>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1">
+                <label className="block text-xs font-medium text-[#526057] mb-1">
                   Instagram Profile URL
                 </label>
                 <input
@@ -1733,12 +1733,12 @@ export default function DashboardPage() {
                   value={profile.instagramUrl || ""}
                   onChange={(e) => setProfile({ ...profile, instagramUrl: e.target.value })}
                   placeholder="https://instagram.com/advocate_handle"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1">
+                <label className="block text-xs font-medium text-[#526057] mb-1">
                   LinkedIn Profile URL
                 </label>
                 <input
@@ -1746,12 +1746,12 @@ export default function DashboardPage() {
                   value={profile.linkedinUrl || ""}
                   onChange={(e) => setProfile({ ...profile, linkedinUrl: e.target.value })}
                   placeholder="https://linkedin.com/in/advocate_handle"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1">
+                <label className="block text-xs font-medium text-[#526057] mb-1">
                   Twitter / X Profile URL
                 </label>
                 <input
@@ -1759,12 +1759,12 @@ export default function DashboardPage() {
                   value={profile.twitterUrl || ""}
                   onChange={(e) => setProfile({ ...profile, twitterUrl: e.target.value })}
                   placeholder="https://twitter.com/advocate_handle"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1">
+                <label className="block text-xs font-medium text-[#526057] mb-1">
                   Official Website URL
                 </label>
                 <input
@@ -1772,32 +1772,32 @@ export default function DashboardPage() {
                   value={profile.websiteUrl || ""}
                   onChange={(e) => setProfile({ ...profile, websiteUrl: e.target.value })}
                   placeholder="https://mychamber.in"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
             </div>
           </div>
 
           {/* ── Box: Additional Links & Judgments (Dedicated Box) ─────────── */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4 shadow-sm">
-            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
                 <ExternalLink className="w-4 h-4 text-purple-400" />
-                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Additional Links & Judgments
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={addCustomLink}
-                className="inline-flex items-center gap-1.5 bg-[#251f33] hover:bg-[#322847] text-purple-300 text-xs font-semibold px-3 py-1.5 rounded-xl border border-purple-400/30 transition-colors shadow-sm"
+                className="inline-flex items-center gap-1.5 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-semibold px-3 py-1.5 rounded-xl border border-purple-400/30 transition-colors shadow-sm"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add Link / Judgment
               </button>
             </div>
 
-            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+            <p className="text-xs text-[#526057] leading-relaxed">
               Add external case orders, reported judgment citations (e.g. SCC / PLR / DLT), legal articles, or publications.
               <span className="text-amber-300/90 block mt-1 font-medium">
                 🔒 Note: If you do not add any links here, this box remains completely hidden from visitors on your chamber profile.
@@ -1805,8 +1805,8 @@ export default function DashboardPage() {
             </p>
 
             {(!profile.customLinks || profile.customLinks.length === 0) ? (
-              <div className="text-center py-6 border border-dashed border-[#343840] rounded-xl text-xs text-[#9aa0a6] space-y-2 bg-[#202227]/40">
-                <ExternalLink className="w-7 h-7 text-[#5f6368] mx-auto" />
+              <div className="text-center py-6 border border-dashed border-[#E7E0D5] rounded-xl text-xs text-[#526057] space-y-2 bg-[#FAF8F5]/40">
+                <ExternalLink className="w-7 h-7 text-[#8C9890] mx-auto" />
                 <p>No additional links or judgments added yet.</p>
                 <p className="text-[11px] text-[#71767c]">
                   This section is currently hidden from the public.
@@ -1814,7 +1814,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={addCustomLink}
-                  className="text-purple-400 hover:text-purple-300 hover:underline font-medium pt-1 inline-block"
+                  className="text-purple-400 hover:text-[#163826] hover:underline font-medium pt-1 inline-block"
                 >
                   + Add your first case order or judgment link
                 </button>
@@ -1824,10 +1824,10 @@ export default function DashboardPage() {
                 {profile.customLinks.map((link, idx) => (
                   <div
                     key={link.id}
-                    className="bg-[#202227] p-3.5 rounded-xl border border-[#343840] space-y-2.5 shadow-sm"
+                    className="bg-[#FAF8F5] p-3.5 rounded-xl border border-[#E7E0D5] space-y-2.5 shadow-sm"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-purple-300 bg-[#251f33] px-2 py-0.5 rounded border border-purple-400/25">
+                      <span className="text-[11px] font-semibold text-[#163826] bg-[#FAF8F5] px-2 py-0.5 rounded border border-purple-400/25">
                         Link #{idx + 1}
                       </span>
                       <div className="flex items-center gap-2">
@@ -1836,7 +1836,7 @@ export default function DashboardPage() {
                             href={link.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-[11px] text-[#8ab4f8] hover:underline flex items-center gap-1"
+                            className="text-[11px] text-[#163826] hover:underline flex items-center gap-1"
                           >
                             <ExternalLink className="w-3 h-3" />
                             Test
@@ -1855,7 +1855,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-[#9aa0a6] mb-1">
+                      <label className="block text-[11px] text-[#526057] mb-1">
                         Title / Judgment Citation
                       </label>
                       <input
@@ -1863,12 +1863,12 @@ export default function DashboardPage() {
                         value={link.title}
                         onChange={(e) => updateCustomLink(link.id, "title", e.target.value)}
                         placeholder="e.g. Landmark Bail Order 2024 (Supreme Court of India)"
-                        className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-purple-400 placeholder:text-[#5f6368]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-purple-400 placeholder:text-[#8C9890]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] text-[#9aa0a6] mb-1">
+                      <label className="block text-[11px] text-[#526057] mb-1">
                         Target Link / Court Order URL
                       </label>
                       <input
@@ -1876,7 +1876,7 @@ export default function DashboardPage() {
                         value={link.url}
                         onChange={(e) => updateCustomLink(link.id, "url", e.target.value)}
                         placeholder="https://main.sci.gov.in/..."
-                        className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#8ab4f8] focus:outline-none focus:border-purple-400 placeholder:text-[#5f6368]"
+                        className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#163826] focus:outline-none focus:border-purple-400 placeholder:text-[#8C9890]"
                       />
                     </div>
                   </div>
@@ -1886,36 +1886,36 @@ export default function DashboardPage() {
           </div>
 
           {/* Section: Newspaper & Media Coverage Carousel */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
-                <Newspaper className="w-4 h-4 text-[#8ab4f8]" />
-                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                <Newspaper className="w-4 h-4 text-[#163826]" />
+                <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Newspaper & Press Coverage
                 </h2>
               </div>
               <button
                 type="button"
                 onClick={addNewsMedia}
-                className="inline-flex items-center gap-1.5 bg-[#1a2333] hover:bg-[#212c40] text-[#8ab4f8] text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#8ab4f8]/30 transition-colors"
+                className="inline-flex items-center gap-1.5 bg-[#EBF3ED] hover:bg-[#DEECE1] text-[#163826] text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#163826]/30 transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Add News Article
               </button>
             </div>
 
-            <p className="text-xs text-[#9aa0a6]">
+            <p className="text-xs text-[#526057]">
               Showcase newspaper headlines, media coverage, and court reports in an interactive visual carousel on your chamber card.
             </p>
 
             {(!profile.newsMedia || profile.newsMedia.length === 0) ? (
-              <div className="text-center py-6 border border-dashed border-[#343840] rounded-xl text-xs text-[#9aa0a6] space-y-2">
-                <Newspaper className="w-8 h-8 text-[#5f6368] mx-auto" />
+              <div className="text-center py-6 border border-dashed border-[#E7E0D5] rounded-xl text-xs text-[#526057] space-y-2">
+                <Newspaper className="w-8 h-8 text-[#8C9890] mx-auto" />
                 <p>No newspaper articles added yet.</p>
                 <button
                   type="button"
                   onClick={addNewsMedia}
-                  className="text-[#8ab4f8] hover:underline font-medium"
+                  className="text-[#163826] hover:underline font-medium"
                 >
                   + Add your first media mention
                 </button>
@@ -1925,10 +1925,10 @@ export default function DashboardPage() {
                 {profile.newsMedia.map((item, idx) => (
                   <div
                     key={item.id}
-                    className="bg-[#202227] p-3.5 rounded-xl border border-[#343840] space-y-3"
+                    className="bg-[#FAF8F5] p-3.5 rounded-xl border border-[#E7E0D5] space-y-3"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-[#8ab4f8] bg-[#1a2333] px-2 py-0.5 rounded border border-[#8ab4f8]/30">
+                      <span className="text-[11px] font-semibold text-[#163826] bg-[#EBF3ED] px-2 py-0.5 rounded border border-[#163826]/30">
                         Article #{idx + 1}
                       </span>
                       <button
@@ -1943,7 +1943,7 @@ export default function DashboardPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                        <label className="block text-[11px] font-medium text-[#526057] mb-1">
                           Article Title / Headline
                         </label>
                         <input
@@ -1951,12 +1951,12 @@ export default function DashboardPage() {
                           value={item.title}
                           onChange={(e) => updateNewsMedia(item.id, "title", e.target.value)}
                           placeholder="e.g. Swiggy told to pay Rs 2,000..."
-                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                        <label className="block text-[11px] font-medium text-[#526057] mb-1">
                           Publication Name
                         </label>
                         <input
@@ -1964,20 +1964,20 @@ export default function DashboardPage() {
                           value={item.publication || ""}
                           onChange={(e) => updateNewsMedia(item.id, "publication", e.target.value)}
                           placeholder="e.g. The Tribune India, LiveLaw, Times of India"
-                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                         />
                       </div>
 
                       <div className="sm:col-span-2 space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <label className="block text-[11px] font-medium text-[#9aa0a6]">
+                          <label className="block text-[11px] font-medium text-[#526057]">
                             Target Article Link (URL)
                           </label>
                           <button
                             type="button"
                             onClick={() => handleExtractNews(item.id, item.url)}
                             disabled={!item.url || extractingNewsId === item.id}
-                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8ab4f8] hover:text-[#aecbfa] disabled:opacity-40 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#163826] hover:text-[#aecbfa] disabled:opacity-40 transition-colors"
                           >
                             {extractingNewsId === item.id ? (
                               <>
@@ -2002,12 +2002,12 @@ export default function DashboardPage() {
                             }
                           }}
                           placeholder="Paste article link (e.g. https://www.tribuneindia.com/...)"
-                          className="w-full bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#8ab4f8] focus:outline-none focus:border-[#8ab4f8]"
+                          className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#163826] focus:outline-none focus:border-[#163826]"
                         />
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-[11px] font-medium text-[#9aa0a6] mb-1">
+                        <label className="block text-[11px] font-medium text-[#526057] mb-1">
                           Article Clipping Image (Extracted automatically from news link)
                         </label>
                         <div className="flex items-center gap-3">
@@ -2015,7 +2015,7 @@ export default function DashboardPage() {
                             <img
                               src={item.imageUrl}
                               alt="Article thumbnail"
-                              className="w-14 h-14 rounded-xl object-cover border border-[#343840] shrink-0 shadow"
+                              className="w-14 h-14 rounded-xl object-cover border border-[#E7E0D5] shrink-0 shadow"
                             />
                           )}
                           <input
@@ -2023,7 +2023,7 @@ export default function DashboardPage() {
                             value={item.imageUrl || ""}
                             onChange={(e) => updateNewsMedia(item.id, "imageUrl", e.target.value)}
                             placeholder="Image URL extracted automatically from article or custom link..."
-                            className="flex-1 bg-[#18191c] border border-[#343840] rounded-lg px-3 py-2 text-xs text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                            className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-lg px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                           />
                         </div>
                       </div>
@@ -2035,11 +2035,11 @@ export default function DashboardPage() {
           </div>
 
           {/* ── Studio Card: Printable Chamber QR Code & Visiting Card Asset Studio ──── */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
-                <QrCode className="w-4 h-4 text-[#8ab4f8]" />
-                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                <QrCode className="w-4 h-4 text-[#163826]" />
+                <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Printable Chamber QR Code & Visiting Card Asset Studio
                 </h2>
               </div>
@@ -2048,11 +2048,11 @@ export default function DashboardPage() {
               </span>
             </div>
 
-            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+            <p className="text-xs text-[#526057] leading-relaxed">
               Generate an official, high-resolution QR badge for your chamber. Ready to hand directly to your visiting card printing press, print on letterheads, or display in an acrylic standee on your office desk.
             </p>
 
-            <div className="bg-[#202227] p-5 rounded-2xl border border-[#343840] flex flex-col sm:flex-row items-center gap-5">
+            <div className="bg-[#FAF8F5] p-5 rounded-2xl border border-[#E7E0D5] flex flex-col sm:flex-row items-center gap-5">
               {/* High Contrast QR Code Canvas */}
               <div className="p-4 bg-white rounded-2xl shadow-xl border border-slate-200 shrink-0 flex flex-col items-center text-center">
                 <QRCodeSVG
@@ -2070,13 +2070,13 @@ export default function DashboardPage() {
 
               <div className="flex-1 space-y-3 text-center sm:text-left">
                 <div>
-                  <h4 className="text-sm font-bold text-[#f1f3f4]">
+                  <h4 className="text-sm font-bold text-[#14231C]">
                     {profile.fullName || "Advocate"}
                   </h4>
-                  <p className="text-xs text-[#9aa0a6]">
+                  <p className="text-xs text-[#526057]">
                     Bar Council: {profile.enrollmentNo || "Registered Advocate"}
                   </p>
-                  <p className="text-[11px] text-[#8ab4f8] font-mono mt-0.5 truncate max-w-[280px]">
+                  <p className="text-[11px] text-[#163826] font-mono mt-0.5 truncate max-w-[280px]">
                     {publicUrl}
                   </p>
                 </div>
@@ -2085,7 +2085,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={downloadDashboardQrPng}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold text-xs shadow-md transition-all active:scale-95"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#163826] hover:bg-[#1E4A33] text-[#0e0e10] font-bold text-xs shadow-md transition-all active:scale-95"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download High-Res PNG</span>
@@ -2094,7 +2094,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={copyPublicLink}
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#202227] hover:bg-[#282d38] text-[#f1f3f4] text-xs font-semibold border border-[#343840] transition-colors"
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-[#F3EFE6] text-[#14231C] text-xs font-semibold border border-[#E7E0D5] transition-colors"
                   >
                     {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                     <span>{copied ? "Link Copied!" : "Copy Link"}</span>
@@ -2109,11 +2109,11 @@ export default function DashboardPage() {
           </div>
 
           {/* ── Studio Card: Google Knowledge Panel & Legal SEO Simulator ───────────── */}
-          <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-[#2d3139]/80 space-y-4">
-            <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
+          <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-[#8ab4f8]" />
-                <h2 className="text-sm font-semibold text-[#f1f3f4] uppercase tracking-wider">
+                <Search className="w-4 h-4 text-[#163826]" />
+                <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Google Knowledge Panel & Legal SEO Simulator
                 </h2>
               </div>
@@ -2123,29 +2123,29 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <p className="text-xs text-[#9aa0a6] leading-relaxed">
+            <p className="text-xs text-[#526057] leading-relaxed">
               Search engines use your chamber data to generate structured Knowledge Panels and Rich Sitelinks. Here is a live simulation of how your profile appears on Google Search:
             </p>
 
             {/* Google Search Result Mockup */}
-            <div className="bg-[#202227] p-4 sm:p-5 rounded-2xl border border-[#343840] space-y-3">
-              <div className="text-[11px] font-semibold text-[#9aa0a6] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-[#2d3139]">
-                <Globe className="w-3.5 h-3.5 text-[#8ab4f8]" />
+            <div className="bg-[#FAF8F5] p-4 sm:p-5 rounded-2xl border border-[#E7E0D5] space-y-3">
+              <div className="text-[11px] font-semibold text-[#526057] uppercase tracking-wider flex items-center gap-1.5 pb-2 border-b border-[#F0ECE4]">
+                <Globe className="w-3.5 h-3.5 text-[#163826]" />
                 <span>Google Search Result Snippet Preview</span>
               </div>
 
               {/* URL Breadcrumb */}
-              <div className="flex items-center gap-1.5 text-xs text-[#9aa0a6]">
+              <div className="flex items-center gap-1.5 text-xs text-[#526057]">
                 <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-[9px] font-bold text-black">
                   ⚖
                 </div>
                 <span className="text-[#dadce0] font-medium">Virtual Chamber</span>
                 <span>›</span>
-                <span className="text-[#9aa0a6] font-mono text-[11px]">my-chamber.vercel.app › {profile.slug || "advocate"}</span>
+                <span className="text-[#526057] font-mono text-[11px]">my-chamber.vercel.app › {profile.slug || "advocate"}</span>
               </div>
 
               {/* Blue Title Link */}
-              <h3 className="text-base sm:text-lg font-medium text-[#8ab4f8] hover:underline cursor-pointer">
+              <h3 className="text-base sm:text-lg font-medium text-[#163826] hover:underline cursor-pointer">
                 {profile.fullName || "Advocate"} | Virtual Chamber Profile
               </h3>
 
@@ -2162,42 +2162,42 @@ export default function DashboardPage() {
                   { label: "Chamber Contacts", desc: profile.mobile || "WhatsApp & Call" },
                   { label: "Bar Enrollment", desc: profile.enrollmentNo || "Bar Council" },
                 ].map((site, i) => (
-                  <div key={i} className="bg-[#18191c] p-2.5 rounded-xl border border-[#343840]/60 space-y-0.5">
-                    <p className="text-xs font-semibold text-[#8ab4f8] hover:underline cursor-pointer truncate">
+                  <div key={i} className="bg-[#FAF8F5] p-2.5 rounded-xl border border-[#E7E0D5]/60 space-y-0.5">
+                    <p className="text-xs font-semibold text-[#163826] hover:underline cursor-pointer truncate">
                       {site.label}
                     </p>
-                    <p className="text-[10px] text-[#9aa0a6] truncate">{site.desc}</p>
+                    <p className="text-[10px] text-[#526057] truncate">{site.desc}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Knowledge Panel Highlights */}
-            <div className="bg-[#18191c] p-4 rounded-xl border border-[#343840] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="bg-[#FAF8F5] p-4 rounded-2xl border border-[#E7E0D5] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div className="space-y-1">
-                <span className="text-[11px] text-[#9aa0a6]">LegalService Schema Type:</span>
-                <p className="font-mono text-[#8ab4f8] text-[11px]">Attorney, LegalService</p>
+                <span className="text-[11px] text-[#526057]">LegalService Schema Type:</span>
+                <p className="font-mono text-[#163826] text-[11px]">Attorney, LegalService</p>
               </div>
               <div className="space-y-1">
-                <span className="text-[11px] text-[#9aa0a6]">Bar Council Index:</span>
+                <span className="text-[11px] text-[#526057]">Bar Council Index:</span>
                 <p className="font-semibold text-emerald-400">{profile.enrollmentNo || "Not specified"}</p>
               </div>
               <div className="space-y-1">
-                <span className="text-[11px] text-[#9aa0a6]">Jurisdiction / Courts:</span>
+                <span className="text-[11px] text-[#526057]">Jurisdiction / Courts:</span>
                 <p className="font-semibold text-[#dadce0] truncate">{profile.courts?.join(", ") || "High Court"}</p>
               </div>
             </div>
           </div>
 
           {/* Bottom Save Bar */}
-          <div className="sticky bottom-4 z-20 bg-[#18191c]/95 backdrop-blur-md p-4 rounded-2xl border border-[#2d3139] flex items-center justify-between shadow-2xl">
-            <span className="text-xs text-[#9aa0a6]">
+          <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md p-4 rounded-3xl border border-[#E7E0D5] flex items-center justify-between shadow-lg">
+            <span className="text-xs text-[#526057]">
               {savedStatus === "saved" ? "✓ All changes saved" : "Unsaved changes ready"}
             </span>
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-1.5"
+                className="bg-[#163826] hover:bg-[#1E4A33] text-[#0e0e10] font-bold text-xs px-5 py-2.5 rounded-xl shadow-md transition-all flex items-center gap-1.5"
               >
                 <Save className="w-4 h-4" />
                 Save & Update Profile
@@ -2211,17 +2211,17 @@ export default function DashboardPage() {
         <div className={`lg:col-span-5 lg:sticky lg:top-20 space-y-3 ${activeTab === "edit" ? "hidden lg:block" : "block"}`}>
           
           {/* Preview Controls Header */}
-          <div className="flex items-center justify-between bg-[#18191c] px-4 py-2.5 rounded-2xl border border-[#2d3139]">
+          <div className="flex items-center justify-between bg-white px-5 py-3 rounded-2xl border border-[#E7E0D5] shadow-sm">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-semibold text-[#f1f3f4]">Live Chamber Preview</span>
+              <span className="text-xs font-semibold text-[#14231C]">Live Chamber Preview</span>
             </div>
 
-            <div className="flex items-center gap-1 bg-[#202227] p-1 rounded-lg border border-[#343840]">
+            <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-lg border border-[#E7E0D5]">
               <button
                 onClick={() => setPreviewDevice("mobile")}
                 className={`p-1.5 rounded-md text-xs transition-colors ${
-                  previewDevice === "mobile" ? "bg-[#8ab4f8] text-[#0e0e10]" : "text-[#9aa0a6]"
+                  previewDevice === "mobile" ? "bg-[#163826] text-[#FAF7F2]" : "text-[#526057]"
                 }`}
                 title="Mobile View"
               >
@@ -2230,7 +2230,7 @@ export default function DashboardPage() {
               <button
                 onClick={() => setPreviewDevice("desktop")}
                 className={`p-1.5 rounded-md text-xs transition-colors ${
-                  previewDevice === "desktop" ? "bg-[#8ab4f8] text-[#0e0e10]" : "text-[#9aa0a6]"
+                  previewDevice === "desktop" ? "bg-[#163826] text-[#FAF7F2]" : "text-[#526057]"
                 }`}
                 title="Full Width View"
               >
@@ -2241,8 +2241,8 @@ export default function DashboardPage() {
 
           {/* Frame Container */}
           <div
-            className={`mx-auto transition-all duration-300 rounded-3xl overflow-hidden border border-[#2d3139] shadow-2xl ${
-              previewDevice === "mobile" ? "max-w-[420px] ring-8 ring-[#18191c]" : "w-full"
+            className={`mx-auto transition-all duration-300 rounded-3xl overflow-hidden border border-[#E7E0D5] shadow-2xl ${
+              previewDevice === "mobile" ? "max-w-[420px] ring-8 ring-white shadow-2xl" : "w-full"
             }`}
           >
             <div className="max-h-[800px] overflow-y-auto scrollbar-thin">
@@ -2259,8 +2259,8 @@ export default function DashboardPage() {
 
       {/* ── Chamber Ownership Dispute & Bar Council Claim Modal ───────────────── */}
       {showClaimModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-          <div className="relative w-full max-w-lg rounded-3xl p-6 sm:p-7 border border-[#343840] bg-[#18191c] text-[#f1f3f4] shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-lg rounded-3xl p-6 sm:p-7 border border-[#E7E0D5] bg-white text-[#14231C] shadow-2xl space-y-4">
             {/* Close button */}
             <button
               onClick={() => setShowClaimModal(false)}
@@ -2276,7 +2276,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-bold">Claim Chamber Ownership</h3>
-                <p className="text-xs text-[#9aa0a6]">
+                <p className="text-xs text-[#526057]">
                   Dispute review for Bar Council No:{" "}
                   <span className="text-amber-400 font-mono font-bold">
                     {profile.enrollmentNo || "N/A"}
@@ -2286,12 +2286,12 @@ export default function DashboardPage() {
             </div>
 
             {claimStatus === "success" ? (
-              <div className="bg-[#202227] border border-emerald-500/40 p-5 rounded-2xl text-center space-y-3">
+              <div className="bg-[#FAF8F5] border border-emerald-500/40 p-5 rounded-2xl text-center space-y-3">
                 <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto">
                   <Check className="w-6 h-6 stroke-[2.5]" />
                 </div>
                 <h4 className="text-sm font-bold text-emerald-300">Ownership Claim Submitted</h4>
-                <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                <p className="text-xs text-[#3F4D45] leading-relaxed">
                   Your claim for Bar Council No.{" "}
                   <strong className="text-white font-mono">{profile.enrollmentNo}</strong> has been logged.
                   Our verification desk will review the official State Bar Council roll and release the
@@ -2307,7 +2307,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <form onSubmit={handleClaimSubmit} className="space-y-3.5">
-                <p className="text-xs text-[#c4c7c5] leading-relaxed">
+                <p className="text-xs text-[#3F4D45] leading-relaxed">
                   If another advocate entered your Bar Council number by mistake or you are the legitimate
                   holder, submit your contact information and ID proof. We will verify and reassign the chamber
                   to your account.
@@ -2315,7 +2315,7 @@ export default function DashboardPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    <label className="block text-[11px] font-semibold text-[#526057] mb-1">
                       Advocate Full Name
                     </label>
                     <input
@@ -2324,11 +2324,11 @@ export default function DashboardPage() {
                       value={profile.fullName}
                       onChange={(e) => setProfile({ ...profile, fullName: e.target.value })}
                       placeholder="Your official name on Bar roll"
-                      className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                      className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#163826]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                    <label className="block text-[11px] font-semibold text-[#526057] mb-1">
                       Official Email Address
                     </label>
                     <input
@@ -2337,13 +2337,13 @@ export default function DashboardPage() {
                       value={profile.email}
                       onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                       placeholder="your.email@gmail.com"
-                      className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                      className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#163826]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                  <label className="block text-[11px] font-semibold text-[#526057] mb-1">
                     Mobile / WhatsApp Number
                   </label>
                   <input
@@ -2352,12 +2352,12 @@ export default function DashboardPage() {
                     value={profile.mobile}
                     onChange={(e) => setProfile({ ...profile, mobile: e.target.value })}
                     placeholder="+91-98XXXXXXXX"
-                    className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                    className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#163826]"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                  <label className="block text-[11px] font-semibold text-[#526057] mb-1">
                     Upload Bar Council ID or Enrollment Certificate (Proof)
                   </label>
                   <input
@@ -2371,7 +2371,7 @@ export default function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => claimProofFileInputRef.current?.click()}
-                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#202227] hover:bg-[#282a30] text-[#8ab4f8] text-xs font-semibold border border-[#343840] transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] transition-colors"
                     >
                       <Upload className="w-3.5 h-3.5" />
                       <span>{claimProofUrl ? "Change Proof Photo" : "Upload ID Proof"}</span>
@@ -2383,7 +2383,7 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-semibold text-[#9aa0a6] mb-1">
+                  <label className="block text-[11px] font-semibold text-[#526057] mb-1">
                     Explanation / Additional Notes (Optional)
                   </label>
                   <textarea
@@ -2391,7 +2391,7 @@ export default function DashboardPage() {
                     value={claimNotes}
                     onChange={(e) => setClaimNotes(e.target.value)}
                     placeholder="e.g. Enrolled with Punjab and Haryana Bar Council in 2025. Please release this registration."
-                    className="w-full bg-[#202227] border border-[#343840] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#8ab4f8]"
+                    className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-[#163826]"
                   />
                 </div>
 
@@ -2399,7 +2399,7 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setShowClaimModal(false)}
-                    className="px-4 py-2 rounded-xl text-xs text-[#9aa0a6] hover:text-white transition-colors"
+                    className="px-4 py-2 rounded-xl text-xs text-[#526057] hover:text-white transition-colors"
                   >
                     Cancel
                   </button>
