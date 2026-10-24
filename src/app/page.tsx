@@ -32,6 +32,9 @@ import {
   Mail,
   Download,
   MessageCircle,
+  Briefcase,
+  Layers,
+  Sparkle,
 } from "lucide-react";
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -47,6 +50,7 @@ export default function Home() {
   const [handleInput, setHandleInput] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [activeAdvocate, setActiveAdvocate] = useState<"vikrant" | "ananya">("vikrant");
 
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +85,9 @@ export default function Home() {
 
           {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-7 text-[13.5px] font-semibold text-[#526057]">
+            <a href="#showcase" className="hover:text-[#14231C] transition-colors">
+              Chambers 3D
+            </a>
             <a href="#features" className="hover:text-[#14231C] transition-colors">
               Features
             </a>
@@ -90,9 +97,6 @@ export default function Home() {
             <Link href="/find" className="hover:text-[#14231C] transition-colors">
               Find Advocate
             </Link>
-            <a href="#how-it-works" className="hover:text-[#14231C] transition-colors">
-              How It Works
-            </a>
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#EBF3ED] text-[#163826] text-[11px] font-bold">
               100% Free
             </span>
@@ -127,20 +131,27 @@ export default function Home() {
         {/* Mobile dropdown */}
         {mobileMenuOpen && (
           <div className="md:hidden mt-2 bg-white border border-[#E7E0D5] rounded-3xl p-5 shadow-xl flex flex-col gap-3">
-            <Link
+            <a
+              href="#showcase"
+              onClick={() => setMobileMenuOpen(false)}
+              className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
+            >
+              Chambers 3D
+            </a>
+            <a
               href="#features"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
             >
               Features
-            </Link>
-            <Link
+            </a>
+            <a
               href="#qr-studio"
               onClick={() => setMobileMenuOpen(false)}
               className="text-sm font-semibold text-[#3F4D45] py-2 border-b border-[#F0ECE4]"
             >
               QR Code Studio
-            </Link>
+            </a>
             <Link
               href="/find"
               onClick={() => setMobileMenuOpen(false)}
@@ -167,7 +178,7 @@ export default function Home() {
       </header>
 
       {/* ── 2. Split Hero Section (Linktree Signature Layout) ────────────────── */}
-      <section className="pt-10 sm:pt-16 pb-16 px-4 sm:px-6 max-w-6xl mx-auto">
+      <section className="pt-10 sm:pt-16 pb-14 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
           
           {/* Left Hero Column */}
@@ -381,7 +392,257 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 4. Bento Feature Grid ───────────────────────────────────────────── */}
+      {/* ── 4. Signature 3D Rotating Cards Section (Linktree Showcase) ──────── */}
+      <section id="showcase" className="py-20 px-4 sm:px-6 bg-[#1746B3] text-white relative overflow-hidden">
+        {/* Ambient background glow & decorative blur */}
+        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-[#2B60DD]/50 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#0F2E78]/60 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          
+          {/* Advocate Toggle Switcher */}
+          <div className="flex items-center justify-center mb-10">
+            <div className="inline-flex p-1.5 rounded-full bg-[#0D2970]/70 border border-white/20 backdrop-blur-md shadow-lg">
+              <button
+                onClick={() => setActiveAdvocate("vikrant")}
+                className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
+                  activeAdvocate === "vikrant"
+                    ? "bg-[#D2E823] text-[#0D2970] shadow-md scale-100"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                <Scale className="w-3.5 h-3.5" />
+                <span>Adv. Vikrant Sharma (Supreme Court)</span>
+              </button>
+
+              <button
+                onClick={() => setActiveAdvocate("ananya")}
+                className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all ${
+                  activeAdvocate === "ananya"
+                    ? "bg-[#D2E823] text-[#0D2970] shadow-md scale-100"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                <Briefcase className="w-3.5 h-3.5" />
+                <span>Adv. Ananya Deshmukh (Bombay High Court)</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* ── LEFT COLUMN: 3D Rotating & Floating Card System ── */}
+            <div className="lg:col-span-6 flex justify-center items-center py-6">
+              <div className="relative w-full max-w-[360px] sm:max-w-[420px] h-[520px] flex items-center justify-center">
+                
+                {/* Decorative 3D Floating Legal Prop (Gavel & Stand in Perspective) */}
+                <div className="absolute -top-4 -left-6 z-0 opacity-80 pointer-events-none drop-shadow-2xl">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#E6D5B8] to-[#8C734B] flex items-center justify-center text-[#1C160C] font-black shadow-2xl rotate-[-18deg] border-2 border-white/40">
+                    <Gavel className="w-10 h-10 text-[#2B1F11]" />
+                  </div>
+                </div>
+
+                {/* 3D Tilted & Floating Main Profile Container */}
+                <div className="relative w-[280px] sm:w-[310px] animate-float-3d">
+                  
+                  {/* MAIN BACK CARD */}
+                  <div
+                    className={`relative rounded-[38px] p-6 text-white shadow-2xl border-2 transition-all duration-500 overflow-hidden ${
+                      activeAdvocate === "vikrant"
+                        ? "bg-gradient-to-b from-[#132B1F] via-[#0E2017] to-[#08140E] border-[#2C6246]/60 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+                        : "bg-gradient-to-b from-[#8C2433] via-[#6B1724] to-[#450C15] border-[#FF8A9B]/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)]"
+                    }`}
+                  >
+                    {/* Top Status & Court Bar */}
+                    <div className="flex items-center justify-between pb-4 border-b border-white/10">
+                      <div className="flex items-center gap-1.5">
+                        <Scale className="w-4 h-4 text-[#D2E823]" />
+                        <span className="text-[11px] font-bold tracking-wider uppercase text-white/90">
+                          {activeAdvocate === "vikrant"
+                            ? "Supreme Court of India"
+                            : "Bombay High Court & NCLT"}
+                        </span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-full bg-white/15 text-[10px] font-mono font-bold text-white">
+                        {activeAdvocate === "vikrant" ? "D/1245/2018" : "MAH/5621/2019"}
+                      </span>
+                    </div>
+
+                    {/* Advocate Visual Cutout / Headshot */}
+                    <div className="pt-4 text-center space-y-2">
+                      <div className="relative w-28 h-28 mx-auto">
+                        <div
+                          className={`w-full h-full rounded-3xl p-1 shadow-xl flex items-center justify-center transition-all ${
+                            activeAdvocate === "vikrant"
+                              ? "bg-gradient-to-tr from-[#D2E823] to-[#163826]"
+                              : "bg-gradient-to-tr from-[#FFD2A6] to-[#8C2433]"
+                          }`}
+                        >
+                          <div className="w-full h-full rounded-[22px] bg-[#0A0D0B] flex flex-col items-center justify-center text-white overflow-hidden relative">
+                            {/* Legal Robe Band Graphic */}
+                            <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
+                            <span className="font-black text-2xl tracking-wider pt-2">
+                              {activeAdvocate === "vikrant" ? "VS" : "AD"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Verified Pill Badge */}
+                        <div className="absolute -bottom-1 -right-1 bg-[#D2E823] text-black font-extrabold p-1 rounded-full shadow-lg border border-white">
+                          <BadgeCheck className="w-4 h-4" />
+                        </div>
+                      </div>
+
+                      {/* Giant Stylized Name (Linktree Hero Style) */}
+                      <div className="pt-1">
+                        <h3 className="text-3xl font-black tracking-tight uppercase leading-none drop-shadow-md">
+                          {activeAdvocate === "vikrant" ? "VIKRANT" : "ANANYA"}
+                        </h3>
+                        <p className="text-xs font-semibold text-white/80 mt-1">
+                          {activeAdvocate === "vikrant"
+                            ? "Adv. Vikrant Sharma"
+                            : "Adv. Ananya Deshmukh"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Stacked Linktree-style Pill Buttons */}
+                    <div className="space-y-2 pt-4 pb-2">
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 cursor-pointer shadow-sm">
+                        {activeAdvocate === "vikrant"
+                          ? "⚖️ Criminal Writs & Bail Matters"
+                          : "📊 IBC Restructuring & NCLT Appeals"}
+                      </div>
+                      <div className="w-full bg-white/15 backdrop-blur-md rounded-2xl py-2.5 px-3.5 text-center text-xs font-bold hover:bg-white/20 transition-all border border-white/15 cursor-pointer shadow-sm">
+                        {activeAdvocate === "vikrant"
+                          ? "🏛️ Chamber 402, Supreme Court"
+                          : "🏛️ Chamber 18, High Court Fort"}
+                      </div>
+                      <div className="w-full bg-[#D2E823] text-[#0E1B13] rounded-2xl py-2.5 px-3.5 text-center text-xs font-black shadow-md cursor-pointer hover:bg-[#b8cc1c] transition-all">
+                        📇 Save Direct Contact (.vcf)
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── POPPING OUT FRONT FLOATING CARD (3D Overlap) ── */}
+                  <div className="absolute -bottom-10 -left-10 sm:-left-12 w-[220px] sm:w-[240px] z-30 animate-pop-card">
+                    <div className="rounded-3xl bg-white text-[#14231C] p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/80 space-y-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                          <FileText className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-black uppercase tracking-wider text-[#163826]">
+                            {activeAdvocate === "vikrant" ? "Case Milestone" : "Legal Advisory"}
+                          </div>
+                          <div className="text-xs font-extrabold leading-tight text-[#14231C]">
+                            {activeAdvocate === "vikrant"
+                              ? "Supreme Court SLP"
+                              : "Arbitration Brief"}
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-[10px] text-[#526057] leading-snug">
+                        {activeAdvocate === "vikrant"
+                          ? "Quashing of Criminal Proceedings under Sec 482 CrPC"
+                          : "Cross-Border Commercial Dispute & Retainer Guidance"}
+                      </p>
+
+                      <div className="w-full bg-[#163826] text-white py-2 px-3 rounded-xl text-center text-[10px] font-bold shadow-sm">
+                        {activeAdvocate === "vikrant" ? "Download Briefing Note" : "Book Advisory Session"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* ── FLOATING 3D ACTION ICONS ON RIGHT (Stacked Pills) ── */}
+                  <div className="absolute top-16 -right-6 sm:-right-8 flex flex-col gap-2.5 z-20 animate-side-icons">
+                    {/* WhatsApp */}
+                    <div className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                      <WhatsAppIcon className="w-5 h-5 text-white" />
+                    </div>
+
+                    {/* Direct Call */}
+                    <div className="w-10 h-10 rounded-full bg-[#0F2E78] text-white flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                      <Phone className="w-4 h-4" />
+                    </div>
+
+                    {/* QR Code */}
+                    <div className="w-10 h-10 rounded-full bg-[#D2E823] text-black flex items-center justify-center shadow-xl border-2 border-white cursor-pointer hover:scale-110 transition-transform">
+                      <QrCode className="w-4 h-4" />
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            {/* ── RIGHT COLUMN: High-Impact Typography & Action ── */}
+            <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+              <h2 className="text-4xl sm:text-6xl md:text-[64px] font-black tracking-tight leading-[1.05] text-[#D2E823]">
+                Create and customize your chamber in minutes
+              </h2>
+
+              <p className="text-base sm:text-lg text-white/90 leading-relaxed font-normal max-w-xl mx-auto lg:mx-0">
+                Connect all your legal credentials across courts, chambers, phonebook vCard, and direct client consultations in one verified link in bio. Customize practice areas, consultation greetings, and visiting card QR codes to match your prestigious practice.
+              </p>
+
+              {/* Bullet Features */}
+              <div className="space-y-3 pt-2 text-left max-w-md mx-auto lg:mx-0">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#D2E823] text-[#0D2970] flex items-center justify-center font-black mt-0.5 shrink-0">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  </div>
+                  <span className="text-sm font-semibold text-white/95">
+                    <strong>1-Tap Direct vCard:</strong> Clients save your mobile and chamber office straight into their phone contact list.
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#D2E823] text-[#0D2970] flex items-center justify-center font-black mt-0.5 shrink-0">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  </div>
+                  <span className="text-sm font-semibold text-white/95">
+                    <strong>High-Resolution QR Studio:</strong> 1000×1200 print-ready QR codes for desk acrylic displays and physical visiting cards.
+                  </span>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#D2E823] text-[#0D2970] flex items-center justify-center font-black mt-0.5 shrink-0">
+                    <Check className="w-3.5 h-3.5 stroke-[3]" />
+                  </div>
+                  <span className="text-sm font-semibold text-white/95">
+                    <strong>Bar Council Anti-Duplicate Guarantee:</strong> Strictly 1 profile per advocate enrollment number with dispute resolution.
+                  </span>
+                </div>
+              </div>
+
+              {/* Big Punchy Action Button */}
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                <Link
+                  href="/login"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#D2E823] hover:bg-[#b8cc1c] text-[#0D2970] font-black text-base px-9 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all hover:-translate-y-0.5 active:scale-95"
+                >
+                  <span>Get started for free</span>
+                  <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+                </Link>
+
+                <Link
+                  href="/find"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-bold text-sm px-6 py-4 rounded-full border border-white/20 transition-colors"
+                >
+                  <span>Explore Advocate Chambers</span>
+                  <ExternalLink className="w-4 h-4 text-white/70" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── 5. Bento Feature Grid ───────────────────────────────────────────── */}
       <section id="features" className="py-20 px-4 sm:px-6 max-w-6xl mx-auto">
         <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
           <span className="text-xs font-bold uppercase tracking-widest text-[#163826] bg-[#EBF3ED] px-3 py-1 rounded-full">
@@ -514,7 +775,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 5. How It Works (3 Steps) ───────────────────────────────────────── */}
+      {/* ── 6. How It Works (3 Steps) ───────────────────────────────────────── */}
       <section id="how-it-works" className="py-16 px-4 sm:px-6 bg-white border-y border-[#EAE3D6]">
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center max-w-xl mx-auto space-y-2">
@@ -560,7 +821,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 6. Bottom Banner CTA (Linktree style) ───────────────────────────── */}
+      {/* ── 7. Bottom Banner CTA (Linktree style) ───────────────────────────── */}
       <section className="py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto rounded-[36px] bg-[#163826] p-8 sm:p-14 text-center space-y-6 shadow-xl text-[#FAF7F2]">
           <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-white mx-auto">
@@ -594,7 +855,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 7. Clean Luxury Legal Footer ────────────────────────────────────── */}
+      {/* ── 8. Clean Luxury Legal Footer ────────────────────────────────────── */}
       <footer className="border-t border-[#EAE3D6] py-10 px-4 sm:px-6 bg-[#F4EFEA] text-center space-y-3">
         <div className="flex items-center justify-center gap-2 text-sm font-bold text-[#14231C]">
           <div className="w-6 h-6 rounded-full bg-[#163826] flex items-center justify-center text-white">

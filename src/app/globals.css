@@ -38,3 +38,54 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #3f444d;
 }
+
+/* 3D Floating Perspective Animations for Linktree-Style Showcase */
+@keyframes float3D {
+  0% {
+    transform: perspective(1200px) rotateY(-18deg) rotateX(9deg) rotateZ(3deg) translateY(0px);
+  }
+  50% {
+    transform: perspective(1200px) rotateY(-10deg) rotateX(5deg) rotateZ(1deg) translateY(-14px);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(-20deg) rotateX(11deg) rotateZ(4deg) translateY(6px);
+  }
+}
+
+@keyframes popCardFloat {
+  0% {
+    transform: translateZ(55px) translateY(0px) rotate(-2deg);
+  }
+  50% {
+    transform: translateZ(68px) translateY(-10px) rotate(0deg);
+  }
+  100% {
+    transform: translateZ(50px) translateY(6px) rotate(-3deg);
+  }
+}
+
+@keyframes sideIconsFloat {
+  0% {
+    transform: translateZ(40px) translateY(0px);
+  }
+  50% {
+    transform: translateZ(52px) translateY(-8px);
+  }
+  100% {
+    transform: translateZ(36px) translateY(6px);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 7s ease-in-out infinite alternate;
+  transform-style: preserve-3d;
+}
+
+.animate-pop-card {
+  animation: popCardFloat 6s ease-in-out infinite alternate;
+}
+
+.animate-side-icons {
+  animation: sideIconsFloat 5s ease-in-out infinite alternate;
+}
+
