@@ -110,49 +110,43 @@ body {
   will-change: transform;
 }
 
-/* ── Linktree Dual-Card 360 Flip Loop (Pure CSS 60fps) ───────────── */
-@keyframes linktree360Loop {
-  0%, 40% {
-    /* Card 1 (Vikrant) rests in 3D perspective */
-    transform: perspective(1200px) rotateX(6deg) rotateY(-16deg);
+/* ── 2 Advocate Cards 360° Rotation System ───────────── */
+@keyframes spin360Full {
+  0%, 65% {
+    transform: perspective(1200px) rotateX(6deg) rotateY(-12deg);
   }
-  48% {
-    /* Rapid, smooth 360 flip transition */
-    transform: perspective(1200px) rotateX(1deg) rotateY(164deg) scale(0.92);
-  }
-  50%, 90% {
-    /* Card 2 (Ananya) rests in 3D perspective */
-    transform: perspective(1200px) rotateX(6deg) rotateY(164deg);
-  }
-  98% {
-    /* Rapid, smooth 360 flip back */
-    transform: perspective(1200px) rotateX(1deg) rotateY(344deg) scale(0.92);
+  85% {
+    transform: perspective(1200px) rotateX(2deg) rotateY(168deg) scale(0.96);
   }
   100% {
-    /* Seamless wrap around to 0% */
-    transform: perspective(1200px) rotateX(6deg) rotateY(344deg);
+    transform: perspective(1200px) rotateX(6deg) rotateY(348deg);
   }
 }
 
-.animate-linktree-360 {
-  animation: linktree360Loop 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.animate-card-spin-1 {
+  animation: spin360Full 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   transform-style: preserve-3d;
-  will-change: transform;
 }
 
-.card-face-front {
-  transform: rotateY(0deg) translateZ(2px);
+.animate-card-spin-2 {
+  animation: spin360Full 8s cubic-bezier(0.4, 0, 0.2, 1) infinite 4s;
+  transform-style: preserve-3d;
+}
+
+.card-face-front-side {
+  transform: rotateY(0deg) translateZ(1px);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-.card-face-back {
-  transform: rotateY(180deg) translateZ(2px);
+.card-face-back-side {
+  transform: rotateY(180deg) translateZ(1px);
   transform-style: preserve-3d;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
+
 
 
 
