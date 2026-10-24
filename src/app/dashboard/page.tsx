@@ -55,6 +55,7 @@ import {
   UserPlus,
   MessageSquare,
   CheckCircle2,
+  AlertCircle,
   LogOut,
 } from "lucide-react";
 
@@ -63,6 +64,7 @@ const STORAGE_KEY = "virtual_chamber_advocate_profile";
 export default function DashboardPage() {
   const [profile, setProfile] = useState<Advocate>(EMPTY_ADVOCATE);
   const [savedStatus, setSavedStatus] = useState<"idle" | "saved">("idle");
+  const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"edit" | "preview">("edit");
   const [previewDevice, setPreviewDevice] = useState<"mobile" | "desktop">("mobile");
@@ -88,24 +90,41 @@ export default function DashboardPage() {
     }
   }, []);
 
-  // Save handler
+  // Save handler with mandatory and unique Bar Council validation
   const handleSave = async () => {
+    setSaveErrorMessage(null);
+
+    // 1. Mandatory check: Every advocate must have a Bar Council Enrollment Number
+    if (!profile.enrollmentNo || !profile.enrollmentNo.trim()) {
+      const msg = "Bar Council Enrollment Number is mandatory. Every advocate profile must have a valid Bar Council registration number.";
+      setSaveErrorMessage(msg);
+      alert("⚠️ Bar Council Enrollment Number is mandatory!\n\nPlease enter your official Bar Council registration number (e.g. PH/7797/2025) before saving.");
+      return;
+    }
+
     try {
+      // 2. Direct Supabase sync with strict uniqueness check (1 profile per Bar Council ID)
+      const result = await upsertAdvocateProfile(profile);
+      if (!result.success) {
+        setSaveErrorMessage(result.error || "Failed to save profile due to database restriction.");
+        alert(`❌ Cannot Save Profile:\n\n${result.error}`);
+        return;
+      }
+
+      // 3. Save to local storage for instant zero-latency load
       localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
       setSavedStatus("saved");
+      setSaveErrorMessage(null);
       setTimeout(() => setSavedStatus("idle"), 2500);
 
-      // 1. Direct Supabase sync
-      await upsertAdvocateProfile(profile).catch(() => {});
-
-      // 2. Also sync to server API
+      // 4. Also sync to server API
       await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
       }).catch(() => {});
-    } catch {
-      alert("Failed to save profile.");
+    } catch (err: any) {
+      alert("Failed to save profile: " + (err.message || "Unknown error"));
     }
   };
 
@@ -652,6 +671,17 @@ export default function DashboardPage() {
         {/* ── LEFT: Profile Editor Form (Cols 7 on Desktop) ────────────────── */}
         <div className={`space-y-6 lg:col-span-7 ${activeTab === "preview" ? "hidden lg:block" : "block"}`}>
           
+          {/* Error Banner if Bar Council or Validation Fails */}
+          {saveErrorMessage && (
+            <div className="bg-rose-950/80 border border-rose-500/50 p-4 rounded-2xl text-xs text-rose-200 flex items-start gap-3 shadow-lg animate-in fade-in">
+              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-bold text-rose-100">Cannot Save Chamber Profile</p>
+                <p className="leading-relaxed">{saveErrorMessage}</p>
+              </div>
+            </div>
+          )}
+
           {/* ── Chamber Box Mover & Layout Organizer ──────────────────────── */}
           <div className="bg-[#18191c] rounded-2xl p-5 sm:p-6 border border-indigo-500/30 space-y-4 shadow-sm">
             <div className="flex items-center justify-between pb-2 border-b border-[#2d3139]">
@@ -799,16 +829,40 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#9aa0a6] mb-1.5">
-                  Bar Council Enrollment Number
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-[#f1f3f4] flex items-center gap-1.5">
+                    <span>Bar Council Enrollment Number</span>
+                    <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                      * Mandatory
+                    </span>
+                  </label>
+                  <span className="text-[10px] text-[#8ab4f8] font-mono">1 Profile / Bar No.</span>
+                </div>
                 <input
                   type="text"
+                  required
                   value={profile.enrollmentNo}
-                  onChange={(e) => setProfile({ ...profile, enrollmentNo: e.target.value })}
-                  placeholder="e.g. D/1234/2020 or State Bar Number"
-                  className="w-full bg-[#202227] border border-[#343840] rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none focus:border-[#8ab4f8]"
+                  onChange={(e) => {
+                    setProfile({ ...profile, enrollmentNo: e.target.value });
+                    if (saveErrorMessage) setSaveErrorMessage(null);
+                  }}
+                  placeholder="e.g. PH/7797/2025 or D/1234/2020"
+                  className={`w-full bg-[#202227] border rounded-xl px-3.5 py-2.5 text-sm text-[#f1f3f4] focus:outline-none transition-colors ${
+                    !profile.enrollmentNo?.trim()
+                      ? "border-amber-500/60 focus:border-amber-400"
+                      : "border-[#343840] focus:border-[#8ab4f8]"
+                  }`}
                 />
+                {!profile.enrollmentNo?.trim() ? (
+                  <p className="text-[11px] text-amber-400 mt-1 flex items-center gap-1">
+                    <span>⚠️ Mandatory:</span>
+                    <span>Every advocate must have a registered Bar Council number to save.</span>
+                  </p>
+                ) : (
+                  <p className="text-[11px] text-[#9aa0a6] mt-1">
+                    ✓ Strictly unique. Duplicate profiles with the same Bar Council number are prohibited.
+                  </p>
+                )}
               </div>
 
               <div>

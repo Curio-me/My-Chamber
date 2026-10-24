@@ -18,7 +18,7 @@ import {
   LogOut,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { supabase } from "@/lib/supabase";
+import { supabase, checkBarCouncilUnique } from "@/lib/supabase";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -49,6 +49,7 @@ export default function LoginPage() {
   const [identifier, setIdentifier] = useState(""); // Email or Bar Council Enrollment No
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [enrollmentNo, setEnrollmentNo] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -278,16 +279,37 @@ export default function LoginPage() {
       return;
     }
 
+    if (!enrollmentNo || !enrollmentNo.trim()) {
+      setMessage({
+        type: "error",
+        text: "Bar Council Enrollment Number is mandatory. Multiple profiles with the same Bar Council Number are not allowed.",
+      });
+      return;
+    }
+
     setLoading(true);
     setMessage(null);
 
     try {
+      // 1. Strict check: verify Bar Council Number uniqueness across all profiles
+      const uniqueCheck = await checkBarCouncilUnique(enrollmentNo, "");
+      if (!uniqueCheck.isUnique) {
+        setLoading(false);
+        setMessage({
+          type: "error",
+          text: `Bar Council Number (${enrollmentNo}) is already registered to another chamber (@${uniqueCheck.conflictingSlug}). Each advocate may only have 1 profile per unique Bar Council registration. Multiple profiles are strictly prohibited.`,
+        });
+        return;
+      }
+
+      // 2. Register account with Supabase
       const { data, error } = await supabase.auth.signUp({
         email: identifier,
         password,
         options: {
           data: {
             full_name: fullName,
+            enrollment_no: enrollmentNo.trim(),
           },
         },
       });
@@ -591,6 +613,26 @@ export default function LoginPage() {
                         placeholder="e.g. Adv. RajaVikrant Sharma"
                         className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8ab4f8]"
                       />
+                    </div>
+
+                    <div>
+                      <label className="block text-[#c4c7c5] text-xs font-semibold mb-1.5 flex items-center justify-between">
+                        <span>Bar Council Enrollment Number</span>
+                        <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                          * Mandatory
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={enrollmentNo}
+                        onChange={(e) => setEnrollmentNo(e.target.value)}
+                        placeholder="e.g. PH/7797/2025 or D/1234/2020"
+                        className="w-full bg-[#202227] border border-[#343840] text-white placeholder-[#5f6368] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8ab4f8]"
+                      />
+                      <p className="text-[10px] text-[#9aa0a6] mt-1">
+                        Strictly unique. Each advocate is permitted only 1 profile per Bar Council registration.
+                      </p>
                     </div>
 
                     <div>

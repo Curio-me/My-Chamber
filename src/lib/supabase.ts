@@ -218,13 +218,74 @@ export async function fetchAdvocateBySlug(slug: string): Promise<Advocate | null
   }
 }
 
+// ── Bar Council Uniqueness & Normalization Helpers ──────────────────────────
+export function normalizeEnrollmentNo(enrollment: string): string {
+  if (!enrollment) return "";
+  return enrollment.trim().toUpperCase().replace(/\s+/g, "").replace(/\/+/g, "/");
+}
+
+export async function checkBarCouncilUnique(
+  enrollmentNo: string,
+  currentSlug: string
+): Promise<{ isUnique: boolean; conflictingSlug?: string; error?: string }> {
+  try {
+    const normalized = normalizeEnrollmentNo(enrollmentNo);
+    if (!normalized) {
+      return { isUnique: false, error: "Bar Council Enrollment Number is mandatory." };
+    }
+
+    // Query existing profiles to verify uniqueness
+    const { data, error } = await supabase
+      .from("advocate_profiles")
+      .select("slug, enrollment_no");
+
+    if (error) {
+      return { isUnique: true };
+    }
+
+    if (data && Array.isArray(data)) {
+      const match = data.find((row) => {
+        if (!row.enrollment_no) return false;
+        const rowNorm = normalizeEnrollmentNo(row.enrollment_no);
+        return rowNorm === normalized && row.slug.toLowerCase() !== currentSlug.toLowerCase();
+      });
+
+      if (match) {
+        return { isUnique: false, conflictingSlug: match.slug };
+      }
+    }
+
+    return { isUnique: true };
+  } catch (err: any) {
+    return { isUnique: true };
+  }
+}
+
 // Save or update advocate profile in Supabase
 export async function upsertAdvocateProfile(
   advocate: Advocate,
   userId?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    if (!advocate.enrollmentNo || advocate.enrollmentNo.trim().length === 0) {
+      return {
+        success: false,
+        error: "Bar Council Enrollment Number is mandatory for every advocate profile.",
+      };
+    }
+
+    // Enforce 1 profile per Bar Council Number rule
+    const uniqueCheck = await checkBarCouncilUnique(advocate.enrollmentNo, advocate.slug);
+    if (!uniqueCheck.isUnique) {
+      return {
+        success: false,
+        error: `Bar Council Enrollment Number (${advocate.enrollmentNo}) is already registered to another advocate profile (@${uniqueCheck.conflictingSlug}). Each advocate may only have 1 profile per unique Bar Council registration. Multiple profiles are not allowed.`,
+      };
+    }
+
     const row = mapAdvocateToRow(advocate, userId);
+    row.enrollment_no = normalizeEnrollmentNo(advocate.enrollmentNo);
+
     const { error } = await supabase
       .from("advocate_profiles")
       .upsert(row, { onConflict: "slug" });

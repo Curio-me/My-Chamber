@@ -95,3 +95,8 @@ insert into public.advocate_profiles (
   'dark',
   true
 ) on conflict (slug) do nothing;
+
+-- 7. Enforce strictly unique Bar Council Enrollment Number (1 profile per Bar Council ID, no duplicates)
+create unique index if not exists idx_unique_advocate_enrollment_no 
+  on public.advocate_profiles (lower(regexp_replace(trim(enrollment_no), '[^a-zA-Z0-9]', '', 'g')));
+

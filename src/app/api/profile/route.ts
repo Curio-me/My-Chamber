@@ -26,11 +26,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid profile data" }, { status: 400 });
     }
 
-    // Upsert into Supabase database
+    // Upsert into Supabase database (validates mandatory & unique Bar Council enrollment)
     const result = await upsertAdvocateProfile(profile);
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error || "Database error" }, { status: 500 });
+      return NextResponse.json({ error: result.error || "Database error" }, { status: 400 });
     }
 
     return NextResponse.json({ success: true, slug: profile.slug });
