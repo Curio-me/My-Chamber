@@ -757,13 +757,23 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div className="mt-6 text-center">
-              <Link
-                href="/"
-                className="text-xs text-[#526057] hover:text-[#14231C] font-semibold transition-colors"
-              >
-                ← Return to My Chamber Home
-              </Link>
+            <div className="mt-6 text-center space-y-2">
+              <div>
+                <Link
+                  href="/"
+                  className="text-xs text-[#526057] hover:text-[#14231C] font-semibold transition-colors"
+                >
+                  ← Return to My Chamber Home
+                </Link>
+              </div>
+              <div>
+                <Link
+                  href="/privacy"
+                  className="text-[11px] text-[#6B7870] hover:text-[#163826] underline transition-colors"
+                >
+                  DPDP Act, 2023 Compliant Privacy Policy
+                </Link>
+              </div>
             </div>
 
           </div>

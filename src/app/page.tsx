@@ -1028,6 +1028,20 @@ export default function Home() {
         <p suppressHydrationWarning className="text-[11px] text-[#8C9890] pt-2">
           © {new Date().getFullYear()} My Chamber • न्याय सबके लिए
         </p>
+
+        <div className="flex items-center justify-center gap-3 text-xs font-semibold text-[#163826] pt-1">
+          <Link href="/privacy" className="hover:underline">
+            Privacy Policy (DPDP Act, 2023)
+          </Link>
+          <span>•</span>
+          <Link href="/login" className="hover:underline">
+            Advocate Portal
+          </Link>
+          <span>•</span>
+          <a href="#faq" className="hover:underline">
+            FAQ
+          </a>
+        </div>
       </footer>
     </div>
   );
