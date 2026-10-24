@@ -47,6 +47,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 export default function Home() {
   const router = useRouter();
   const [handleInput, setHandleInput] = useState("");
+  const [handleError, setHandleError] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [currentAdvocate, setCurrentAdvocate] = useState<0 | 1>(0);
@@ -92,11 +93,16 @@ export default function Home() {
   const handleClaim = (e: React.FormEvent) => {
     e.preventDefault();
     const clean = handleInput.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "");
-    if (clean) {
-      router.push(`/dashboard?slug=${encodeURIComponent(clean)}`);
-    } else {
+    if (!clean) {
       router.push("/dashboard");
+      return;
     }
+    if (clean.length < 4) {
+      setHandleError("Chamber handle must be at least 4 characters long (e.g. /yourname)");
+      return;
+    }
+    setHandleError(null);
+    router.push(`/dashboard?slug=${encodeURIComponent(clean)}`);
   };
 
   const copySampleLink = () => {
@@ -224,31 +230,46 @@ export default function Home() {
             </p>
 
             {/* Interactive Handle Claim Form */}
-            <form
-              onSubmit={handleClaim}
-              className="max-w-md mx-auto lg:mx-0 flex flex-col sm:flex-row items-stretch gap-2.5 p-1.5 bg-white rounded-2xl sm:rounded-full border border-[#DCD5C9] shadow-sm focus-within:border-[#163826] focus-within:ring-2 focus-within:ring-[#163826]/15 transition-all"
-            >
-              <div className="flex items-center px-4 py-2 sm:py-0 flex-1">
-                <span className="text-xs sm:text-sm font-semibold text-[#8C9890] select-none">
-                  mychamber.in/
-                </span>
-                <input
-                  type="text"
-                  value={handleInput}
-                  onChange={(e) => setHandleInput(e.target.value)}
-                  placeholder="yourname"
-                  className="w-full bg-transparent text-sm font-bold text-[#14231C] placeholder-[#AAB4AD] focus:outline-none ml-0.5"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-sm px-6 py-3.5 rounded-xl sm:rounded-full shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 active:scale-95"
+            <div className="max-w-md mx-auto lg:mx-0">
+              <form
+                onSubmit={handleClaim}
+                className={`flex flex-col sm:flex-row items-stretch gap-2.5 p-1.5 bg-white rounded-2xl sm:rounded-full border shadow-sm transition-all ${
+                  handleError
+                    ? "border-rose-400 focus-within:border-rose-500 focus-within:ring-2 focus-within:ring-rose-500/20"
+                    : "border-[#DCD5C9] focus-within:border-[#163826] focus-within:ring-2 focus-within:ring-[#163826]/15"
+                }`}
               >
-                <span>Claim Chamber</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
+                <div className="flex items-center px-4 py-2 sm:py-0 flex-1">
+                  <span className="text-xs sm:text-sm font-semibold text-[#8C9890] select-none">
+                    mychamber.in/
+                  </span>
+                  <input
+                    type="text"
+                    minLength={4}
+                    value={handleInput}
+                    onChange={(e) => {
+                      setHandleInput(e.target.value);
+                      if (handleError) setHandleError(null);
+                    }}
+                    placeholder="yourname"
+                    className="w-full bg-transparent text-sm font-bold text-[#14231C] placeholder-[#AAB4AD] focus:outline-none ml-0.5"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-sm px-6 py-3.5 rounded-xl sm:rounded-full shadow-sm hover:shadow transition-all flex items-center justify-center gap-2 active:scale-95"
+                >
+                  <span>Claim Chamber</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+              {handleError && (
+                <p className="text-xs text-rose-600 font-semibold mt-2 px-3 flex items-center gap-1.5 animate-fadeIn">
+                  <span>⚠️</span> {handleError}
+                </p>
+              )}
+            </div>
 
             {/* Trust Badges */}
             <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-5 text-xs font-semibold text-[#66756B]">
@@ -897,7 +918,7 @@ export default function Home() {
               </div>
               <h4 className="text-base font-bold text-[#14231C]">Claim Your Name</h4>
               <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
-                Sign in with Google 1-Tap or your email. Choose your unique profile handle (e.g. `mychamber.in/advocate_name`).
+                Sign in with Google 1-Tap or your email. Choose your unique profile handle of at least 4 characters (e.g. `mychamber.in/advocate_name`).
               </p>
             </div>
 

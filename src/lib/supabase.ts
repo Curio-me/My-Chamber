@@ -281,6 +281,14 @@ export async function upsertAdvocateProfile(
       };
     }
 
+    const cleanSlug = (advocate.slug || "").trim().toLowerCase();
+    if (!cleanSlug || cleanSlug.length < 4) {
+      return {
+        success: false,
+        error: "Chamber unique handle must be at least 4 characters long (e.g. /yourname).",
+      };
+    }
+
     // Enforce 1 profile per Bar Council Number rule
     const uniqueCheck = await checkBarCouncilUnique(advocate.enrollmentNo, advocate.slug);
     if (!uniqueCheck.isUnique) {

@@ -122,6 +122,15 @@ export default function DashboardPage() {
       return;
     }
 
+    // 2. Mandatory check: Chamber unique handle must be at least 4 characters
+    const cleanSlug = (profile.slug || "").trim().toLowerCase();
+    if (!cleanSlug || cleanSlug.length < 4) {
+      const msg = "Chamber unique handle must be at least 4 characters long (e.g. /yourname).";
+      setSaveErrorMessage(msg);
+      alert("⚠️ Chamber handle too short!\n\nYour chamber unique handle must be at least 4 characters long.");
+      return;
+    }
+
     try {
       // 2. Direct Supabase sync with strict uniqueness check (1 profile per Bar Council ID)
       const result = await upsertAdvocateProfile(profile);
@@ -887,27 +896,51 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1.5">
-                  Chamber URL Slug
-                </label>
-                <div className="flex items-center bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2.5 text-sm focus-within:border-[#163826]">
-                  <span className="text-[#526057] text-xs font-mono">/</span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-[#14231C]">
+                    Chamber URL Handle
+                  </label>
+                  <span
+                    className={`text-[10px] font-mono font-semibold ${
+                      (profile.slug || "").length >= 4 ? "text-[#163826]" : "text-amber-600"
+                    }`}
+                  >
+                    {(profile.slug || "").length >= 4
+                      ? "✓ Valid (≥ 4 chars)"
+                      : `${(profile.slug || "").length}/4 chars min`}
+                  </span>
+                </div>
+                <div
+                  className={`flex items-center bg-[#FAF8F5] border rounded-xl px-3 py-2.5 text-sm transition-all focus-within:bg-white ${
+                    (profile.slug || "").length > 0 && (profile.slug || "").length < 4
+                      ? "border-amber-400 focus-within:border-amber-500"
+                      : "border-[#E7E0D5] focus-within:border-[#163826]"
+                  }`}
+                >
+                  <span className="text-[#526057] text-xs font-mono">mychamber.in/</span>
                   <input
                     type="text"
+                    minLength={4}
                     value={profile.slug}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setProfile({
                         ...profile,
                         slug: e.target.value
                           .toLowerCase()
                           .replace(/\s+/g, "-")
                           .replace(/[^a-z0-9-_]/g, ""),
-                      })
-                    }
-                    placeholder="write your name"
+                      });
+                      if (saveErrorMessage) setSaveErrorMessage(null);
+                    }}
+                    placeholder="yourname"
                     className="w-full bg-transparent text-sm text-[#14231C] focus:outline-none pl-1 font-mono placeholder:text-[#8C9890]"
                   />
                 </div>
+                {(profile.slug || "").length > 0 && (profile.slug || "").length < 4 && (
+                  <p className="text-[10px] text-amber-600 mt-1 font-medium">
+                    ⚠️ Unique handle must be at least 4 characters long.
+                  </p>
+                )}
               </div>
 
               <div>
