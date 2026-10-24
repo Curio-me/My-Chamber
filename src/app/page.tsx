@@ -521,35 +521,65 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Floating Front Popout Card (Modeled after 'June on film', displaying Specialized in Law: Constitutional Law, Cyber Law) */}
+                {/* Floating Front Popout Card (Modeled after 'June on film', displaying Specialized in Law for Vikrant, and Chamber Contact & Maps Location for Ananya) */}
                 <div className="absolute -bottom-7 -left-6 sm:-left-8 w-[225px] sm:w-[250px] z-30 animate-pop-card">
                   <div className="rounded-3xl bg-white text-[#14231C] p-3.5 shadow-[0_25px_50px_rgba(0,0,0,0.55)] border-2 border-white/90 space-y-2.5">
                     {/* Media Banner Header with Circle Icon (June on film preview style) */}
-                    <div className="relative h-18 rounded-2xl bg-gradient-to-tr from-[#163826] via-[#245239] to-[#C9A84C] p-2 flex items-center justify-center overflow-hidden shadow-inner">
-                      <div className="w-8 h-8 rounded-full bg-white/95 text-[#163826] flex items-center justify-center shadow-md">
-                        <Scale className="w-4 h-4 text-[#163826]" />
+                    <div
+                      className={`relative h-18 rounded-2xl p-2 flex items-center justify-center overflow-hidden shadow-inner transition-colors duration-300 ${
+                        currentAdvocate === 0
+                          ? "bg-gradient-to-tr from-[#163826] via-[#245239] to-[#C9A84C]"
+                          : "bg-gradient-to-tr from-[#6B1724] via-[#8C2433] to-[#E6B87D]"
+                      }`}
+                    >
+                      <div
+                        className={`w-8 h-8 rounded-full bg-white/95 flex items-center justify-center shadow-md ${
+                          currentAdvocate === 0 ? "text-[#163826]" : "text-[#8C2433]"
+                        }`}
+                      >
+                        {currentAdvocate === 0 ? (
+                          <Scale className="w-4 h-4 text-[#163826]" />
+                        ) : (
+                          <MapPin className="w-4 h-4 text-[#8C2433]" />
+                        )}
                       </div>
                       <span className="absolute bottom-1 left-2.5 text-[8px] font-bold tracking-wider uppercase text-white/90 drop-shadow">
-                        Legal Practice Focus
+                        {currentAdvocate === 0 ? "Legal Practice Focus" : "Chamber Office & Maps"}
                       </span>
                     </div>
 
                     {/* Popout Text Content */}
                     <div className="space-y-1">
-                      <span className="inline-block text-[8.5px] font-black uppercase tracking-wider text-[#163826] bg-[#EBF3ED] px-2 py-0.5 rounded-full">
-                        Specialized in Law
+                      <span
+                        className={`inline-block text-[8.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                          currentAdvocate === 0
+                            ? "text-[#163826] bg-[#EBF3ED]"
+                            : "text-[#8C2433] bg-[#FDF0F2]"
+                        }`}
+                      >
+                        {currentAdvocate === 0 ? "Specialized in Law" : "Chamber Contact & Maps Location"}
                       </span>
                       <h4 className="text-xs sm:text-[13px] font-extrabold text-[#14231C] leading-snug">
-                        Constitutional Law, Cyber Law
+                        {currentAdvocate === 0
+                          ? "Constitutional Law, Cyber Law"
+                          : "Chamber 18, High Court Fort"}
                       </h4>
                       <p className="text-[9.5px] text-[#526057] leading-tight">
-                        Supreme Court Writs, Data Protection & Cyber Appellate Matters
+                        {currentAdvocate === 0
+                          ? "Supreme Court Writs, Data Protection & Cyber Appellate Matters"
+                          : "Bombay High Court Annexe, Fort, Mumbai • Maps & Navigation"}
                       </p>
                     </div>
 
                     {/* Consultation Action Button */}
-                    <div className="w-full bg-[#163826] hover:bg-[#1E4A33] text-white py-1.5 rounded-xl text-center text-[10px] font-bold shadow-sm transition-colors cursor-pointer">
-                      Consult on Legal Matter
+                    <div
+                      className={`w-full text-white py-1.5 rounded-xl text-center text-[10px] font-bold shadow-sm transition-colors cursor-pointer ${
+                        currentAdvocate === 0
+                          ? "bg-[#163826] hover:bg-[#1E4A33]"
+                          : "bg-[#8C2433] hover:bg-[#6B1724]"
+                      }`}
+                    >
+                      {currentAdvocate === 0 ? "Consult on Legal Matter" : "Get Chamber Directions"}
                     </div>
                   </div>
                 </div>
