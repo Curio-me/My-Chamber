@@ -36,6 +36,7 @@ import {
   Printer,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import LegalSchema from "./LegalSchema";
 
@@ -278,8 +279,25 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
   const [copied, setCopied] = useState(false);
   const [showQr, setShowQr] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isFloatingDismissed, setIsFloatingDismissed] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll when QR modal is open
+  useEffect(() => {
+    if (showQr) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showQr]);
 
   // ── Option C: 3D Holographic / Prismatic Foil Sheen State ──────────
   const [is3DActive, setIs3DActive] = useState(false); // Default: strictly OFF (rock-solid 2D)
@@ -1820,11 +1838,12 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         </aside>
       )}
 
-      {/* ── Official Chamber QR Code Modal (Rendered at root for true full-viewport overlay) ────── */}
-      {showQr && (
+      {/* ── Official Chamber QR Code Modal (Rendered via Portal directly into document.body) ────── */}
+      {mounted && showQr && typeof document !== "undefined" && createPortal(
         <div
           onClick={() => setShowQr(false)}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-[999999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 999999 }}
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -1875,7 +1894,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               <div suppressHydrationWarning className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
                 <QRCodeSVG
                   id="profile-qr-svg"
-                  value={profileUrl}
+                  value={profileUrl || (typeof window !== "undefined" ? window.location.href : "")}
                   size={180}
                   level="H"
                   includeMargin={true}
@@ -1925,7 +1944,8 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               PNG renders at 1000×1200 high-res, print-ready for printing presses.
             </p>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Toast Notification ──────────────────────────────────────────────── */}
