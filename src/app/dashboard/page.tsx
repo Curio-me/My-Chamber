@@ -95,18 +95,31 @@ export default function DashboardPage() {
   const photoFileInputRef = useRef<HTMLInputElement>(null);
   const [origin, setOrigin] = useState("https://mychamber.me");
 
-  // Load saved profile on mount if author previously created one
+  // Load saved profile on mount if author previously created one, or apply claimed slug from URL
   useEffect(() => {
+    let currentProfile = EMPTY_ADVOCATE;
     if (typeof window !== "undefined") {
       setOrigin(window.location.origin);
-    }
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        setProfile(JSON.parse(saved));
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          currentProfile = JSON.parse(saved);
+        }
+      } catch {
+        // remains EMPTY_ADVOCATE
       }
-    } catch {
-      // remains EMPTY_ADVOCATE
+
+      // Check if handle was passed via ?slug= from the claim form on the homepage
+      const urlParams = new URLSearchParams(window.location.search);
+      const querySlug = urlParams.get("slug");
+      if (querySlug) {
+        const cleanSlug = querySlug.toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
+        if (cleanSlug) {
+          currentProfile = { ...currentProfile, slug: cleanSlug };
+        }
+      }
+
+      setProfile(currentProfile);
     }
   }, []);
 
