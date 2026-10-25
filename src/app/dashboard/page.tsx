@@ -93,7 +93,7 @@ export default function DashboardPage() {
   const claimProofFileInputRef = useRef<HTMLInputElement>(null);
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
-  const [origin, setOrigin] = useState("https://my-chamber.vercel.app");
+  const [origin, setOrigin] = useState("https://mychamber.me");
 
   // Load saved profile on mount if author previously created one
   useEffect(() => {
@@ -920,7 +920,7 @@ export default function DashboardPage() {
                       : "border-[#E7E0D5] focus-within:border-[#163826]"
                   }`}
                 >
-                  <span className="text-[#526057] text-xs font-mono">mychamber.in/</span>
+                  <span className="text-[#526057] text-xs font-mono">mychamber.me/</span>
                   <input
                     type="text"
                     minLength={4}
@@ -1824,7 +1824,7 @@ export default function DashboardPage() {
                   type="url"
                   value={profile.websiteUrl || ""}
                   onChange={(e) => setProfile({ ...profile, websiteUrl: e.target.value })}
-                  placeholder="https://mychamber.in"
+                  placeholder="https://mychamber.me"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>

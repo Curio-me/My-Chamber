@@ -1,6 +1,6 @@
 import { Advocate } from "@/lib/types";
 
-export function generateLegalSchema(advocate: Advocate, baseUrl = "https://my-chamber.vercel.app") {
+export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mychamber.me") {
   const profileUrl = `${baseUrl}/${advocate.slug}`;
 
   const credentials = (advocate.qualifications || []).map((deg) => ({

@@ -408,7 +408,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [profileUrl, setProfileUrl] = useState(
-    `https://my-chamber.vercel.app/${advocate.slug || ""}`
+    `https://mychamber.me/${advocate.slug || ""}`
   );
 
   useEffect(() => {

@@ -63,7 +63,7 @@ export default function Home() {
     {
       question: "Is creating and maintaining a digital chamber profile 100% free?",
       answer:
-        "Yes, 100% free forever. There are no monthly fees, hidden charges, or paid paywalls. Every advocate receives their dedicated custom chamber handle (my-chamber.com/adv/your-handle), high-resolution desk QR code generator, interactive court of practice badges, and client orientation links at zero cost.",
+        "Yes, 100% free forever. There are no monthly fees, hidden charges, or paid paywalls. Every advocate receives their dedicated custom chamber handle (mychamber.me/your-handle), high-resolution desk QR code generator, interactive court of practice badges, and client orientation links at zero cost.",
     },
     {
       question: "How does State Bar enrollment verification protect against impersonation?",
@@ -110,7 +110,7 @@ export default function Home() {
   };
 
   const copySampleLink = () => {
-    navigator.clipboard.writeText("https://my-chamber.vercel.app/rajavikrant");
+    navigator.clipboard.writeText("https://mychamber.me/rajavikrant");
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
@@ -245,7 +245,7 @@ export default function Home() {
               >
                 <div className="flex items-center px-4 py-2 sm:py-0 flex-1">
                   <span className="text-xs sm:text-sm font-semibold text-[#8C9890] select-none">
-                    mychamber.in/
+                    mychamber.me/
                   </span>
                   <input
                     type="text"
@@ -923,7 +923,7 @@ export default function Home() {
               </div>
               <h4 className="text-base font-bold text-[#14231C]">Claim Your Name</h4>
               <p className="text-xs sm:text-sm text-[#526057] leading-relaxed">
-                Sign in with Google 1-Tap or your email. Choose your unique profile handle between 4 to 20 characters (e.g. `mychamber.in/advocate_name`).
+                Sign in with Google 1-Tap or your email. Choose your unique profile handle between 4 to 20 characters (e.g. `mychamber.me/advocate_name`).
               </p>
             </div>
 
