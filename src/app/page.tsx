@@ -155,7 +155,7 @@ export default function Home() {
               Log in
             </Link>
             <Link
-              href="/login"
+              href="/login?tab=signup"
               className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-sm font-bold px-5 py-2.5 rounded-full shadow-sm hover:shadow transition-all hover:-translate-y-0.5 active:scale-95"
             >
               Sign up free
@@ -204,7 +204,7 @@ export default function Home() {
               Advocate Log In
             </Link>
             <Link
-              href="/login"
+              href="/login?tab=signup"
               onClick={() => setMobileMenuOpen(false)}
               className="mt-2 text-center bg-[#163826] text-white font-bold py-3 rounded-full shadow-sm text-sm"
             >
@@ -1025,7 +1025,7 @@ export default function Home() {
 
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
-              href="/login"
+              href="/login?tab=signup"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#163826] font-bold text-sm px-8 py-3.5 rounded-full shadow-md hover:bg-[#F3EFE6] transition-all active:scale-95"
             >
               <span>Get started for free</span>

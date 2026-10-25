@@ -91,6 +91,18 @@ export default function LoginPage() {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam === "signup" || tabParam === "register") {
+        setTab("signup");
+      } else if (tabParam === "password") {
+        setTab("password");
+      } else if (tabParam === "magic") {
+        setTab("magic");
+      }
+    }
+
     supabase.auth.getSession().then(({ data }) => {
       if (data?.session?.user) {
         setCurrentUser(data.session.user);
@@ -114,7 +126,7 @@ export default function LoginPage() {
       const redirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/dashboard`
-          : "https://my-chamber.vercel.app/dashboard";
+          : "https://mychamber.me/dashboard";
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -391,11 +403,17 @@ export default function LoginPage() {
                 <Scale className="w-7 h-7" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#14231C] tracking-tight">
-                {currentUser ? "Chamber Session Active" : "Advocate Portal"}
+                {currentUser
+                  ? "Chamber Session Active"
+                  : tab === "signup"
+                  ? "Create Your Chamber"
+                  : "Advocate Portal"}
               </h1>
               <p className="text-[#526057] text-xs sm:text-sm mt-1.5 leading-relaxed">
                 {currentUser
                   ? `Signed in as ${currentUser.email}`
+                  : tab === "signup"
+                  ? "Register your verified advocate profile & digital visiting card"
                   : "Sign in to manage your digital chamber profile, QR codes & practice links"}
               </p>
             </div>
@@ -532,7 +550,7 @@ export default function LoginPage() {
                         : "text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
-                    <span>Register</span>
+                    <span>Create Chamber</span>
                   </button>
                 </div>
 

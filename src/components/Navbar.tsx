@@ -63,21 +63,15 @@ export default function Navbar() {
             >
               FAQ
             </Link>
-            <Link
-              href="/dashboard"
-              className="text-[#163826] hover:text-[#1E4A33] text-sm font-semibold transition-colors flex items-center gap-1.5"
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" />
-              Chamber Studio
-            </Link>
 
             {user ? (
               <div className="flex items-center gap-2.5">
                 <Link
                   href="/dashboard"
-                  className="text-xs font-bold text-[#163826] bg-[#EBF3ED] hover:bg-[#DEECE1] px-4 py-2 rounded-full border border-[#163826]/20 transition-colors"
+                  className="text-xs font-bold text-[#FAF7F2] bg-[#163826] hover:bg-[#1E4A33] px-4 py-2 rounded-full shadow-sm transition-all flex items-center gap-1.5"
                 >
-                  Dashboard
+                  <LayoutDashboard className="w-3.5 h-3.5 text-[#E6D5B8]" />
+                  <span>Chamber Studio</span>
                 </Link>
                 <button
                   onClick={handleSignOut}
@@ -89,13 +83,20 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <Link
-                href="/login"
-                className="flex items-center gap-1.5 text-sm font-bold text-[#FAF7F2] bg-[#163826] hover:bg-[#1E4A33] px-5 py-2.5 rounded-full transition-all shadow-sm hover:shadow"
-              >
-                <LogIn className="w-4 h-4" />
-                <span>Advocate Sign In</span>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-[#3F4D45] hover:text-[#14231C] text-sm font-semibold px-2 py-1.5 transition-colors"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/login?tab=signup"
+                  className="flex items-center gap-1.5 text-sm font-bold text-[#FAF7F2] bg-[#163826] hover:bg-[#1E4A33] px-5 py-2.5 rounded-full transition-all shadow-sm hover:shadow active:scale-95"
+                >
+                  <span>Sign Up Free</span>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -115,28 +116,38 @@ export default function Navbar() {
           <Link href="/" onClick={() => setMenuOpen(false)} className="text-[#3F4D45] hover:text-[#14231C] text-sm font-semibold py-1">Home</Link>
           <Link href="/#features" onClick={() => setMenuOpen(false)} className="text-[#3F4D45] hover:text-[#14231C] text-sm font-semibold py-1">Features</Link>
           <Link href="/#faq" onClick={() => setMenuOpen(false)} className="text-[#3F4D45] hover:text-[#14231C] text-sm font-semibold py-1">FAQ</Link>
-          <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="text-[#163826] text-sm font-bold flex items-center gap-1.5 py-1">
-            <LayoutDashboard className="w-4 h-4" />
-            Chamber Studio (Dashboard)
-          </Link>
           
           {user ? (
-            <button
-              onClick={handleSignOut}
-              className="flex items-center justify-center gap-2 text-xs font-bold text-rose-700 bg-[#FDF2F2] border border-rose-200 py-2.5 rounded-full mt-1"
-            >
-              <LogOut className="w-3.5 h-3.5 text-rose-500" />
-              <span>Sign Out ({user.email})</span>
-            </button>
+            <>
+              <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="text-[#163826] text-sm font-bold flex items-center gap-1.5 py-1">
+                <LayoutDashboard className="w-4 h-4" />
+                <span>Chamber Studio</span>
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="flex items-center justify-center gap-2 text-xs font-bold text-rose-700 bg-[#FDF2F2] border border-rose-200 py-2.5 rounded-full mt-1 w-full"
+              >
+                <LogOut className="w-3.5 h-3.5 text-rose-500" />
+                <span>Sign Out ({user.email})</span>
+              </button>
+            </>
           ) : (
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className="text-sm font-bold text-[#FAF7F2] bg-[#163826] hover:bg-[#1E4A33] px-4 py-2.5 rounded-full text-center transition-colors flex items-center justify-center gap-2 mt-1"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Advocate Sign In</span>
-            </Link>
+            <div className="pt-2 flex flex-col gap-2 border-t border-[#E7E0D5]">
+              <Link
+                href="/login"
+                onClick={() => setMenuOpen(false)}
+                className="text-sm font-semibold text-[#3F4D45] py-2 text-center"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/login?tab=signup"
+                onClick={() => setMenuOpen(false)}
+                className="text-sm font-bold text-[#FAF7F2] bg-[#163826] hover:bg-[#1E4A33] px-4 py-2.5 rounded-full text-center transition-colors flex items-center justify-center gap-2 shadow-sm"
+              >
+                <span>Sign Up Free</span>
+              </Link>
+            </div>
           )}
         </div>
       )}
