@@ -423,9 +423,9 @@ export default function Home() {
       <section className="border-y border-[#EAE3D6] bg-white py-8 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-2xl sm:text-3xl font-black text-[#163826]">100%</div>
+            <div className="text-2xl sm:text-3xl font-black text-[#163826]">24 / 7</div>
             <div className="text-xs sm:text-sm font-semibold text-[#66756B] mt-0.5">
-              Bar Verified Standards
+              Digital Chamber Office
             </div>
           </div>
           <div>
