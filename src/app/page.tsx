@@ -315,7 +315,11 @@ export default function Home() {
                     <div className="relative inline-block">
                       <div className="w-20 h-20 rounded-full mx-auto bg-gradient-to-tr from-[#163826] to-[#2E6B4A] p-0.5 shadow-md">
                         <div className="w-full h-full rounded-full bg-[#1A2E23] flex items-center justify-center text-white font-bold text-xl overflow-hidden">
-                          <span className="tracking-wider">VS</span>
+                          <img
+                            src="/advocate-vikrant.jpg"
+                            alt="Adv. Vikrant Sharma"
+                            className="w-full h-full object-cover object-top"
+                          />
                         </div>
                       </div>
                       <div className="absolute -bottom-1 -right-1 bg-[#163826] text-[#FAF7F2] rounded-full p-1 border-2 border-white shadow">
@@ -513,11 +517,11 @@ export default function Home() {
                               currentAdvocate === 0 ? "bg-[#0A0D0B]" : "bg-[#1E0509]"
                             }`}
                           >
-                            {/* Legal Robe Band Graphic */}
-                            <div className="absolute top-1.5 w-6 h-3 bg-white rounded-b-sm border-t-2 border-black" />
-                            <span className="font-black text-2xl tracking-wider pt-2">
-                              {currentAdvocate === 0 ? "VS" : "AD"}
-                            </span>
+                            <img
+                              src={currentAdvocate === 0 ? "/advocate-vikrant.jpg" : "/advocate-ananya.jpg"}
+                              alt={currentAdvocate === 0 ? "Adv. Vikrant Sharma" : "Adv. Ananya Deshmukh"}
+                              className="w-full h-full object-cover object-top"
+                            />
                           </div>
                         </div>
                         <div
