@@ -536,49 +536,42 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       canvas.width = 1000;
       canvas.height = 1200;
 
-      // White background
+      // Fill white background
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, 1000, 1200);
 
       // Outer border
-      ctx.strokeStyle = "#e2e8f0";
+      ctx.strokeStyle = "#E7E0D5";
       ctx.lineWidth = 14;
       ctx.strokeRect(35, 35, 930, 1130);
 
-      // Gold / Blue double border accent
-      ctx.strokeStyle = "#1a73e8";
+      // Judicial Forest Green border accent
+      ctx.strokeStyle = "#163826";
       ctx.lineWidth = 4;
       ctx.strokeRect(52, 52, 896, 1096);
 
       // Header Title
-      ctx.fillStyle = "#0f172a";
+      ctx.fillStyle = "#14231C";
       ctx.font = "bold 44px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(advocate.fullName, 500, 140);
+      ctx.fillText(advocate.fullName, 500, 150);
 
       // Bar council subtitle
-      ctx.fillStyle = "#475569";
+      ctx.fillStyle = "#526057";
       ctx.font = "24px sans-serif";
-      ctx.fillText(`Advocate • Bar Council: ${advocate.enrollmentNo || "Registered"}`, 500, 190);
+      ctx.fillText(`Advocate • Bar Council: ${advocate.enrollmentNo || "Registered"}`, 500, 205);
 
-      // Court name
-      if (advocate.courts?.[0]) {
-        ctx.fillStyle = "#1a73e8";
-        ctx.font = "bold 22px sans-serif";
-        ctx.fillText(advocate.courts[0], 500, 230);
-      }
-
-      // Draw QR Code in center
-      ctx.drawImage(img, 175, 290, 650, 650);
+      // Draw QR Code in center (court name removed for clean, focused layout)
+      ctx.drawImage(img, 175, 260, 650, 650);
 
       // Footer
-      ctx.fillStyle = "#0f172a";
+      ctx.fillStyle = "#14231C";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("SCAN TO CONNECT • VIRTUAL CHAMBER", 500, 1020);
+      ctx.fillText("SCAN TO CONNECT • DIGITAL CHAMBER", 500, 1005);
 
-      ctx.fillStyle = "#64748b";
+      ctx.fillStyle = "#6B7870";
       ctx.font = "20px sans-serif";
-      ctx.fillText(profileUrl, 500, 1060);
+      ctx.fillText(profileUrl, 500, 1050);
 
       URL.revokeObjectURL(url);
       const a = document.createElement("a");
@@ -1903,7 +1896,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               </div>
 
               <p className="text-[10px] font-mono tracking-wider text-slate-400 mt-3 uppercase">
-                Scan to Connect • My Chamber
+                Scan to Connect • Digital Chamber
               </p>
             </div>
 

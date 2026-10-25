@@ -601,31 +601,24 @@ export default function DashboardPage() {
       ctx.fillStyle = "#14231C";
       ctx.font = "bold 44px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText(profile.fullName || "Advocate", 500, 140);
+      ctx.fillText(profile.fullName || "Advocate", 500, 150);
 
       // Subtitle Bar Council
       ctx.fillStyle = "#526057";
       ctx.font = "24px sans-serif";
-      ctx.fillText(`Advocate • Bar Council: ${profile.enrollmentNo || "Registered"}`, 500, 190);
+      ctx.fillText(`Advocate • Bar Council: ${profile.enrollmentNo || "Registered"}`, 500, 205);
 
-      // Court name
-      if (profile.courts?.[0]) {
-        ctx.fillStyle = "#163826";
-        ctx.font = "bold 22px sans-serif";
-        ctx.fillText(profile.courts[0], 500, 230);
-      }
-
-      // Draw QR Code
-      ctx.drawImage(img, 175, 290, 650, 650);
+      // Draw QR Code in center (court name removed for clean, focused layout)
+      ctx.drawImage(img, 175, 260, 650, 650);
 
       // Footer
       ctx.fillStyle = "#14231C";
       ctx.font = "bold 24px sans-serif";
-      ctx.fillText("SCAN TO CONNECT • MY CHAMBER", 500, 1020);
+      ctx.fillText("SCAN TO CONNECT • DIGITAL CHAMBER", 500, 1005);
 
       ctx.fillStyle = "#6B7870";
       ctx.font = "20px sans-serif";
-      ctx.fillText(publicUrl, 500, 1060);
+      ctx.fillText(publicUrl, 500, 1050);
 
       URL.revokeObjectURL(url);
       const a = document.createElement("a");
