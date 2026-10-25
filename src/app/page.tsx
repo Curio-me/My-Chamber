@@ -56,9 +56,9 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Is My Chamber compliant with Bar Council of India (BCI) rules?",
+      question: "What is My Chamber?",
       answer:
-        "Yes, completely. Under Rule 36 of the Bar Council of India Rules, advocates are prohibited from commercial solicitation and advertising, but are permitted to publish factual professional particulars online (such as name, qualifications, chamber address, courts of practice, contact info, and Bar Council enrollment number). My Chamber strictly operates as a factual, professional orientation portal and digital business card—never a lawyer marketplace or solicitation engine.",
+        "My Chamber is a professional digital chamber and verified link platform built exclusively for Indian advocates. It gives practicing lawyers a dignified digital presence (mychamber.me/yourname) featuring a 1-tap phonebook contact saver (.vcf), high-resolution desk & visiting card QR codes, Bar Council credentials, courts of practice, and client consultation links—with zero coding or technical setup required.",
     },
     {
       question: "Is creating and maintaining a digital chamber profile 100% free?",
