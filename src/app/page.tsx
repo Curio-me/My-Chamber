@@ -671,7 +671,7 @@ export default function Home() {
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                 </div>
                 <span className="text-sm font-semibold text-white/95">
-                  <strong>1-Tap Direct vCard:</strong> Clients save your mobile and chamber office straight into their phone contact list.
+                  <strong>Direct WhatsApp Consultations:</strong> Clients and colleagues connect with your chamber in 1-tap without saving numbers.
                 </span>
               </div>
 
@@ -680,7 +680,7 @@ export default function Home() {
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                 </div>
                 <span className="text-sm font-semibold text-white/95">
-                  <strong>High-Resolution QR Studio:</strong> 1000×1200 print-ready QR codes for desk acrylic displays and physical visiting cards.
+                  <strong>Chamber Maps & Navigation:</strong> Integrated Google Maps directions guiding clients straight to your court chamber or office desk.
                 </span>
               </div>
 
@@ -689,7 +689,7 @@ export default function Home() {
                   <Check className="w-3.5 h-3.5 stroke-[3]" />
                 </div>
                 <span className="text-sm font-semibold text-white/95">
-                  <strong>Bar Council Anti-Duplicate Guarantee:</strong> Strictly 1 profile per advocate enrollment number with dispute resolution.
+                  <strong>Zero-Code Free Setup:</strong> Ready in under 2 minutes with no hosting fees, web developers, or technical maintenance required.
                 </span>
               </div>
             </div>
