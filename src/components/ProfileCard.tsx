@@ -781,9 +781,13 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
               {/* QR Button */}
               <button
-                onClick={() => setShowQr(!showQr)}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowQr(true);
+                }}
                 title="Show QR Code"
-                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-colors shadow-sm ${
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all shadow-sm cursor-pointer active:scale-95 ${
                   isDark
                     ? "bg-[#202227] hover:bg-[#282a2e] text-white border-[#343840]"
                     : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
@@ -1056,107 +1060,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         {/* ── Main Content Cards ───────────────────────────────────────────── */}
         <div className="px-5 sm:px-7 pb-8 space-y-4">
           
-          {/* ── Official Chamber QR Code Modal ─────────────────────────────── */}
-          {showQr && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200">
-              <div
-                className={`relative w-full max-w-sm sm:max-w-md rounded-3xl p-6 border shadow-2xl transition-all ${
-                  isDark
-                    ? "bg-[#18191c] border-[#343840] text-[#f1f3f4]"
-                    : "bg-white border-slate-200 text-slate-900"
-                }`}
-              >
-                {/* Close Button */}
-                <button
-                  onClick={() => setShowQr(false)}
-                  className={`absolute top-4 right-4 p-2 rounded-full transition-colors ${
-                    isDark
-                      ? "hover:bg-white/10 text-gray-400 hover:text-white"
-                      : "hover:bg-slate-100 text-slate-500 hover:text-slate-900"
-                  }`}
-                  aria-label="Close"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                {/* Modal Header */}
-                <div className="text-center mb-4">
-                  <div className="w-11 h-11 mx-auto mb-2 rounded-2xl bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-[#0e0e10] shadow-md">
-                    <QrCode className="w-5 h-5 font-bold" />
-                  </div>
-                  <h3 className="text-base sm:text-lg font-bold">Chamber QR Code</h3>
-                  <p
-                    className={`text-xs mt-0.5 ${
-                      isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                    }`}
-                  >
-                    Print for visiting cards, letterheads & acrylic desk standees
-                  </p>
-                </div>
-
-                {/* High-Contrast Print Preview Card Frame */}
-                <div className="bg-white p-5 rounded-2xl shadow-inner border border-slate-200 flex flex-col items-center text-center text-slate-900 mb-5">
-                  <p className="text-sm sm:text-base font-bold tracking-tight text-slate-900 mb-0.5">
-                    {advocate.fullName}
-                  </p>
-                  <p className="text-[11px] text-slate-500 font-medium mb-3">
-                    Advocate • {advocate.enrollmentNo || "Bar Council Registered"}
-                  </p>
-
-                  <div suppressHydrationWarning className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
-                    <QRCodeSVG
-                      id="profile-qr-svg"
-                      value={profileUrl}
-                      size={180}
-                      level="H"
-                      includeMargin={true}
-                      className="w-40 h-40 sm:w-48 sm:h-48"
-                    />
-                  </div>
-
-                  <p className="text-[10px] font-mono tracking-wider text-slate-400 mt-3 uppercase">
-                    Scan to Connect • Virtual Chamber
-                  </p>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    onClick={downloadQrPng}
-                    className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#8ab4f8] hover:bg-[#aecbfa] text-[#0e0e10] text-xs font-bold shadow-md transition-all active:scale-95"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>Download PNG</span>
-                  </button>
-
-                  <button
-                    onClick={handleShare}
-                    className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-colors active:scale-95 ${
-                      isDark
-                        ? "bg-[#202227] hover:bg-[#282a30] border-[#343840] text-white"
-                        : "bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800"
-                    }`}
-                  >
-                    {copied ? (
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    ) : (
-                      <Share2 className="w-4 h-4" />
-                    )}
-                    <span>{copied ? "Link Copied!" : "Copy Link"}</span>
-                  </button>
-                </div>
-
-                <p
-                  className={`text-[11px] text-center mt-3 ${
-                    isDark ? "text-[#9aa0a6]" : "text-slate-500"
-                  }`}
-                >
-                  PNG renders at 1000×1200 high-res, print-ready for printing presses.
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* ── Dynamic Reorderable Profile Boxes (Box Mover) ─────────────── */}
           {(() => {
             const customOrder =
@@ -1915,6 +1818,114 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             </button>
           </div>
         </aside>
+      )}
+
+      {/* ── Official Chamber QR Code Modal (Rendered at root for true full-viewport overlay) ────── */}
+      {showQr && (
+        <div
+          onClick={() => setShowQr(false)}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className={`relative w-full max-w-sm sm:max-w-md rounded-3xl p-6 border shadow-2xl transition-all ${
+              isDark
+                ? "bg-[#16171b] border-[#343840] text-[#f1f3f4]"
+                : "bg-white border-[#E7E0D5] text-[#14231C]"
+            }`}
+          >
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={() => setShowQr(false)}
+              className={`absolute top-4 right-4 p-2 rounded-full transition-colors cursor-pointer ${
+                isDark
+                  ? "hover:bg-white/10 text-gray-400 hover:text-white"
+                  : "hover:bg-slate-100 text-slate-500 hover:text-slate-900"
+              }`}
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Modal Header */}
+            <div className="text-center mb-4">
+              <div className="w-11 h-11 mx-auto mb-2 rounded-2xl bg-[#163826] flex items-center justify-center text-[#E6D5B8] shadow-md">
+                <QrCode className="w-5 h-5 font-bold" />
+              </div>
+              <h3 className="text-base sm:text-lg font-bold">Chamber QR Code</h3>
+              <p
+                className={`text-xs mt-0.5 ${
+                  isDark ? "text-[#9aa0a6]" : "text-[#526057]"
+                }`}
+              >
+                Print for visiting cards, letterheads & acrylic desk standees
+              </p>
+            </div>
+
+            {/* High-Contrast Print Preview Card Frame */}
+            <div className="bg-white p-5 rounded-2xl shadow-inner border border-slate-200 flex flex-col items-center text-center text-slate-900 mb-5">
+              <p className="text-sm sm:text-base font-bold tracking-tight text-slate-900 mb-0.5">
+                {advocate.fullName}
+              </p>
+              <p className="text-[11px] text-slate-500 font-medium mb-3">
+                Advocate • {advocate.enrollmentNo || "Bar Council Registered"}
+              </p>
+
+              <div suppressHydrationWarning className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
+                <QRCodeSVG
+                  id="profile-qr-svg"
+                  value={profileUrl}
+                  size={180}
+                  level="H"
+                  includeMargin={true}
+                  className="w-40 h-40 sm:w-48 sm:h-48"
+                />
+              </div>
+
+              <p className="text-[10px] font-mono tracking-wider text-slate-400 mt-3 uppercase">
+                Scan to Connect • My Chamber
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <button
+                type="button"
+                onClick={downloadQrPng}
+                className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer"
+              >
+                <Download className="w-4 h-4 text-[#E6D5B8]" />
+                <span>Download PNG</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border text-xs font-semibold transition-colors active:scale-95 cursor-pointer ${
+                  isDark
+                    ? "bg-[#202227] hover:bg-[#282a30] border-[#343840] text-white"
+                    : "bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800"
+                }`}
+              >
+                {copied ? (
+                  <Check className="w-4 h-4 text-emerald-400" />
+                ) : (
+                  <Share2 className="w-4 h-4" />
+                )}
+                <span>{copied ? "Link Copied!" : "Copy Link"}</span>
+              </button>
+            </div>
+
+            <p
+              className={`text-[11px] text-center mt-3 ${
+                isDark ? "text-[#9aa0a6]" : "text-slate-500"
+              }`}
+            >
+              PNG renders at 1000×1200 high-res, print-ready for printing presses.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* ── Toast Notification ──────────────────────────────────────────────── */}
