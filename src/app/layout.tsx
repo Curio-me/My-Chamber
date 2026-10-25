@@ -11,18 +11,59 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mychamber.me"),
   title: {
     default: "My Chamber — Digital Profiles for Indian Advocates",
     template: "%s | My Chamber",
   },
   description:
-    "My Chamber is a distinguished digital chamber infrastructure for advocates in India. Showcase office contact, bar enrollment, specializations, and office location.",
-  keywords: ["advocate", "lawyer", "my chamber", "virtual chamber", "High Court", "legal", "India"],
+    "The Link in Bio & Digital Chamber platform built exclusively for Indian advocates. Verified Bar Council credentials, 1-tap phonebook vCard, printable desk QR codes, and client consultations.",
+  keywords: [
+    "advocate",
+    "lawyer",
+    "my chamber",
+    "digital chamber",
+    "High Court",
+    "Supreme Court of India",
+    "District Court",
+    "Bar Council of India",
+    "legal",
+    "India",
+    "vCard",
+    "visiting card QR",
+    "acrylic desk stand QR",
+  ],
+  authors: [{ name: "My Chamber" }],
+  creator: "My Chamber",
+  publisher: "My Chamber",
+  alternates: {
+    canonical: "https://mychamber.me",
+  },
   openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://mychamber.me",
+    siteName: "My Chamber",
     title: "My Chamber — Digital Profiles for Indian Advocates",
     description:
-      "Every advocate deserves a digital presence. Shareable chamber profile with practice areas, direct contact, and map location.",
-    siteName: "My Chamber",
+      "A distinguished digital chamber infrastructure for advocates in India. Bar Council verification, 1-tap vCard, desk QR code, and court particulars.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "My Chamber — Digital Profiles for Indian Advocates",
+    description:
+      "A distinguished digital chamber infrastructure for advocates in India. Bar Council verification, 1-tap vCard, desk QR code, and court particulars.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 

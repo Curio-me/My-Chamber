@@ -21,21 +21,23 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const canonicalUrl = `https://mychamber.me/${encodeURIComponent(slug)}`;
 
   if (RESERVED_SLUGS.has(slug.toLowerCase())) {
-    return { title: "Virtual Chamber" };
+    return { title: "My Chamber" };
   }
 
   // Fetch actual data or fallback
   const advocate = await fetchAdvocateBySlug(slug);
 
   if (advocate) {
-    const title = `${advocate.fullName} | Virtual Chamber`;
+    const courtName = advocate.courts?.[0] || "High Court";
+    const title = `${advocate.fullName} — ${courtName}`;
     const desc = advocate.bio
-      ? advocate.bio.slice(0, 160)
-      : `Official Virtual Chamber profile of ${advocate.fullName}, practicing at ${
-          advocate.courts?.[0] || "High Court"
-        }. Bar Council: ${advocate.enrollmentNo || "Registered"}.`;
+      ? advocate.bio.slice(0, 155)
+      : `Official digital chamber of ${advocate.fullName}, practicing at ${courtName}. Bar Council Registration: ${
+          advocate.enrollmentNo || "Registered Advocate"
+        }. Contact details, chamber address & desk QR.`;
     return {
       title,
       description: desc,
@@ -45,20 +47,25 @@ export async function generateMetadata({
         ...(advocate.courts || []),
         ...(advocate.barAssociations || []),
         "Advocate",
-        "Virtual Chamber",
+        "My Chamber",
         "Legal Counsel",
         "High Court",
+        "Supreme Court",
       ],
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
-        title: `${advocate.fullName} | Virtual Chamber`,
+        title: `${advocate.fullName} — ${courtName} | My Chamber`,
         description: desc,
+        url: canonicalUrl,
         type: "profile",
-        siteName: "Virtual Chamber",
-        images: advocate.photoUrl ? [{ url: advocate.photoUrl }] : undefined,
+        siteName: "My Chamber",
+        images: advocate.photoUrl ? [{ url: advocate.photoUrl, width: 800, height: 800, alt: advocate.fullName }] : undefined,
       },
       twitter: {
-        card: "summary",
-        title: `${advocate.fullName} | Virtual Chamber`,
+        card: "summary_large_image",
+        title: `${advocate.fullName} — ${courtName} | My Chamber`,
         description: desc,
         images: advocate.photoUrl ? [advocate.photoUrl] : undefined,
       },
@@ -66,8 +73,8 @@ export async function generateMetadata({
   }
 
   if (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv") {
-    const title = "Adv. RajaVikrant Sharma | Virtual Chamber";
-    const description = "Official Virtual Chamber profile of Adv. RajaVikrant Sharma, Advocate practicing at the Punjab and Haryana High Court. Bar Council No: PH//7797//2025.";
+    const title = "Adv. RajaVikrant Sharma — Punjab & Haryana High Court";
+    const description = "Official digital chamber of Adv. RajaVikrant Sharma, Advocate practicing at the Punjab and Haryana High Court. Bar Council No: PH/7797/2025. Contact, directions & desk QR.";
     return {
       title,
       description,
@@ -79,16 +86,21 @@ export async function generateMetadata({
         "Consumer Law",
         "Cyber Law",
         "Civil Law",
+        "My Chamber",
       ],
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
-        title,
+        title: `${title} | My Chamber`,
         description,
+        url: canonicalUrl,
         type: "profile",
-        siteName: "Virtual Chamber",
+        siteName: "My Chamber",
       },
       twitter: {
-        card: "summary",
-        title,
+        card: "summary_large_image",
+        title: `${title} | My Chamber`,
         description,
       },
     };
@@ -103,21 +115,25 @@ export async function generateMetadata({
         .join(" ")
     : "Advocate";
 
-  const title = `Adv. ${formattedName}`;
-  const description = `Official Virtual Chamber profile of Adv. ${formattedName}. Specializations, Bar Council details, chamber location, and direct contact.`;
+  const title = `Adv. ${formattedName} | My Chamber`;
+  const description = `Official digital chamber of Adv. ${formattedName}. Specializations, Bar Council credentials, chamber location, and direct contact.`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: `${title} | Virtual Chamber`,
+      title,
       description,
+      url: canonicalUrl,
       type: "profile",
-      siteName: "Virtual Chamber",
+      siteName: "My Chamber",
     },
     twitter: {
-      card: "summary",
-      title: `${title} | Virtual Chamber`,
+      card: "summary_large_image",
+      title,
       description,
     },
   };

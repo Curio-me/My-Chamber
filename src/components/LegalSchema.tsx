@@ -56,9 +56,9 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mycha
     jobTitle: "Advocate",
     description:
       advocate.bio ||
-      `Official Virtual Chamber profile of ${advocate.fullName}. Practicing advocate at ${
+      `Official digital chamber profile of ${advocate.fullName}. Practicing advocate at ${
         advocate.courts?.[0] || "High Court"
-      }.`,
+      }. Bar Council Registration: ${advocate.enrollmentNo || "Registered"}.`,
     url: profileUrl,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -118,11 +118,36 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mycha
 
 export default function LegalSchema({ advocate }: { advocate: Advocate }) {
   const schema = generateLegalSchema(advocate);
+  const profileUrl = `https://mychamber.me/${encodeURIComponent(advocate.slug || "")}`;
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "My Chamber",
+        item: "https://mychamber.me",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: advocate.fullName,
+        item: profileUrl,
+      },
+    ],
+  };
 
   return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+    </>
   );
 }

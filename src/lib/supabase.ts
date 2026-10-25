@@ -225,6 +225,28 @@ export async function fetchAdvocateBySlug(slug: string): Promise<Advocate | null
   }
 }
 
+// Fetch all registered advocate slugs for dynamic SEO sitemap generation
+export async function fetchAllAdvocateSlugs(): Promise<{ slug: string; updatedAt?: string }[]> {
+  try {
+    const { data, error } = await supabase
+      .from("advocate_profiles")
+      .select("slug, updated_at");
+
+    if (error || !data) {
+      return [];
+    }
+
+    return data
+      .filter((row) => Boolean(row.slug))
+      .map((row) => ({
+        slug: row.slug,
+        updatedAt: row.updated_at,
+      }));
+  } catch {
+    return [];
+  }
+}
+
 // ── Bar Council Uniqueness & Normalization Helpers ──────────────────────────
 export function normalizeEnrollmentNo(enrollment: string): string {
   if (!enrollment) return "";
