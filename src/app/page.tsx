@@ -661,7 +661,7 @@ export default function Home() {
             </h2>
 
             <p className="text-base sm:text-lg text-[#D4DFD8] leading-relaxed font-normal max-w-xl mx-auto lg:mx-0">
-              Connect your Bar Council credentials, court appearances, office chambers, printable QR code, and client consultations in one verified link in bio. Customize every detail to match your practice.
+              Connect your Bar Council credentials, office chambers, Contact details, Social Media links, Google Map, printable QR code, Media Coverage and client consultations in one verified link. Customize every detail to match your practice.
             </p>
 
             {/* Bullet Features */}
