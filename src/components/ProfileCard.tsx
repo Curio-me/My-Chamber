@@ -1590,82 +1590,211 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                         <Navigation className="w-3.5 h-3.5" />
                         <span>Get 1-Tap Directions in Google Maps</span>
                       </a>
-
-                      {/* Additional Socials (Twitter / YouTube / Facebook / Website) */}
-                      {(advocate.twitterUrl || advocate.youtubeUrl || advocate.facebookUrl || advocate.websiteUrl) && (
-                        <div className="grid grid-cols-2 gap-2 pt-1">
-                          {advocate.twitterUrl && (
-                            <a
-                              href={normalizeSocialUrl("twitter", advocate.twitterUrl)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                                isDark
-                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                              }`}
-                            >
-                              <TwitterIcon
-                                className={`w-3.5 h-3.5 shrink-0 ${
-                                  isDark ? "text-white" : "text-slate-900"
-                                }`}
-                              />
-                              <span className="truncate">Twitter / X</span>
-                            </a>
-                          )}
-                          {advocate.youtubeUrl && (
-                            <a
-                              href={normalizeSocialUrl("youtube", advocate.youtubeUrl)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                                isDark
-                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                              }`}
-                            >
-                              <YoutubeIcon className="w-3.5 h-3.5 shrink-0 text-red-500" />
-                              <span className="truncate">YouTube</span>
-                            </a>
-                          )}
-                          {advocate.facebookUrl && (
-                            <a
-                              href={normalizeSocialUrl("facebook", advocate.facebookUrl)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                                isDark
-                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                              }`}
-                            >
-                              <FacebookIcon className="w-3.5 h-3.5 shrink-0 text-[#1877F2]" />
-                              <span className="truncate">Facebook</span>
-                            </a>
-                          )}
-                          {advocate.websiteUrl && (
-                            <a
-                              href={normalizeSocialUrl("website", advocate.websiteUrl)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
-                                isDark
-                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
-                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
-                              }`}
-                            >
-                              <Globe
-                                className={`w-3.5 h-3.5 shrink-0 ${
-                                  isDark ? "text-[#8ab4f8]" : "text-blue-600"
-                                }`}
-                              />
-                              <span className="truncate">Website</span>
-                            </a>
-                          )}
-                        </div>
-                      )}
                     </div>
                   );
+
+                case "social_presence": {
+                  const hasAnySocial = Boolean(
+                    advocate.linkedinUrl ||
+                    advocate.twitterUrl ||
+                    advocate.youtubeUrl ||
+                    advocate.instagramUrl ||
+                    advocate.facebookUrl ||
+                    advocate.websiteUrl
+                  );
+                  if (!hasAnySocial) return null;
+
+                  return (
+                    <div
+                      key="box-social-presence"
+                      className={`rounded-2xl p-5 border space-y-3.5 shadow-sm transition-all ${
+                        isDark
+                          ? "bg-[#202227] border-[#343840]/50"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <h2
+                          className={`text-sm font-semibold tracking-wide flex items-center gap-2 ${
+                            isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                          }`}
+                        >
+                          <Share2
+                            className={`w-4 h-4 ${
+                              isDark ? "text-[#8ab4f8]" : "text-[#163826]"
+                            }`}
+                          />
+                          <span>Social Profiles & Web Presence</span>
+                        </h2>
+                        <span
+                          className={`text-[11px] font-medium ${
+                            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                          }`}
+                        >
+                          Verified Channels
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                        {/* LinkedIn */}
+                        {advocate.linkedinUrl && (
+                          <a
+                            href={normalizeSocialUrl("linkedin", advocate.linkedinUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-[#0077b5]/50 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-[#0077b5]/40 text-slate-800"
+                            }`}
+                          >
+                            <div className="w-9 h-9 rounded-xl bg-[#0077b5]/15 flex items-center justify-center shrink-0 border border-[#0077b5]/30">
+                              <LinkedinIcon className="w-4 h-4 text-[#0077b5]" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">LinkedIn</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("linkedin", advocate.linkedinUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-[#0077b5] opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                          </a>
+                        )}
+
+                        {/* Twitter / X */}
+                        {advocate.twitterUrl && (
+                          <a
+                            href={normalizeSocialUrl("twitter", advocate.twitterUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-white/30 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-slate-400 text-slate-800"
+                            }`}
+                          >
+                            <div className="w-9 h-9 rounded-xl bg-black/40 border border-white/20 flex items-center justify-center shrink-0">
+                              <TwitterIcon className="w-3.5 h-3.5 text-white" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">Twitter / X</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("twitter", advocate.twitterUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className={`w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ${isDark ? "text-white" : "text-slate-900"}`} />
+                          </a>
+                        )}
+
+                        {/* YouTube */}
+                        {advocate.youtubeUrl && (
+                          <a
+                            href={normalizeSocialUrl("youtube", advocate.youtubeUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-red-500/50 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-red-500/40 text-slate-800"
+                            }`}
+                          >
+                            <div className="w-9 h-9 rounded-xl bg-red-500/15 border border-red-500/30 flex items-center justify-center shrink-0">
+                              <YoutubeIcon className="w-4 h-4 text-red-500" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">YouTube Channel</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("youtube", advocate.youtubeUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-red-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                          </a>
+                        )}
+
+                        {/* Instagram */}
+                        {advocate.instagramUrl && (
+                          <a
+                            href={normalizeSocialUrl("instagram", advocate.instagramUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-pink-500/50 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-pink-500/40 text-slate-800"
+                            }`}
+                          >
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-pink-500/20 via-purple-500/20 to-orange-500/20 border border-pink-500/30 flex items-center justify-center shrink-0">
+                              <InstagramIcon className="w-4 h-4 text-pink-500" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">Instagram</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("instagram", advocate.instagramUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-pink-500 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                          </a>
+                        )}
+
+                        {/* Facebook */}
+                        {advocate.facebookUrl && (
+                          <a
+                            href={normalizeSocialUrl("facebook", advocate.facebookUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-[#1877F2]/50 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-[#1877F2]/40 text-slate-800"
+                            }`}
+                          >
+                            <div className="w-9 h-9 rounded-xl bg-[#1877F2]/15 border border-[#1877F2]/30 flex items-center justify-center shrink-0">
+                              <FacebookIcon className="w-4 h-4 text-[#1877F2]" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">Facebook</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("facebook", advocate.facebookUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-[#1877F2] opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                          </a>
+                        )}
+
+                        {/* Official Website */}
+                        {advocate.websiteUrl && (
+                          <a
+                            href={normalizeSocialUrl("website", advocate.websiteUrl)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`group rounded-xl p-3 flex items-center gap-3 border transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] shadow-sm ${
+                              isDark
+                                ? "bg-[#181a1f] hover:bg-[#22252c] border-[#343840]/60 hover:border-[#D4AF37]/50 text-white"
+                                : "bg-white hover:bg-slate-50 border-slate-200 hover:border-[#163826]/40 text-slate-800"
+                            }`}
+                          >
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border ${
+                              isDark
+                                ? "bg-[#D4AF37]/15 border-[#D4AF37]/30 text-[#D4AF37]"
+                                : "bg-[#163826]/10 border-[#163826]/20 text-[#163826]"
+                            }`}>
+                              <Globe className="w-4 h-4" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs font-bold truncate">Official Website</p>
+                              <p className={`text-[11px] truncate ${isDark ? "text-[#9aa0a6]" : "text-slate-500"}`}>
+                                {extractSocialHandle("website", advocate.websiteUrl)}
+                              </p>
+                            </div>
+                            <ChevronRight className={`w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all ${
+                              isDark ? "text-[#D4AF37]" : "text-[#163826]"
+                            }`} />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
 
                 case "news_media":
                   if (!advocate.newsMedia || advocate.newsMedia.length === 0)

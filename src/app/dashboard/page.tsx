@@ -526,6 +526,8 @@ export default function DashboardPage() {
         return <GraduationCap className="w-4 h-4 text-indigo-300" />;
       case "contact":
         return <Phone className="w-4 h-4 text-emerald-400" />;
+      case "social_presence":
+        return <Share2 className="w-4 h-4 text-[#163826]" />;
       case "location":
         return <MapPin className="w-4 h-4 text-rose-400" />;
       case "news_media":
