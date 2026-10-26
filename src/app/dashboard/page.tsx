@@ -104,6 +104,9 @@ export default function DashboardPage() {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           currentProfile = JSON.parse(saved);
+          if (currentProfile.id === "chamber-new") {
+            currentProfile.id = "";
+          }
         }
       } catch {
         // remains EMPTY_ADVOCATE
@@ -144,9 +147,15 @@ export default function DashboardPage() {
       return;
     }
 
+    const profileToSave: Advocate = {
+      ...profile,
+      slug: cleanSlug,
+      id: (!profile.id || profile.id === "chamber-new") ? cleanSlug : profile.id,
+    };
+
     try {
       // 2. Direct Supabase sync with strict uniqueness check (1 profile per Bar Council ID)
-      const result = await upsertAdvocateProfile(profile);
+      const result = await upsertAdvocateProfile(profileToSave);
       if (!result.success) {
         setSaveErrorMessage(result.error || "Failed to save profile due to database restriction.");
         alert(`❌ Cannot Save Profile:\n\n${result.error}`);
@@ -154,7 +163,8 @@ export default function DashboardPage() {
       }
 
       // 3. Save to local storage for instant zero-latency load
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profileToSave));
+      setProfile(profileToSave);
       setSavedStatus("saved");
       setSaveErrorMessage(null);
       setTimeout(() => setSavedStatus("idle"), 2500);
@@ -163,7 +173,7 @@ export default function DashboardPage() {
       await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
+        body: JSON.stringify(profileToSave),
       }).catch(() => {});
     } catch (err: any) {
       alert("Failed to save profile: " + (err.message || "Unknown error"));

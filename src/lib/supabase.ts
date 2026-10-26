@@ -177,9 +177,15 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
     },
   ];
 
+  const cleanSlug = (advocate.slug || "").trim().toLowerCase();
+  const profileId =
+    advocate.id && advocate.id !== "chamber-new"
+      ? advocate.id
+      : cleanSlug || `adv_${Date.now()}`;
+
   return {
-    id: advocate.id || advocate.slug,
-    slug: advocate.slug,
+    id: profileId,
+    slug: cleanSlug,
     user_id: userId || null,
     full_name: advocate.fullName,
     enrollment_no: advocate.enrollmentNo,
@@ -320,7 +326,18 @@ export async function upsertAdvocateProfile(
       };
     }
 
-    const row = mapAdvocateToRow(advocate, userId);
+    // Query if a profile with this slug already exists to preserve its primary key ID
+    const { data: existingProfile } = await supabase
+      .from("advocate_profiles")
+      .select("id")
+      .eq("slug", cleanSlug)
+      .maybeSingle();
+
+    const profileId =
+      existingProfile?.id ||
+      (advocate.id && advocate.id !== "chamber-new" ? advocate.id : cleanSlug);
+
+    const row = mapAdvocateToRow({ ...advocate, id: profileId, slug: cleanSlug }, userId);
     row.enrollment_no = normalizeEnrollmentNo(advocate.enrollmentNo);
 
     const { error } = await supabase

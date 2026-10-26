@@ -2,7 +2,7 @@ import { Advocate, DEFAULT_BOX_ORDER } from "./types";
 
 // Empty advocate template for new users opening the Dashboard
 export const EMPTY_ADVOCATE: Advocate = {
-  id: "chamber-new",
+  id: "",
   slug: "",
   fullName: "",
   enrollmentNo: "",
