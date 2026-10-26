@@ -200,11 +200,20 @@ export default function DashboardPage() {
   const handleSave = async () => {
     setSaveErrorMessage(null);
 
-    // 1. Mandatory check: Every advocate must have a Bar Council Enrollment Number
-    if (!profile.enrollmentNo || !profile.enrollmentNo.trim()) {
+    // 1. Mandatory check: Every advocate must have a valid Bar Council Enrollment Number
+    const rawEnrollment = (profile.enrollmentNo || "").trim();
+    if (!rawEnrollment) {
       const msg = "Bar Council Enrollment Number is mandatory. Every advocate profile must have a valid Bar Council registration number.";
       setSaveErrorMessage(msg);
       alert("⚠️ Bar Council Enrollment Number is mandatory!\n\nPlease enter your official Bar Council registration number (e.g. PH/7797/2025) before saving.");
+      return;
+    }
+
+    const formatCheck = validateBarCouncilFormat(rawEnrollment);
+    if (!formatCheck.isValid) {
+      const msg = `Invalid Bar Council Enrollment Number (${rawEnrollment}). ${formatCheck.suggestion || "Must follow [State]/[Number]/[Year], e.g. PH/7797/2025. Asterisks (*) or placeholder masks are strictly prohibited."}`;
+      setSaveErrorMessage(msg);
+      alert(`⚠️ Invalid Bar Council Enrollment Number!\n\n"${rawEnrollment}" does not match official Bar Council conventions.\n\nRequired Format: [State Code]/[Number]/[Year]\nExamples:\n• PH/7797/2025 (Punjab & Haryana)\n• D/1234/2018 (Delhi)\n• MAH/567/2019 (Maharashtra & Goa)\n• UP/1029/2021 (Uttar Pradesh)\n\nNote: Masking with asterisks (****) or placeholder letters is strictly prohibited.`);
       return;
     }
 

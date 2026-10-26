@@ -313,6 +313,15 @@ export async function upsertAdvocateProfile(
       };
     }
 
+    // Strict format validation: reject asterisks (*), placeholders, or invalid state conventions
+    const formatCheck = validateBarCouncilFormat(advocate.enrollmentNo);
+    if (!formatCheck.isValid) {
+      return {
+        success: false,
+        error: `Invalid Bar Council Enrollment format (${advocate.enrollmentNo}). ${formatCheck.suggestion || "Must follow [State]/[Number]/[Year], e.g. PH/7797/2025. Asterisks (*) or placeholder masks are not allowed."}`,
+      };
+    }
+
     const cleanSlug = (advocate.slug || "").trim().toLowerCase();
     if (!cleanSlug || cleanSlug.length < 4 || cleanSlug.length > 20) {
       return {
@@ -432,8 +441,16 @@ export function validateBarCouncilFormat(val: string): {
   }
   const clean = val.trim().toUpperCase().replace(/\s+/g, "");
 
-  // Pattern: STATE / ROLL_NO / YEAR (e.g. PH/7797/2025, D/1234/2020)
-  const pattern = /^[A-Z]{1,5}\s*\/+\s*\d+\s*\/+\s*(19\d{2}|20\d{2})$/i;
+  // Strictly reject any asterisks or masks (e.g. PH/*****/**** or D/XX/2020)
+  if (clean.includes("*") || /x{2,}/i.test(clean)) {
+    return {
+      isValid: false,
+      suggestion: "Masking with asterisks (*) or placeholder letters is strictly prohibited. Please enter your real registration number.",
+    };
+  }
+
+  // Pattern: STATE / ROLL_NO / YEAR (e.g. PH/7797/2025, D/1234/2020, KAR-1234-2019, MAH/567/18)
+  const pattern = /^[A-Z]{1,5}[\/\-]\d+[\/\-](19\d{2}|20\d{2}|\d{2})$/i;
 
   if (pattern.test(clean)) {
     return { isValid: true };
@@ -471,7 +488,7 @@ export function validateBarCouncilFormat(val: string): {
   return {
     isValid: false,
     state: detectedState,
-    suggestion: "Format should typically be [State]/[Number]/[Year], e.g. PH/7797/2025 or D/1234/2020",
+    suggestion: "Format must be [State]/[Number]/[Year], e.g. PH/7797/2025, D/1234/2020, or MAH/567/2019.",
   };
 }
 

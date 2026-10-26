@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { ShieldIcon } from "@/components/Logo";
-import { supabase, checkBarCouncilUnique, submitChamberClaim } from "@/lib/supabase";
+import { supabase, checkBarCouncilUnique, submitChamberClaim, validateBarCouncilFormat } from "@/lib/supabase";
 
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -328,10 +328,20 @@ export default function LoginPage() {
       return;
     }
 
-    if (!enrollmentNo || !enrollmentNo.trim()) {
+    const rawEnrollment = (enrollmentNo || "").trim();
+    if (!rawEnrollment) {
       setMessage({
         type: "error",
         text: "Bar Council Enrollment Number is mandatory. Multiple profiles with the same Bar Council Number are not allowed.",
+      });
+      return;
+    }
+
+    const formatCheck = validateBarCouncilFormat(rawEnrollment);
+    if (!formatCheck.isValid) {
+      setMessage({
+        type: "error",
+        text: `Invalid Bar Council format (${rawEnrollment}). ${formatCheck.suggestion || "Must follow [State]/[Number]/[Year], e.g. PH/7797/2025. Asterisks (*) or placeholders are strictly prohibited."}`,
       });
       return;
     }
