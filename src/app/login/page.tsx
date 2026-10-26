@@ -196,7 +196,7 @@ export default function LoginPage() {
       const redirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/dashboard`
-          : "https://my-chamber.vercel.app/dashboard";
+          : "https://mychamber.me/dashboard";
 
       const { error } = await supabase.auth.signInWithOtp({
         email: resolvedEmail,
@@ -293,7 +293,7 @@ export default function LoginPage() {
       const redirectTo =
         typeof window !== "undefined"
           ? `${window.location.origin}/login`
-          : "https://my-chamber.vercel.app/login";
+          : "https://mychamber.me/login";
 
       const { error } = await supabase.auth.resetPasswordForEmail(resolvedEmail, {
         redirectTo,
@@ -351,10 +351,16 @@ export default function LoginPage() {
       }
 
       // 2. Register account with Supabase
+      const redirectTo =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/dashboard`
+          : "https://mychamber.me/dashboard";
+
       const { data, error } = await supabase.auth.signUp({
         email: identifier,
         password,
         options: {
+          emailRedirectTo: redirectTo,
           data: {
             full_name: fullName,
             enrollment_no: enrollmentNo.trim(),

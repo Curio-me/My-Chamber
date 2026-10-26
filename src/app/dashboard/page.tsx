@@ -2203,7 +2203,7 @@ export default function DashboardPage() {
                 </div>
                 <span className="text-[#dadce0] font-medium">Virtual Chamber</span>
                 <span>›</span>
-                <span className="text-[#526057] font-mono text-[11px]">my-chamber.vercel.app › {profile.slug || "advocate"}</span>
+                <span className="text-[#526057] font-mono text-[11px]">mychamber.me › {profile.slug || "advocate"}</span>
               </div>
 
               {/* Blue Title Link */}
