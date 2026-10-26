@@ -54,6 +54,14 @@ export const metadata: Metadata = {
     description:
       "A distinguished digital chamber infrastructure for advocates in India. Bar Council verification, 1-tap vCard, desk QR code, and court particulars.",
   },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/logo-shield.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/icon.svg",
+    apple: "/logo-shield.svg",
+  },
   robots: {
     index: true,
     follow: true,
