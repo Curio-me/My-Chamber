@@ -155,7 +155,7 @@ export default function LoginPage() {
     // Attempt to lookup advocate's email by Bar Council Enrollment No
     try {
       const { data } = await supabase
-        .from("advocates")
+        .from("advocate_profiles")
         .select("email")
         .ilike("enrollment_no", `%${trimmed}%`)
         .limit(1)

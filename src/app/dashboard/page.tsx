@@ -16,6 +16,7 @@ import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import {
   upsertAdvocateProfile,
+  mapRowToAdvocate,
   supabase,
   submitChamberClaim,
   validateBarCouncilFormat,
@@ -95,7 +96,7 @@ export default function DashboardPage() {
   const photoFileInputRef = useRef<HTMLInputElement>(null);
   const [origin, setOrigin] = useState("https://mychamber.me");
 
-  // Load saved profile on mount if author previously created one, or apply claimed slug from URL
+  // Load saved profile on mount if author previously created one, or apply claimed slug from URL, and sync with live Supabase database
   useEffect(() => {
     let currentProfile = EMPTY_ADVOCATE;
     if (typeof window !== "undefined") {
@@ -123,6 +124,52 @@ export default function DashboardPage() {
       }
 
       setProfile(currentProfile);
+
+      // Async: Sync with live profile from Supabase cloud database
+      const loadLiveProfile = async () => {
+        try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const user = sessionData?.session?.user;
+
+          // 1. If authenticated, load profile matching logged-in advocate's email or user ID
+          if (user) {
+            let query = supabase.from("advocate_profiles").select("*");
+            if (user.email) {
+              query = query.or(`email.eq.${user.email},user_id.eq.${user.id}`);
+            } else {
+              query = query.eq("user_id", user.id);
+            }
+
+            const { data: userProfile } = await query.maybeSingle();
+            if (userProfile) {
+              const mapped = mapRowToAdvocate(userProfile);
+              setProfile(mapped);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped));
+              return;
+            }
+          }
+
+          // 2. If querySlug exists (e.g. /dashboard?slug=rajavikrant)
+          const targetSlug = querySlug ? querySlug.toLowerCase() : currentProfile.slug;
+          if (targetSlug) {
+            const { data: slugProfile } = await supabase
+              .from("advocate_profiles")
+              .select("*")
+              .eq("slug", targetSlug)
+              .maybeSingle();
+
+            if (slugProfile) {
+              const mapped = mapRowToAdvocate(slugProfile);
+              setProfile(mapped);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped));
+            }
+          }
+        } catch (err) {
+          console.error("Live profile sync error:", err);
+        }
+      };
+
+      loadLiveProfile();
     }
   }, []);
 
