@@ -1778,7 +1778,9 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           <div className="pt-8 pb-4 text-center space-y-3.5">
             <div className="flex flex-col items-center justify-center">
               <a
-                href="/dashboard"
+                href="https://mychamber.me"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`group inline-flex items-center justify-center gap-3 text-sm sm:text-base font-bold px-7 py-3.5 rounded-2xl border transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
                   isDark
                     ? "bg-[#20252e] hover:bg-[#28303d] text-[#f1f3f4] border-[#3d4554] hover:border-[#8ab4f8]/70 shadow-black/40"
