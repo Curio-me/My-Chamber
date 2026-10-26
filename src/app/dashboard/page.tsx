@@ -14,6 +14,7 @@ import {
 } from "@/lib/types";
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
+import Logo from "@/components/Logo";
 import {
   upsertAdvocateProfile,
   mapRowToAdvocate,
@@ -724,13 +725,8 @@ export default function DashboardPage() {
           
           {/* Logo & Status */}
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-full bg-[#163826] text-[#F3EFE6] flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
-                <Scale className="w-4 h-4 text-[#E6D5B8]" />
-              </div>
-              <span className="font-extrabold text-[#14231C] text-base tracking-tight hidden sm:inline">
-                My Chamber<span className="text-[#163826] font-normal">✦</span>
-              </span>
+            <Link href="/" className="group py-0.5">
+              <Logo size="sm" />
             </Link>
             <span className="text-xs text-[#D5CFC5] hidden md:inline">|</span>
             <span className="text-xs font-bold text-[#163826] bg-[#EBF3ED] px-3 py-1 rounded-full border border-[#163826]/20 hidden md:inline">

@@ -20,6 +20,7 @@ import {
   Upload,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { ShieldIcon } from "@/components/Logo";
 import { supabase, checkBarCouncilUnique, submitChamberClaim } from "@/lib/supabase";
 
 function GoogleIcon({ className }: { className?: string }) {
@@ -405,8 +406,8 @@ export default function LoginPage() {
             
             {/* Header */}
             <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-[#163826] rounded-2xl flex items-center justify-center mx-auto mb-3.5 shadow-sm text-[#E6D5B8]">
-                <Scale className="w-7 h-7" />
+              <div className="w-16 h-16 flex items-center justify-center mx-auto mb-3.5 drop-shadow-sm">
+                <ShieldIcon size={56} />
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#14231C] tracking-tight">
                 {currentUser

@@ -39,6 +39,7 @@ import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import LegalSchema from "./LegalSchema";
+import { ShieldIcon } from "./Logo";
 
 interface ProfileCardProps {
   advocate: Advocate;
@@ -784,9 +785,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                   : "bg-slate-100 border-slate-200 text-slate-800"
               }`}
             >
-              <Scale
-                className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`}
-              />
+              <ShieldIcon size={16} />
               <span className="text-xs font-semibold tracking-wide">
                 Digital Chamber
               </span>

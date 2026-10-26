@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Logo, { ShieldIcon } from "@/components/Logo";
 import {
   Scale,
   QrCode,
@@ -121,13 +122,8 @@ export default function Home() {
       <header className="sticky top-4 z-50 px-4 sm:px-6 max-w-6xl mx-auto">
         <nav className="bg-white/95 backdrop-blur-md border border-[#E7E0D5] rounded-full px-5 py-3 shadow-sm flex items-center justify-between transition-all">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-full bg-[#163826] text-[#F3EFE6] flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
-              <Scale className="w-4 h-4 text-[#E6D5B8]" />
-            </div>
-            <span className="font-extrabold text-[#14231C] text-lg tracking-tight">
-              My Chamber<span className="text-[#163826] font-normal">✦</span>
-            </span>
+          <Link href="/" className="group py-0.5">
+            <Logo size="sm" />
           </Link>
 
           {/* Desktop Nav Links */}
@@ -1038,10 +1034,8 @@ export default function Home() {
       {/* ── 7. Clean Luxury Legal Footer ────────────────────────────────────── */}
       <footer className="border-t border-[#EAE3D6] py-10 px-4 sm:px-6 bg-[#F4EFEA] text-center space-y-3">
         <div className="flex items-center justify-center gap-2 text-sm font-bold text-[#14231C]">
-          <div className="w-6 h-6 rounded-full bg-[#163826] flex items-center justify-center text-white">
-            <Scale className="w-3.5 h-3.5 text-[#E6D5B8]" />
-          </div>
-          <span>My Chamber</span>
+          <ShieldIcon size={24} />
+          <span className="font-extrabold tracking-tight">My Chamber<span className="text-[#D4AF37]">✦</span></span>
         </div>
 
         <p className="text-xs text-[#6B7870] max-w-md mx-auto leading-relaxed">

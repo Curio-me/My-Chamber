@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Scale, Menu, X, LayoutDashboard, LogIn, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, LogIn, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import Logo from "@/components/Logo";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,13 +35,8 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-full bg-[#163826] text-[#F3EFE6] flex items-center justify-center font-bold shadow-sm transition-transform group-hover:scale-105">
-              <Scale className="w-4 h-4 text-[#E6D5B8]" />
-            </div>
-            <span className="font-extrabold text-[#14231C] text-lg tracking-tight">
-              My Chamber<span className="text-[#163826] font-normal">✦</span>
-            </span>
+          <Link href="/" className="group py-1">
+            <Logo size="sm" />
           </Link>
 
           {/* Desktop Nav */}
