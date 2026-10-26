@@ -1142,7 +1142,7 @@ export default function DashboardPage() {
                 </div>
 
                 <p className="text-[11px] text-[#526057] leading-relaxed">
-                  Upload a photo of your official Bar Council Certificate or Bar Association ID card. This locks your Bar Council registration to your profile, protects against mistaken duplicate claims, and activates your official <strong className="text-white">Verified Advocate Blue Badge</strong>.
+                  Upload a photo of your official Bar Council Certificate or Bar Association ID card. This locks your Bar Council registration to your profile, protects against mistaken duplicate claims, and activates your official <strong className="text-[#163826] font-semibold">Verified Advocate Badge</strong>.
                 </p>
 
                 <div className="flex items-center gap-3">
