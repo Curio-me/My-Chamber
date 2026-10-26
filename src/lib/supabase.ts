@@ -326,18 +326,44 @@ export async function upsertAdvocateProfile(
       };
     }
 
-    // Query if a profile with this slug already exists to preserve its primary key ID
+    // Query if a profile with this slug already exists to preserve its primary key ID and verify ownership
     const { data: existingProfile } = await supabase
       .from("advocate_profiles")
-      .select("id")
+      .select("id, user_id, email, full_name")
       .eq("slug", cleanSlug)
       .maybeSingle();
+
+    // Strict Security: If the chamber already exists, verify authenticated ownership!
+    if (existingProfile) {
+      const { data: authData } = await supabase.auth.getUser();
+      const currentUser = authData?.user;
+
+      if (!currentUser) {
+        return {
+          success: false,
+          error: `Authentication required: @${cleanSlug} is an active, claimed chamber. Please log in with the registered owner's email to save changes.`,
+        };
+      }
+
+      const isOwner =
+        (existingProfile.user_id && existingProfile.user_id === currentUser.id) ||
+        (existingProfile.email && currentUser.email && existingProfile.email.toLowerCase() === currentUser.email.toLowerCase()) ||
+        (!existingProfile.user_id && existingProfile.email && currentUser.email && existingProfile.email.toLowerCase() === currentUser.email.toLowerCase());
+
+      if (!isOwner) {
+        return {
+          success: false,
+          error: `Unauthorized: @${cleanSlug} is owned by ${existingProfile.full_name || "another advocate"}. You do not have permission to modify this chamber.`,
+        };
+      }
+    }
 
     const profileId =
       existingProfile?.id ||
       (advocate.id && advocate.id !== "chamber-new" ? advocate.id : cleanSlug);
 
-    const row = mapAdvocateToRow({ ...advocate, id: profileId, slug: cleanSlug }, userId);
+    const activeUserId = userId || (await supabase.auth.getUser()).data.user?.id || undefined;
+    const row = mapAdvocateToRow({ ...advocate, id: profileId, slug: cleanSlug }, activeUserId);
     row.enrollment_no = normalizeEnrollmentNo(advocate.enrollmentNo);
 
     const { error } = await supabase

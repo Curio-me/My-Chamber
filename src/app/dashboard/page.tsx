@@ -149,7 +149,7 @@ export default function DashboardPage() {
             }
           }
 
-          // 2. If querySlug exists (e.g. /dashboard?slug=rajavikrant)
+          // 2. If targetSlug exists in database, verify ownership!
           const targetSlug = querySlug ? querySlug.toLowerCase() : currentProfile.slug;
           if (targetSlug) {
             const { data: slugProfile } = await supabase
@@ -159,6 +159,20 @@ export default function DashboardPage() {
               .maybeSingle();
 
             if (slugProfile) {
+              // Existing chamber found in database! Verify if visitor is the verified owner.
+              const isOwner =
+                user &&
+                ((slugProfile.user_id && slugProfile.user_id === user.id) ||
+                 (slugProfile.email && user.email && slugProfile.email.toLowerCase() === user.email.toLowerCase()) ||
+                 (!slugProfile.user_id && slugProfile.email && user.email && slugProfile.email.toLowerCase() === user.email.toLowerCase()));
+
+              if (!isOwner) {
+                // Not authorized to edit this chamber! Protect data integrity.
+                alert(`🔒 Chamber Protected:\n\n@${targetSlug} is registered to ${slugProfile.full_name || "another advocate"}.\n\nYou must log in with the owner's verified email to edit this chamber.`);
+                window.location.href = `/login?tab=magic`;
+                return;
+              }
+
               const mapped = mapRowToAdvocate(slugProfile);
               setProfile(mapped);
               localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped));
