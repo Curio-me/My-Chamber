@@ -275,7 +275,7 @@ export default function PrivacyPolicyPage() {
                 Grievance Officer
               </p>
               <p>
-                <strong className="text-[#14231C]">Platform:</strong> My Chamber (Virtual Chamber
+                <strong className="text-[#14231C]">Platform:</strong> My Chamber (Digital Chamber
                 Infrastructure)
               </p>
               <p>

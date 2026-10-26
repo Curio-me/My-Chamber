@@ -454,7 +454,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const cleanMobile = advocate.mobile.replace(/[^0-9]/g, "");
   const defaultWhatsAppMsg =
     advocate.whatsappGreeting?.trim() ||
-    `Hello ${advocate.fullName}, I found your chamber profile on Virtual Chamber and would like to consult regarding a legal matter.`;
+    `Hello ${advocate.fullName}, I found your chamber profile on My Chamber and would like to consult regarding a legal matter.`;
   const whatsappUrl = cleanMobile
     ? `https://wa.me/${cleanMobile}?text=${encodeURIComponent(defaultWhatsAppMsg)}`
     : "#";
@@ -472,7 +472,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({
           title: advocate.fullName,
-          text: `Virtual Chamber profile of ${advocate.fullName} (${advocate.enrollmentNo})`,
+          text: `Digital Chamber profile of ${advocate.fullName} (${advocate.enrollmentNo})`,
           url: profileUrl,
         });
       } else {
@@ -510,7 +510,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
         ? `ADR;TYPE=WORK:;;${advocate.officeAddress.replace(/,/g, ";")};;;;`
         : "",
       `URL:${profileUrl}`,
-      `NOTE:Virtual Chamber: ${profileUrl}\\nBar Registration: ${advocate.enrollmentNo || "Registered"}${
+      `NOTE:Digital Chamber: ${profileUrl}\\nBar Registration: ${advocate.enrollmentNo || "Registered"}${
         advocate.barAssociations?.length ? `\\nEnrolled Bar: ${advocate.barAssociations.join(", ")}` : ""
       }${advocate.almaMater ? `\\nAlma Mater: ${advocate.almaMater}` : ""}${
         advocate.chamberHours ? `\\nChamber Timings: ${advocate.chamberHours}` : ""
@@ -613,7 +613,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
       {/* ── Floating 3D Controls Bar ────────────────────────────────────────── */}
       <div className="w-full max-w-[660px] flex items-center justify-between mb-3 px-2">
         <div className="flex items-center gap-1.5 text-xs font-medium text-[#9aa0a6]">
-          <span>Virtual Chamber</span>
+          <span>Digital Chamber</span>
           <span>•</span>
           <span className="text-[11px] font-mono text-[#8ab4f8]">
             {is3DActive ? "✦ Holographic Foil Active" : "2D Flat View"}
@@ -788,7 +788,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 className={`w-4 h-4 ${isDark ? "text-[#8ab4f8]" : "text-blue-600"}`}
               />
               <span className="text-xs font-semibold tracking-wide">
-                Virtual Chamber
+                Digital Chamber
               </span>
             </div>
 
@@ -1799,7 +1799,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 isDark ? "text-[#606368]" : "text-slate-400"
               }`}
             >
-              Virtual Chamber • Free digital profiles for advocates in India
+              Digital Chamber • Verified digital identity for advocates in India
             </p>
           </div>
         </div>

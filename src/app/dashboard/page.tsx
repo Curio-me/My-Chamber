@@ -635,7 +635,7 @@ export default function DashboardPage() {
       profile.email ? `EMAIL;TYPE=INTERNET,WORK:${profile.email}` : "",
       profile.officeAddress ? `ADR;TYPE=WORK:;;${profile.officeAddress.replace(/,/g, ";")};;;;` : "",
       `URL:${publicUrl}`,
-      `NOTE:Virtual Chamber: ${publicUrl}\\nBar Registration: ${profile.enrollmentNo || "Registered"}${
+      `NOTE:Digital Chamber: ${publicUrl}\\nBar Registration: ${profile.enrollmentNo || "Registered"}${
         profile.barAssociations?.length ? `\\nEnrolled Bar: ${profile.barAssociations.join(", ")}` : ""
       }${profile.almaMater ? `\\nAlma Mater: ${profile.almaMater}` : ""}${
         profile.chamberHours ? `\\nChamber Hours: ${profile.chamberHours}` : ""
@@ -1833,7 +1833,7 @@ export default function DashboardPage() {
                   type="text"
                   value={profile.whatsappGreeting || ""}
                   onChange={(e) => setProfile({ ...profile, whatsappGreeting: e.target.value })}
-                  placeholder={`e.g. Hello Adv. ${profile.fullName || "Advocate"}, I found your chamber profile on Virtual Chamber and would like to consult regarding a legal matter.`}
+                  placeholder={`e.g. Hello Adv. ${profile.fullName || "Advocate"}, I found your digital chamber profile on My Chamber and would like to consult regarding a legal matter.`}
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-emerald-500 placeholder:text-[#8C9890]"
                 />
                 <p className="text-[11px] text-[#526057] mt-1">
@@ -2337,19 +2337,19 @@ export default function DashboardPage() {
                 <div className="w-4 h-4 rounded-full bg-gradient-to-br from-[#8ab4f8] to-[#1a73e8] flex items-center justify-center text-[9px] font-bold text-black">
                   ⚖
                 </div>
-                <span className="text-[#dadce0] font-medium">Virtual Chamber</span>
+                <span className="text-[#dadce0] font-medium">Digital Chamber</span>
                 <span>›</span>
                 <span className="text-[#526057] font-mono text-[11px]">mychamber.me › {profile.slug || "advocate"}</span>
               </div>
 
               {/* Blue Title Link */}
               <h3 className="text-base sm:text-lg font-medium text-[#163826] hover:underline cursor-pointer">
-                {profile.fullName || "Advocate"} | Virtual Chamber Profile
+                {profile.fullName || "Advocate"} | Digital Chamber Profile
               </h3>
 
               {/* Snippet Description */}
               <p className="text-xs text-[#bdc1c6] leading-relaxed line-clamp-3">
-                Official Virtual Chamber profile of {profile.fullName || "Advocate"}, Advocate practicing at {profile.courts?.[0] || "High Court"}. Bar Council No: {profile.enrollmentNo || "Registered"}. Experience: {profile.yearsExp || 1}+ Years. Specialized in {(profile.specializations || []).slice(0, 3).join(", ") || "Constitutional, Civil & Criminal Law"}.
+                Official Digital Chamber profile of {profile.fullName || "Advocate"}, Advocate practicing at {profile.courts?.[0] || "High Court"}. Bar Council No: {profile.enrollmentNo || "Registered"}. Experience: {profile.yearsExp || 1}+ Years. Specialized in {(profile.specializations || []).slice(0, 3).join(", ") || "Constitutional, Civil & Criminal Law"}.
               </p>
 
               {/* Google Sitelinks Pills */}

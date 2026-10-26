@@ -3,7 +3,7 @@ import { Search, MapPin, Scale, Construction } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export const metadata = {
-  title: "Find Advocates | Virtual Chamber",
+  title: "Find Advocates | Digital Chamber",
 };
 
 export default function FindPage() {
