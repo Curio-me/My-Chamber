@@ -86,6 +86,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
   const almaMater: string = row.alma_mater || metaProfile.almaMater || "";
   const chamberHours: string = row.chamber_hours || metaProfile.chamberHours || "";
   const barIdCardUrl: string | undefined = row.bar_id_card_url || metaProfile.barIdCardUrl || undefined;
+  const hideEnrollmentNo: boolean = Boolean(row.hide_enrollment_no || metaProfile.hideEnrollmentNo);
   const verificationStatus: "unverified" | "pending" | "verified" =
     metaProfile.verificationStatus || (row.is_verified ? "verified" : "unverified");
   const boxOrder: string[] = Array.isArray(row.box_order)
@@ -138,6 +139,7 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     isVerified: row.is_verified !== false,
     barIdCardUrl,
     verificationStatus,
+    hideEnrollmentNo,
   };
 }
 
@@ -165,6 +167,7 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
       chamberHours: advocate.chamberHours || "",
       barIdCardUrl: advocate.barIdCardUrl || null,
       verificationStatus: advocate.verificationStatus || (advocate.isVerified ? "verified" : "unverified"),
+      hideEnrollmentNo: advocate.hideEnrollmentNo === true,
       youtubeUrl: advocate.youtubeUrl || null,
       facebookUrl: advocate.facebookUrl || null,
       boxOrder: advocate.boxOrder || [

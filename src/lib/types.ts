@@ -44,6 +44,7 @@ export interface Advocate {
   isVerified: boolean;
   barIdCardUrl?: string; // Uploaded Bar Council Certificate or ID proof
   verificationStatus?: "unverified" | "pending" | "verified";
+  hideEnrollmentNo?: boolean; // Whether to hide the exact roll number from public visitors
   boxOrder?: string[]; // Custom arrangement of profile boxes e.g. ["qualifications", "about", ...]
 }
 

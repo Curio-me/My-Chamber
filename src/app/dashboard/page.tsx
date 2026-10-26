@@ -230,6 +230,7 @@ export default function DashboardPage() {
       ...profile,
       slug: cleanSlug,
       id: (!profile.id || profile.id === "chamber-new") ? cleanSlug : profile.id,
+      hideEnrollmentNo: profile.hideEnrollmentNo === true,
       instagramUrl: normalizeSocialUrl("instagram", profile.instagramUrl || ""),
       linkedinUrl: normalizeSocialUrl("linkedin", profile.linkedinUrl || ""),
       twitterUrl: normalizeSocialUrl("twitter", profile.twitterUrl || ""),
@@ -1113,6 +1114,27 @@ export default function DashboardPage() {
                     ✓ Strictly unique. Duplicate profiles with the same Bar Council number are prohibited.
                   </p>
                 )}
+
+                {/* Privacy toggle: Hide enrollment number from public visitors */}
+                <div className="mt-2.5 p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5] flex items-start gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="hideEnrollmentNo"
+                    checked={profile.hideEnrollmentNo === true}
+                    onChange={(e) =>
+                      setProfile({ ...profile, hideEnrollmentNo: e.target.checked })
+                    }
+                    className="mt-0.5 w-4 h-4 rounded border-[#E7E0D5] text-[#163826] focus:ring-[#163826] accent-[#163826] cursor-pointer shrink-0"
+                  />
+                  <label htmlFor="hideEnrollmentNo" className="text-xs cursor-pointer select-none">
+                    <span className="font-semibold text-[#14231C] block">
+                      Hide enrollment number from public visitors (Keep private)
+                    </span>
+                    <span className="text-[11px] text-[#526057] block mt-0.5 leading-relaxed">
+                      Your enrollment number remains securely verified in MyChamber records, but public visitors on your chamber profile link will only see your State Bar Council and Verified Advocate Badge.
+                    </span>
+                  </label>
+                </div>
               </div>
 
               <div>

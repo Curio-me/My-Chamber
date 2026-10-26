@@ -436,9 +436,20 @@ export default function AdminVerificationPage() {
                         {/* Bar Enrollment Number */}
                         <td className="py-3.5 px-4 font-mono">
                           {adv.enrollmentNo ? (
-                            <span className="font-semibold text-white bg-[#0E1D14] px-2 py-1 rounded border border-[#234D35]">
-                              {adv.enrollmentNo}
-                            </span>
+                            <div className="space-y-1">
+                              <span className="font-semibold text-white bg-[#0E1D14] px-2 py-1 rounded border border-[#234D35] inline-block">
+                                {adv.enrollmentNo}
+                              </span>
+                              {adv.hideEnrollmentNo ? (
+                                <span className="block text-[10px] text-amber-400 font-sans font-medium">
+                                  🔒 Hidden on profile
+                                </span>
+                              ) : (
+                                <span className="block text-[10px] text-emerald-400/80 font-sans font-medium">
+                                  🌐 Visible on profile
+                                </span>
+                              )}
+                            </div>
                           ) : (
                             <span className="text-[#526057] italic">Not Provided</span>
                           )}

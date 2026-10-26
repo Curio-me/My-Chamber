@@ -908,7 +908,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             >
               <span>@{advocate.slug}</span>
               <span>•</span>
-              <span>Bar: {advocate.enrollmentNo}</span>
+              {advocate.hideEnrollmentNo ? (
+                <span className="inline-flex items-center gap-1 font-medium">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 inline" />
+                  <span>Bar Council Enrolled</span>
+                </span>
+              ) : (
+                <span>Bar: {advocate.enrollmentNo}</span>
+              )}
               <span>•</span>
               <span
                 className={`font-medium ${
@@ -1875,7 +1882,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                 {advocate.fullName}
               </p>
               <p className="text-[11px] text-slate-500 font-medium mb-3">
-                Advocate • {advocate.enrollmentNo || "Bar Council Registered"}
+                Advocate • {advocate.hideEnrollmentNo ? "Bar Council Enrolled" : advocate.enrollmentNo || "Bar Council Registered"}
               </p>
 
               <div suppressHydrationWarning className="p-3 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
