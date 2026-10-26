@@ -310,8 +310,7 @@ export default function DashboardPage() {
         setProfile((prev) => ({
           ...prev,
           barIdCardUrl: event.target?.result as string,
-          verificationStatus: "verified",
-          isVerified: true,
+          verificationStatus: "pending",
         }));
       };
       reader.readAsDataURL(file);
@@ -1304,21 +1303,46 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Verified toggle */}
-            <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60">
+            {/* Verified Status (Read-Only: Controlled Exclusively by Admin Desk) */}
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60">
               <div className="flex items-center gap-2.5">
-                <BadgeCheck className="w-4 h-4 text-[#163826]" />
+                <div
+                  className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                    profile.isVerified
+                      ? "bg-emerald-500/15 text-emerald-700 border border-emerald-500/30"
+                      : "bg-[#163826]/10 text-[#163826]"
+                  }`}
+                >
+                  <BadgeCheck className="w-4 h-4" />
+                </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#14231C]">Bar Council Verified Badge</p>
-                  <p className="text-[11px] text-[#526057]">Display official advocate verification mark</p>
+                  <p className="text-xs font-semibold text-[#14231C]">Bar Council Verification Status</p>
+                  <p className="text-[11px] text-[#526057]">
+                    {profile.isVerified
+                      ? "Official Verified Shield Badge is active on your chamber profile."
+                      : profile.barIdCardUrl
+                      ? "ID Proof attached. Verification is under review by MyChamber Admin Desk."
+                      : "Upload your Bar Council ID proof below to unlock the Verified Shield Badge."}
+                  </p>
                 </div>
               </div>
-              <input
-                type="checkbox"
-                checked={profile.isVerified}
-                onChange={(e) => setProfile({ ...profile, isVerified: e.target.checked })}
-                className="w-4 h-4 accent-[#8ab4f8] rounded cursor-pointer"
-              />
+              <div className="shrink-0 ml-3">
+                {profile.isVerified ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 border border-emerald-300 text-emerald-800 shadow-sm">
+                    <BadgeCheck className="w-3.5 h-3.5 text-emerald-600" />
+                    Verified
+                  </span>
+                ) : profile.barIdCardUrl ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 border border-amber-300 text-amber-800 shadow-sm">
+                    <Clock className="w-3 h-3 text-amber-600" />
+                    Pending Review
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium bg-stone-100 border border-stone-300 text-stone-600">
+                    Unverified
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Theme & 3D Settings */}
