@@ -1023,7 +1023,7 @@ export default function Home() {
             Free forever. No credit card required. Keep your professional identity protected and readily accessible to clients across India.
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div className="pt-2 flex items-center justify-center">
             <Link
               href="/login?tab=signup"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-[#163826] font-bold text-sm px-8 py-3.5 rounded-full shadow-md hover:bg-[#F3EFE6] transition-all active:scale-95"
@@ -1031,13 +1031,6 @@ export default function Home() {
               <span>Get started for free</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
-
-            <button
-              onClick={copySampleLink}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 text-white font-semibold text-sm px-6 py-3.5 rounded-full border border-white/20 transition-colors"
-            >
-              <span>{copiedLink ? "✓ Link Copied!" : "Copy Sample Profile Link"}</span>
-            </button>
           </div>
         </div>
       </section>
