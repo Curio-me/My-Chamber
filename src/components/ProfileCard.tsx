@@ -298,7 +298,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
   const [showQr, setShowQr] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [isFloatingDismissed, setIsFloatingDismissed] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -1775,23 +1774,42 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
             return orderedBoxIds.map((boxId) => renderBox(boxId));
           })()}
 
-          {/* ── Minimal Google-Style Chamber Footer ───────────────────────── */}
-          <div className="pt-6 pb-2 text-center space-y-3">
-            <a
-              href="/dashboard"
-              className={`inline-flex items-center gap-2 text-xs font-semibold px-5 py-2.5 rounded-full border transition-all shadow-sm hover:scale-[1.02] ${
-                isDark
-                  ? "bg-[#202227] hover:bg-[#282a30] text-[#f1f3f4] border-[#343840] hover:border-[#8ab4f8]/50"
-                  : "bg-white hover:bg-slate-50 text-slate-800 border-slate-300 shadow-sm"
-              }`}
-            >
-              <Scale
-                className={`w-3.5 h-3.5 ${
-                  isDark ? "text-[#8ab4f8]" : "text-blue-600"
+          {/* ── Prominent Digital Chamber Invitation Footer ─────────────────── */}
+          <div className="pt-8 pb-4 text-center space-y-3.5">
+            <div className="flex flex-col items-center justify-center">
+              <a
+                href="/dashboard"
+                className={`group inline-flex items-center justify-center gap-3 text-sm sm:text-base font-bold px-7 py-3.5 rounded-2xl border transition-all duration-200 shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
+                  isDark
+                    ? "bg-[#20252e] hover:bg-[#28303d] text-[#f1f3f4] border-[#3d4554] hover:border-[#8ab4f8]/70 shadow-black/40"
+                    : "bg-white hover:bg-slate-50 text-slate-900 border-slate-300 hover:border-slate-400 shadow-slate-200"
                 }`}
-              />
-              <span>Create Your Own Chamber</span>
-            </a>
+              >
+                <div
+                  className={`w-7 h-7 rounded-xl flex items-center justify-center transition-colors ${
+                    isDark
+                      ? "bg-[#8ab4f8]/15 text-[#8ab4f8] group-hover:bg-[#8ab4f8]/25"
+                      : "bg-[#163826]/10 text-[#163826] group-hover:bg-[#163826]/15"
+                  }`}
+                >
+                  <Scale className="w-4 h-4" />
+                </div>
+                <span>Create Your Own Chamber</span>
+                <ChevronRight
+                  className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${
+                    isDark ? "text-[#8ab4f8]" : "text-[#163826]"
+                  }`}
+                />
+              </a>
+
+              <p
+                className={`text-xs mt-2.5 font-medium ${
+                  isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                }`}
+              >
+                Are you an advocate? Claim your verified digital chamber handle
+              </p>
+            </div>
 
             <p
               className={`text-[11px] ${
@@ -1803,78 +1821,6 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           </div>
         </div>
       </div>
-
-      {/* ── Floating Instant Consultation CTA Bar ────────────────────────────── */}
-      {!isFloatingDismissed && (cleanMobile || advocate.email) && (
-        <aside
-          aria-label="Instant Consultation Bar"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-[480px] animate-in slide-in-from-bottom-5 duration-300"
-        >
-          <div
-            className={`p-2 rounded-full border shadow-2xl backdrop-blur-xl flex items-center justify-between gap-1.5 transition-colors ${
-              isDark
-                ? "bg-[#16171b]/92 border-[#343840] text-white shadow-black/80"
-                : "bg-white/95 border-slate-300 text-slate-900 shadow-slate-400/50"
-            }`}
-          >
-            {/* 1-Tap WhatsApp Consultation */}
-            {cleanMobile ? (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 min-w-0 flex items-center justify-center gap-1.5 py-2 px-3 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-xs shadow-sm transition-all active:scale-95"
-              >
-                <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
-                <span className="truncate">WhatsApp Consult</span>
-              </a>
-            ) : null}
-
-            {/* 1-Tap Direct Call */}
-            {cleanMobile ? (
-              <a
-                href={`tel:${cleanMobile}`}
-                className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-full border text-xs font-semibold transition-colors shrink-0 active:scale-95 ${
-                  isDark
-                    ? "bg-[#24272c] hover:bg-[#2d3137] text-white border-[#343840]"
-                    : "bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300"
-                }`}
-                title="Call Chamber"
-              >
-                <Phone className="w-3.5 h-3.5 text-[#8ab4f8] shrink-0" />
-                <span className="hidden sm:inline">Call</span>
-              </a>
-            ) : null}
-
-            {/* Save Contact vCard */}
-            <button
-              onClick={downloadVCard}
-              title="Save Chamber Contact to Phone (.vcf)"
-              className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-full border text-xs font-semibold transition-colors shrink-0 active:scale-95 ${
-                isDark
-                  ? "bg-[#1f293d] hover:bg-[#28354f] text-[#8ab4f8] border-[#8ab4f8]/30"
-                  : "bg-blue-50 hover:bg-blue-100 text-blue-700 border-blue-200"
-              }`}
-            >
-              <UserPlus className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <span className="hidden sm:inline">Save</span>
-            </button>
-
-            {/* Dismiss floating bar */}
-            <button
-              onClick={() => setIsFloatingDismissed(true)}
-              title="Dismiss quick consultation bar"
-              className={`p-1.5 rounded-full transition-colors shrink-0 ${
-                isDark
-                  ? "hover:bg-white/10 text-gray-400 hover:text-white"
-                  : "hover:bg-slate-200 text-slate-400 hover:text-slate-700"
-              }`}
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </aside>
-      )}
 
       {/* ── Official Chamber QR Code Modal (Rendered via Portal directly into document.body) ────── */}
       {mounted && showQr && typeof document !== "undefined" && createPortal(
