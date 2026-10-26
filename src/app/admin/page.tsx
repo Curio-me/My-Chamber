@@ -33,6 +33,7 @@ import Logo from "@/components/Logo";
 // Authorized administrator emails
 const AUTHORIZED_ADMIN_EMAILS = [
   "mychamber.official@gmail.com",
+  "rajavikrant.developer@gmail.com",
 ];
 
 // Fallback Master Passkey for emergency admin access from any browser
