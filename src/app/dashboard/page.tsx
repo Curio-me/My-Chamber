@@ -351,14 +351,22 @@ export default function DashboardPage() {
   };
 
   const addCustomSpecialization = () => {
-    if (!customTagInput.trim()) return;
-    if (!profile.specializations.includes(customTagInput.trim())) {
+    const trimmed = customTagInput.trim();
+    if (!trimmed) return;
+    if (!profile.specializations.includes(trimmed)) {
       setProfile((prev) => ({
         ...prev,
-        specializations: [...prev.specializations, customTagInput.trim()],
+        specializations: [...prev.specializations, trimmed],
       }));
     }
     setCustomTagInput("");
+  };
+
+  const removeSpecialization = (spec: string) => {
+    setProfile((prev) => ({
+      ...prev,
+      specializations: prev.specializations.filter((s) => s !== spec),
+    }));
   };
 
   const toggleCourt = (court: string) => {
@@ -1437,23 +1445,67 @@ export default function DashboardPage() {
                 </span>
               </div>
 
-              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]">
-                {ALL_SPECIALIZATIONS.map((spec) => {
-                  const selected = profile.specializations.includes(spec);
-                  return (
-                    <button
+              {/* Selected Practice Areas Active Badges (with ✕ to instantly remove custom or preset areas) */}
+              {profile.specializations.length > 0 && (
+                <div className="mb-2.5 flex flex-wrap gap-1.5 p-2.5 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]/70">
+                  <span className="text-[11px] text-[#526057] py-1 self-center mr-1">Active:</span>
+                  {profile.specializations.map((spec) => (
+                    <span
                       key={spec}
-                      type="button"
-                      onClick={() => toggleSpecialization(spec)}
-                      className={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
+                      className="inline-flex items-center gap-1.5 bg-[#163826] text-[#FAF7F2] text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm"
+                    >
+                      <span>{spec}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeSpecialization(spec)}
+                        className="text-[#FAF7F2]/80 hover:text-rose-300 font-bold ml-1 text-sm leading-none transition-colors"
+                        title={`Remove ${spec}`}
+                      >
+                        ×
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              )}
+
+              {/* Full pool including ALL presets AND custom practice areas */}
+              <div className="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto p-2 bg-[#FAF8F5] rounded-xl border border-[#E7E0D5]">
+                {Array.from(new Set([...ALL_SPECIALIZATIONS, ...profile.specializations])).map((spec) => {
+                  const selected = profile.specializations.includes(spec);
+                  const isCustom = !ALL_SPECIALIZATIONS.includes(spec);
+                  return (
+                    <span
+                      key={spec}
+                      className={`inline-flex items-center rounded-full text-xs font-medium transition-all ${
                         selected
                           ? "bg-[#163826] text-[#FAF7F2] font-semibold"
                           : "bg-white text-[#526057] border border-[#E7E0D5] hover:border-[#163826]/40 hover:text-[#14231C]"
                       }`}
                     >
-                      {selected ? "✓ " : "+ "}
-                      {spec}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleSpecialization(spec)}
+                        className="px-3 py-1.5"
+                      >
+                        {selected ? "✓ " : "+ "}
+                        {spec}
+                      </button>
+                      {isCustom && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeSpecialization(spec);
+                          }}
+                          className={`pr-2.5 pl-0.5 text-xs font-bold ${
+                            selected ? "text-rose-300 hover:text-white" : "text-rose-500 hover:text-rose-700"
+                          }`}
+                          title={`Permanently delete custom area ${spec}`}
+                        >
+                          ×
+                        </button>
+                      )}
+                    </span>
                   );
                 })}
               </div>
