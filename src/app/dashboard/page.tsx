@@ -15,6 +15,7 @@ import {
 import { EMPTY_ADVOCATE, DEMO_ADVOCATE } from "@/lib/demoData";
 import ProfileCard from "@/components/ProfileCard";
 import Logo from "@/components/Logo";
+import { normalizeSocialUrl, extractSocialHandle } from "@/lib/urlHelpers";
 import {
   upsertAdvocateProfile,
   mapRowToAdvocate,
@@ -220,6 +221,12 @@ export default function DashboardPage() {
       ...profile,
       slug: cleanSlug,
       id: (!profile.id || profile.id === "chamber-new") ? cleanSlug : profile.id,
+      instagramUrl: normalizeSocialUrl("instagram", profile.instagramUrl || ""),
+      linkedinUrl: normalizeSocialUrl("linkedin", profile.linkedinUrl || ""),
+      twitterUrl: normalizeSocialUrl("twitter", profile.twitterUrl || ""),
+      youtubeUrl: normalizeSocialUrl("youtube", profile.youtubeUrl || ""),
+      facebookUrl: normalizeSocialUrl("facebook", profile.facebookUrl || ""),
+      websiteUrl: normalizeSocialUrl("website", profile.websiteUrl || ""),
     };
 
     try {
@@ -1864,81 +1871,222 @@ export default function DashboardPage() {
               </h2>
             </div>
 
-            <div className="space-y-3">
+            {/* Smart URL Helper Guidance Banner */}
+            <div className="bg-[#FAF8F5] border border-[#E7E0D5] rounded-2xl p-3.5 flex items-start gap-3">
+              <div className="w-6 h-6 rounded-lg bg-[#163826]/10 text-[#163826] flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-3.5 h-3.5" />
+              </div>
+              <div className="text-xs text-[#526057] space-y-1">
+                <p className="font-semibold text-[#14231C]">
+                  Smart Auto-Formatting Enabled
+                </p>
+                <p className="leading-relaxed">
+                  Enter your full URL (e.g. <span className="font-mono text-[#163826] bg-white px-1.5 py-0.5 rounded border border-[#E7E0D5]">https://instagram.com/handle</span>) or simply type your handle (e.g. <span className="font-mono text-[#163826] bg-white px-1.5 py-0.5 rounded border border-[#E7E0D5]">@handle</span>). MyChamber automatically converts it into a verified working link.
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-4 pt-1">
+              {/* Instagram */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  Instagram Profile URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    Instagram Profile URL
+                  </label>
+                  {profile.instagramUrl && (
+                    <a
+                      href={normalizeSocialUrl("instagram", profile.instagramUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.instagramUrl || ""}
                   onChange={(e) => setProfile({ ...profile, instagramUrl: e.target.value })}
-                  placeholder="https://instagram.com/advocate_handle"
+                  onBlur={() => {
+                    if (profile.instagramUrl) {
+                      setProfile({
+                        ...profile,
+                        instagramUrl: normalizeSocialUrl("instagram", profile.instagramUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://instagram.com/handle or @handle"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
+              {/* LinkedIn */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  LinkedIn Profile URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    LinkedIn Profile URL
+                  </label>
+                  {profile.linkedinUrl && (
+                    <a
+                      href={normalizeSocialUrl("linkedin", profile.linkedinUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.linkedinUrl || ""}
                   onChange={(e) => setProfile({ ...profile, linkedinUrl: e.target.value })}
-                  placeholder="https://linkedin.com/in/advocate_handle"
+                  onBlur={() => {
+                    if (profile.linkedinUrl) {
+                      setProfile({
+                        ...profile,
+                        linkedinUrl: normalizeSocialUrl("linkedin", profile.linkedinUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://linkedin.com/in/handle or handle"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
+              {/* Twitter / X */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  Twitter / X Profile URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    Twitter / X Profile URL
+                  </label>
+                  {profile.twitterUrl && (
+                    <a
+                      href={normalizeSocialUrl("twitter", profile.twitterUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.twitterUrl || ""}
                   onChange={(e) => setProfile({ ...profile, twitterUrl: e.target.value })}
-                  placeholder="https://twitter.com/advocate_handle"
+                  onBlur={() => {
+                    if (profile.twitterUrl) {
+                      setProfile({
+                        ...profile,
+                        twitterUrl: normalizeSocialUrl("twitter", profile.twitterUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://x.com/handle or @handle"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
+              {/* YouTube */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  YouTube Channel / Legal Discussions URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    YouTube Channel / Legal Discussions URL
+                  </label>
+                  {profile.youtubeUrl && (
+                    <a
+                      href={normalizeSocialUrl("youtube", profile.youtubeUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.youtubeUrl || ""}
                   onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
-                  placeholder="https://youtube.com/@advocate_handle"
+                  onBlur={() => {
+                    if (profile.youtubeUrl) {
+                      setProfile({
+                        ...profile,
+                        youtubeUrl: normalizeSocialUrl("youtube", profile.youtubeUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://youtube.com/@handle or @handle"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
+              {/* Facebook */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  Facebook Page / Chamber URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    Facebook Page / Chamber URL
+                  </label>
+                  {profile.facebookUrl && (
+                    <a
+                      href={normalizeSocialUrl("facebook", profile.facebookUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.facebookUrl || ""}
                   onChange={(e) => setProfile({ ...profile, facebookUrl: e.target.value })}
-                  placeholder="https://facebook.com/advocate_handle"
+                  onBlur={() => {
+                    if (profile.facebookUrl) {
+                      setProfile({
+                        ...profile,
+                        facebookUrl: normalizeSocialUrl("facebook", profile.facebookUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://facebook.com/handle or handle"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>
 
+              {/* Official Website */}
               <div>
-                <label className="block text-xs font-medium text-[#526057] mb-1">
-                  Official Website URL
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-medium text-[#526057]">
+                    Official Website URL
+                  </label>
+                  {profile.websiteUrl && (
+                    <a
+                      href={normalizeSocialUrl("website", profile.websiteUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-[#163826] font-semibold hover:underline inline-flex items-center gap-1"
+                    >
+                      Test Link <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                </div>
                 <input
-                  type="url"
+                  type="text"
                   value={profile.websiteUrl || ""}
                   onChange={(e) => setProfile({ ...profile, websiteUrl: e.target.value })}
-                  placeholder="https://mychamber.me"
+                  onBlur={() => {
+                    if (profile.websiteUrl) {
+                      setProfile({
+                        ...profile,
+                        websiteUrl: normalizeSocialUrl("website", profile.websiteUrl),
+                      });
+                    }
+                  }}
+                  placeholder="https://yourchamber.com or yourchamber.com"
                   className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
               </div>

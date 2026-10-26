@@ -40,6 +40,7 @@ import { createPortal } from "react-dom";
 import { QRCodeSVG } from "qrcode.react";
 import LegalSchema from "./LegalSchema";
 import { ShieldIcon } from "./Logo";
+import { normalizeSocialUrl, extractSocialHandle } from "@/lib/urlHelpers";
 
 interface ProfileCardProps {
   advocate: Advocate;
@@ -985,7 +986,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4">
             {advocate.instagramUrl && (
               <a
-                href={advocate.instagramUrl}
+                href={normalizeSocialUrl("instagram", advocate.instagramUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`rounded-2xl p-3 flex items-center gap-3 border transition-all group shadow-sm ${
@@ -1010,7 +1011,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                       isDark ? "text-[#9aa0a6]" : "text-slate-500"
                     }`}
                   >
-                    {advocate.instagramUrl.replace("https://instagram.com/", "@")}
+                    {extractSocialHandle("instagram", advocate.instagramUrl)}
                   </p>
                 </div>
               </a>
@@ -1018,7 +1019,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
 
             {advocate.linkedinUrl && (
               <a
-                href={advocate.linkedinUrl}
+                href={normalizeSocialUrl("linkedin", advocate.linkedinUrl)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`rounded-2xl p-3 flex items-center gap-3 border transition-all group shadow-sm ${
@@ -1043,7 +1044,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                       isDark ? "text-[#9aa0a6]" : "text-slate-500"
                     }`}
                   >
-                    Professional Profile
+                    {extractSocialHandle("linkedin", advocate.linkedinUrl)}
                   </p>
                 </div>
               </a>
@@ -1588,7 +1589,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                         <div className="grid grid-cols-2 gap-2 pt-1">
                           {advocate.twitterUrl && (
                             <a
-                              href={advocate.twitterUrl}
+                              href={normalizeSocialUrl("twitter", advocate.twitterUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
@@ -1607,7 +1608,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                           )}
                           {advocate.youtubeUrl && (
                             <a
-                              href={advocate.youtubeUrl}
+                              href={normalizeSocialUrl("youtube", advocate.youtubeUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
@@ -1622,7 +1623,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                           )}
                           {advocate.facebookUrl && (
                             <a
-                              href={advocate.facebookUrl}
+                              href={normalizeSocialUrl("facebook", advocate.facebookUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
@@ -1637,7 +1638,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                           )}
                           {advocate.websiteUrl && (
                             <a
-                              href={advocate.websiteUrl}
+                              href={normalizeSocialUrl("website", advocate.websiteUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
