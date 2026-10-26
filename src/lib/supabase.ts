@@ -474,3 +474,62 @@ export function validateBarCouncilFormat(val: string): {
     suggestion: "Format should typically be [State]/[Number]/[Year], e.g. PH/7797/2025 or D/1234/2020",
   };
 }
+
+// ── Admin Verification & Profile Management ──────────────────────────────────
+export async function fetchAllAdvocatesForAdmin(): Promise<Advocate[]> {
+  try {
+    const { data, error } = await supabase
+      .from("advocate_profiles")
+      .select("*")
+      .order("updated_at", { ascending: false });
+
+    if (error || !data) {
+      return [];
+    }
+
+    return data.map((row) => mapRowToAdvocate(row));
+  } catch {
+    return [];
+  }
+}
+
+export async function updateAdvocateVerificationStatus(
+  id: string,
+  isVerified: boolean,
+  status: "verified" | "unverified" | "pending"
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { data: row, error: fetchErr } = await supabase
+      .from("advocate_profiles")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (fetchErr || !row) {
+      return { success: false, error: fetchErr?.message || "Advocate record not found" };
+    }
+
+    const advocate = mapRowToAdvocate(row);
+    advocate.isVerified = isVerified;
+    advocate.verificationStatus = status;
+
+    const updatedRow = mapAdvocateToRow(advocate, row.user_id);
+
+    const { error: updateErr } = await supabase
+      .from("advocate_profiles")
+      .update({
+        is_verified: isVerified,
+        custom_links: updatedRow.custom_links,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+
+    if (updateErr) {
+      return { success: false, error: updateErr.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || "Failed to update verification status" };
+  }
+}
