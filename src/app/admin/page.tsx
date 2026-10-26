@@ -209,18 +209,6 @@ export default function AdminVerificationPage() {
               Unlock Verification Portal
             </button>
           </form>
-
-          <div className="pt-4 border-t border-white/10 text-center">
-            <p className="text-[11px] text-[#526057]">
-              Authorized for <span className="text-[#C4C7C5]">mychamber.official@gmail.com</span>
-            </p>
-            <Link
-              href="/login"
-              className="text-xs text-[#D4AF37] hover:underline font-semibold mt-2 inline-block"
-            >
-              Or Sign In with Google
-            </Link>
-          </div>
         </div>
       </div>
     );
