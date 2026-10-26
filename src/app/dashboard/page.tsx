@@ -499,8 +499,12 @@ export default function DashboardPage() {
     }
   };
 
-  // Custom Links / Judgments
+  // Custom Links / Judgments (Max 3 Allowed)
   const addCustomLink = () => {
+    if ((profile.customLinks || []).length >= 3) {
+      alert("⚠️ Maximum Limit Reached:\n\nYou can add a maximum of 3 Additional Links & Judgments to keep your chamber profile clean and focused.");
+      return;
+    }
     const newLink = {
       id: Date.now().toString(),
       title: "",
@@ -526,8 +530,12 @@ export default function DashboardPage() {
     }));
   };
 
-  // News Media handlers
+  // News Media handlers (Max 7 Allowed)
   const addNewsMedia = () => {
+    if ((profile.newsMedia || []).length >= 7) {
+      alert("⚠️ Maximum Limit Reached:\n\nYou can add a maximum of 7 Newspaper & Press Coverage articles to maintain fast mobile performance for clients.");
+      return;
+    }
     const newItem: NewsMediaItem = {
       id: Date.now().toString(),
       title: "Landmark Case Order / News Feature",
@@ -1902,6 +1910,32 @@ export default function DashboardPage() {
 
               <div>
                 <label className="block text-xs font-medium text-[#526057] mb-1">
+                  YouTube Channel / Legal Discussions URL
+                </label>
+                <input
+                  type="url"
+                  value={profile.youtubeUrl || ""}
+                  onChange={(e) => setProfile({ ...profile, youtubeUrl: e.target.value })}
+                  placeholder="https://youtube.com/@advocate_handle"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-[#526057] mb-1">
+                  Facebook Page / Chamber URL
+                </label>
+                <input
+                  type="url"
+                  value={profile.facebookUrl || ""}
+                  onChange={(e) => setProfile({ ...profile, facebookUrl: e.target.value })}
+                  placeholder="https://facebook.com/advocate_handle"
+                  className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3.5 py-2.5 text-sm text-[#14231C] focus:outline-none focus:border-[#163826]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-[#526057] mb-1">
                   Official Website URL
                 </label>
                 <input
@@ -1919,23 +1953,35 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl p-5 sm:p-7 border border-[#E7E0D5] space-y-4 shadow-sm">
             <div className="flex items-center justify-between pb-2 border-b border-[#F0ECE4]">
               <div className="flex items-center gap-2">
-                <ExternalLink className="w-4 h-4 text-purple-400" />
+                <ExternalLink className="w-4 h-4 text-[#163826]" />
                 <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Additional Links & Judgments
                 </h2>
+                <span className="text-[11px] font-bold text-[#163826] bg-[#EBF3ED] px-2 py-0.5 rounded-full border border-[#163826]/20">
+                  {profile.customLinks?.length || 0}/3 Max
+                </span>
               </div>
               <button
                 type="button"
                 onClick={addCustomLink}
-                className="inline-flex items-center gap-1.5 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-semibold px-3 py-1.5 rounded-xl border border-purple-400/30 transition-colors shadow-sm"
+                disabled={(profile.customLinks || []).length >= 3}
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors shadow-sm ${
+                  (profile.customLinks || []).length >= 3
+                    ? "bg-[#F3EFE6] text-[#8C9890] border-[#E7E0D5] cursor-not-allowed"
+                    : "bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] border-[#163826]/30"
+                }`}
               >
                 <Plus className="w-3.5 h-3.5" />
-                Add Link / Judgment
+                <span>
+                  {(profile.customLinks || []).length >= 3
+                    ? "Limit Reached (3/3)"
+                    : "Add Link / Judgment"}
+                </span>
               </button>
             </div>
 
             <p className="text-xs text-[#526057] leading-relaxed">
-              Add external case orders, reported judgment citations (e.g. SCC / PLR / DLT), legal articles, or publications.
+              Add external case orders, reported judgment citations (e.g. SCC / PLR / DLT), legal articles, or publications (max 3 links).
               <span className="text-[#7A5B18] block mt-1 font-semibold">
                 🔒 Note: If you do not add any links here, this box remains completely hidden from visitors on your chamber profile.
               </span>
@@ -2030,19 +2076,31 @@ export default function DashboardPage() {
                 <h2 className="text-sm font-semibold text-[#14231C] uppercase tracking-wider">
                   Newspaper & Press Coverage
                 </h2>
+                <span className="text-[11px] font-bold text-[#163826] bg-[#EBF3ED] px-2 py-0.5 rounded-full border border-[#163826]/20">
+                  {profile.newsMedia?.length || 0}/7 Max
+                </span>
               </div>
               <button
                 type="button"
                 onClick={addNewsMedia}
-                className="inline-flex items-center gap-1.5 bg-[#EBF3ED] hover:bg-[#DEECE1] text-[#163826] text-xs font-semibold px-3 py-1.5 rounded-xl border border-[#163826]/30 transition-colors"
+                disabled={(profile.newsMedia || []).length >= 7}
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors ${
+                  (profile.newsMedia || []).length >= 7
+                    ? "bg-[#F3EFE6] text-[#8C9890] border-[#E7E0D5] cursor-not-allowed"
+                    : "bg-[#EBF3ED] hover:bg-[#DEECE1] text-[#163826] border-[#163826]/30"
+                }`}
               >
                 <Plus className="w-3.5 h-3.5" />
-                Add News Article
+                <span>
+                  {(profile.newsMedia || []).length >= 7
+                    ? "Limit Reached (7/7)"
+                    : "Add News Article"}
+                </span>
               </button>
             </div>
 
             <p className="text-xs text-[#526057]">
-              Showcase newspaper headlines, media coverage, and court reports in an interactive visual carousel on your chamber card.
+              Showcase newspaper headlines, media coverage, and court reports in an interactive visual carousel on your chamber card (maximum 7 featured articles to keep mobile card loading fast).
             </p>
 
             {(!profile.newsMedia || profile.newsMedia.length === 0) ? (

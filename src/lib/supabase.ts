@@ -128,6 +128,8 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
     instagramUrl: row.instagram_url || undefined,
     twitterUrl: row.twitter_url || undefined,
     linkedinUrl: row.linkedin_url || undefined,
+    youtubeUrl: row.youtube_url || metaProfile.youtubeUrl || undefined,
+    facebookUrl: row.facebook_url || metaProfile.facebookUrl || undefined,
     websiteUrl: row.website_url || undefined,
     customLinks: standardLinks,
     newsMedia: newsItems,
@@ -163,6 +165,8 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
       chamberHours: advocate.chamberHours || "",
       barIdCardUrl: advocate.barIdCardUrl || null,
       verificationStatus: advocate.verificationStatus || (advocate.isVerified ? "verified" : "unverified"),
+      youtubeUrl: advocate.youtubeUrl || null,
+      facebookUrl: advocate.facebookUrl || null,
       boxOrder: advocate.boxOrder || [
         "about",
         "specializations",

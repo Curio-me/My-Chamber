@@ -77,6 +77,22 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+function YoutubeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  );
+}
+
 // ── Initials Avatar ────────────────────────────────────────────────────────
 function InitialsAvatar({ name, isDark }: { name: string; isDark: boolean }) {
   const initials = name
@@ -1569,26 +1585,56 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                         <span>Get 1-Tap Directions in Google Maps</span>
                       </a>
 
-                      {/* Additional Socials (Twitter / Website) */}
-                      {(advocate.twitterUrl || advocate.websiteUrl) && (
-                        <div className="flex items-center gap-2 pt-1">
+                      {/* Additional Socials (Twitter / YouTube / Facebook / Website) */}
+                      {(advocate.twitterUrl || advocate.youtubeUrl || advocate.facebookUrl || advocate.websiteUrl) && (
+                        <div className="grid grid-cols-2 gap-2 pt-1">
                           {advocate.twitterUrl && (
                             <a
                               href={advocate.twitterUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
                                 isDark
                                   ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
                                   : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
                               }`}
                             >
                               <TwitterIcon
-                                className={`w-4 h-4 ${
+                                className={`w-3.5 h-3.5 shrink-0 ${
                                   isDark ? "text-white" : "text-slate-900"
                                 }`}
                               />
-                              <span>Twitter / X</span>
+                              <span className="truncate">Twitter / X</span>
+                            </a>
+                          )}
+                          {advocate.youtubeUrl && (
+                            <a
+                              href={advocate.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                                isDark
+                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
+                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
+                              }`}
+                            >
+                              <YoutubeIcon className="w-3.5 h-3.5 shrink-0 text-red-500" />
+                              <span className="truncate">YouTube</span>
+                            </a>
+                          )}
+                          {advocate.facebookUrl && (
+                            <a
+                              href={advocate.facebookUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                                isDark
+                                  ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
+                                  : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
+                              }`}
+                            >
+                              <FacebookIcon className="w-3.5 h-3.5 shrink-0 text-[#1877F2]" />
+                              <span className="truncate">Facebook</span>
                             </a>
                           )}
                           {advocate.websiteUrl && (
@@ -1596,18 +1642,18 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                               href={advocate.websiteUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
+                              className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-medium transition-colors shadow-sm ${
                                 isDark
                                   ? "bg-[#202227] hover:bg-[#282a30] border-[#343840]/50 text-[#c4c7c5] hover:text-white"
                                   : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-slate-900"
                               }`}
                             >
                               <Globe
-                                className={`w-4 h-4 ${
+                                className={`w-3.5 h-3.5 shrink-0 ${
                                   isDark ? "text-[#8ab4f8]" : "text-blue-600"
                                 }`}
                               />
-                              <span>Official Website</span>
+                              <span className="truncate">Website</span>
                             </a>
                           )}
                         </div>

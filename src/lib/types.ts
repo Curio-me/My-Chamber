@@ -33,6 +33,8 @@ export interface Advocate {
   instagramUrl?: string;
   twitterUrl?: string;
   linkedinUrl?: string;
+  youtubeUrl?: string;
+  facebookUrl?: string;
   websiteUrl?: string;
   customLinks?: { id: string; title: string; url: string }[];
   whatsappGreeting?: string;
