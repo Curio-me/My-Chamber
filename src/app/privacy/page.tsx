@@ -281,10 +281,10 @@ export default function PrivacyPolicyPage() {
               <p>
                 <strong className="text-[#14231C]">Grievance Email:</strong>{" "}
                 <a
-                  href="mailto:privacy@my-chamber.com"
+                  href="mailto:contact@mychamber.me"
                   className="text-[#163826] underline font-bold"
                 >
-                  privacy@my-chamber.com
+                  contact@mychamber.me
                 </a>
               </p>
               <p className="text-[#6B7870] text-xs pt-1">
