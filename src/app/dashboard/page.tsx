@@ -353,6 +353,14 @@ export default function DashboardPage() {
   const addCustomSpecialization = () => {
     const trimmed = customTagInput.trim();
     if (!trimmed) return;
+    if (trimmed.length < 3) {
+      alert("⚠️ Practice area name too short!\n\nPlease enter at least 3 characters (e.g. NCLT, Insolvency, Family Courts).");
+      return;
+    }
+    if (trimmed.length > 40) {
+      alert("⚠️ Practice area name too long!\n\nPlease keep it under 40 characters so it fits cleanly on mobile screens.");
+      return;
+    }
     if (!profile.specializations.includes(trimmed)) {
       setProfile((prev) => ({
         ...prev,
@@ -380,11 +388,16 @@ export default function DashboardPage() {
   };
 
   const addCustomCourt = () => {
-    if (!customCourtInput.trim()) return;
-    if (!profile.courts.includes(customCourtInput.trim())) {
+    const trimmed = customCourtInput.trim();
+    if (!trimmed) return;
+    if (trimmed.length < 3) {
+      alert("⚠️ Court name too short!\n\nPlease enter at least 3 characters (e.g. NCLT, Patiala House District Court).");
+      return;
+    }
+    if (!profile.courts.includes(trimmed)) {
       setProfile((prev) => ({
         ...prev,
-        courts: [...prev.courts, customCourtInput.trim()],
+        courts: [...prev.courts, trimmed],
       }));
     }
     setCustomCourtInput("");
@@ -1514,10 +1527,11 @@ export default function DashboardPage() {
               <div className="mt-2.5 flex gap-2">
                 <input
                   type="text"
+                  maxLength={40}
                   value={customTagInput}
                   onChange={(e) => setCustomTagInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomSpecialization())}
-                  placeholder="Add custom practice area (e.g. Armed Forces Tribunal, Insolvency...)"
+                  placeholder="Add custom practice area (3-40 chars, e.g. Armed Forces Tribunal, Insolvency...)"
                   className="flex-1 bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl px-3 py-2 text-xs text-[#14231C] focus:outline-none focus:border-[#163826]"
                 />
                 <button
@@ -1607,6 +1621,7 @@ export default function DashboardPage() {
               <div className="mt-2.5 flex gap-2">
                 <input
                   type="text"
+                  maxLength={60}
                   value={customCourtInput}
                   onChange={(e) => setCustomCourtInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addCustomCourt())}
