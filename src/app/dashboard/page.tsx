@@ -115,6 +115,13 @@ export default function DashboardPage() {
 
       // Check if handle was passed via ?slug= from the claim form on the homepage
       const urlParams = new URLSearchParams(window.location.search);
+      const authError = urlParams.get("error_description") || urlParams.get("error");
+      if (authError) {
+        alert("⚠️ Sign-In Incomplete:\n\nGoogle OAuth could not complete (" + decodeURIComponent(authError).replace(/\+/g, " ") + ").\n\nPlease use the 'Magic Link' tab on the login page to receive an instant 1-click login link in your Gmail.");
+        window.location.href = "/login?tab=magic";
+        return;
+      }
+
       const querySlug = urlParams.get("slug");
       if (querySlug) {
         const cleanSlug = querySlug.toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
