@@ -26,6 +26,7 @@ import { Advocate } from "@/lib/types";
 import {
   fetchAllAdvocatesForAdmin,
   updateAdvocateVerificationStatus,
+  getVerificationDocSignedUrl,
   supabase,
 } from "@/lib/supabase";
 import Logo from "@/components/Logo";
@@ -46,7 +47,17 @@ export default function AdminVerificationPage() {
   const [filterTab, setFilterTab] = useState<"pending" | "all" | "verified" | "unverified">("pending");
   const [inspectAdvocate, setInspectAdvocate] = useState<Advocate | null>(null);
   const [inspectZoom, setInspectZoom] = useState(1);
+  const [resolvedInspectUrl, setResolvedInspectUrl] = useState<string>("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+
+  // Load secure signed URL when inspecting a document
+  useEffect(() => {
+    if (inspectAdvocate?.barIdCardUrl) {
+      getVerificationDocSignedUrl(inspectAdvocate.barIdCardUrl).then(setResolvedInspectUrl);
+    } else {
+      setResolvedInspectUrl("");
+    }
+  }, [inspectAdvocate]);
 
   // Auth state
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
@@ -577,7 +588,7 @@ export default function AdminVerificationPage() {
                   Zoom ({inspectZoom}x)
                 </button>
                 <a
-                  href={inspectAdvocate.barIdCardUrl}
+                  href={resolvedInspectUrl || inspectAdvocate.barIdCardUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-2.5 py-1 text-xs rounded-lg bg-[#163826] border border-white/10 text-stone-300 hover:text-white flex items-center gap-1"
@@ -599,7 +610,7 @@ export default function AdminVerificationPage() {
               {/* Document Image Zoom Viewport (2 cols) */}
               <div className="md:col-span-2 p-4 bg-black/60 flex items-center justify-center overflow-auto min-h-[360px] max-h-[500px]">
                 <img
-                  src={inspectAdvocate.barIdCardUrl}
+                  src={resolvedInspectUrl || inspectAdvocate.barIdCardUrl}
                   alt="Bar Council ID Proof"
                   style={{ transform: `scale(${inspectZoom})`, transformOrigin: "center" }}
                   className="max-w-full max-h-[460px] object-contain rounded-lg border border-white/20 shadow-2xl transition-transform duration-200"

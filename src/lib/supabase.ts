@@ -553,3 +553,104 @@ export async function updateAdvocateVerificationStatus(
     return { success: false, error: err.message || "Failed to update verification status" };
   }
 }
+
+// ── Supabase Storage Helpers ──────────────────────────────────────────────────
+
+/**
+ * Upload compressed profile portrait photo to Supabase 'avatars' public CDN bucket.
+ * Returns the permanent public CDN URL.
+ */
+export async function uploadProfilePhotoToStorage(
+  blob: Blob,
+  slug: string
+): Promise<{ url: string | null; error?: string }> {
+  try {
+    const cleanSlug = (slug || "advocate").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const fileName = `${cleanSlug}-${Date.now()}.jpg`;
+    const filePath = `profiles/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, blob, {
+        contentType: "image/jpeg",
+        upsert: true,
+        cacheControl: "31536000", // 1 year immutable CDN cache
+      });
+
+    if (error || !data) {
+      return { url: null, error: error?.message || "Storage upload failed" };
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("avatars")
+      .getPublicUrl(filePath);
+
+    return { url: publicData.publicUrl };
+  } catch (err: any) {
+    return { url: null, error: err.message || "Failed to upload avatar" };
+  }
+}
+
+/**
+ * Upload sensitive Bar Council ID card / certificate to private 'verification-documents' bucket.
+ * Returns the private storage path.
+ */
+export async function uploadVerificationDocToStorage(
+  fileOrBlob: Blob,
+  slug: string,
+  extension = "jpg"
+): Promise<{ path: string | null; error?: string }> {
+  try {
+    const cleanSlug = (slug || "advocate").toLowerCase().replace(/[^a-z0-9-]/g, "");
+    const fileName = `${cleanSlug}-bar-id-${Date.now()}.${extension}`;
+    const filePath = `bar-ids/${fileName}`;
+
+    const { data, error } = await supabase.storage
+      .from("verification-documents")
+      .upload(filePath, fileOrBlob, {
+        upsert: true,
+        contentType: fileOrBlob.type || "image/jpeg",
+      });
+
+    if (error || !data) {
+      return { path: null, error: error?.message || "ID proof upload failed" };
+    }
+
+    // Return the private storage identifier
+    return { path: `storage://${filePath}` };
+  } catch (err: any) {
+    return { path: null, error: err.message || "Failed to upload verification document" };
+  }
+}
+
+/**
+ * Generate a secure, time-limited signed URL for admin viewing of private Bar Council ID cards.
+ */
+export async function getVerificationDocSignedUrl(
+  pathOrUrl: string,
+  expiresInSeconds = 300
+): Promise<string> {
+  if (!pathOrUrl) return "";
+
+  // If already a data URL or external HTTP URL, return as-is
+  if (pathOrUrl.startsWith("data:") || (pathOrUrl.startsWith("http") && !pathOrUrl.includes("verification-documents"))) {
+    return pathOrUrl;
+  }
+
+  try {
+    // Strip "storage://" prefix if present
+    const cleanPath = pathOrUrl.replace(/^storage:\/\//, "");
+
+    const { data, error } = await supabase.storage
+      .from("verification-documents")
+      .createSignedUrl(cleanPath, expiresInSeconds);
+
+    if (error || !data?.signedUrl) {
+      return pathOrUrl;
+    }
+
+    return data.signedUrl;
+  } catch {
+    return pathOrUrl;
+  }
+}

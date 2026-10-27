@@ -22,6 +22,8 @@ import {
   supabase,
   submitChamberClaim,
   validateBarCouncilFormat,
+  uploadProfilePhotoToStorage,
+  uploadVerificationDocToStorage,
 } from "@/lib/supabase";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -97,6 +99,8 @@ export default function DashboardPage() {
 
   const photoFileInputRef = useRef<HTMLInputElement>(null);
   const [origin, setOrigin] = useState("https://mychamber.me");
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isUploadingBarId, setIsUploadingBarId] = useState(false);
 
   // Load saved profile on mount if author previously created one, or apply claimed slug from URL, and sync with live Supabase database
   useEffect(() => {
@@ -287,8 +291,12 @@ export default function DashboardPage() {
     }
   };
 
-  // Helper to compress advocate portrait photo for fast mobile page loads (~35KB instead of 2MB+)
-  const compressImageFile = (file: File, maxDim = 480, quality = 0.85): Promise<string> => {
+  // Helper to compress image to Blob + DataURL for instant UI preview and lightweight Supabase storage (~35KB)
+  const compressImageFile = (
+    file: File,
+    maxDim = 480,
+    quality = 0.85
+  ): Promise<{ blob: Blob; dataUrl: string }> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -311,13 +319,33 @@ export default function DashboardPage() {
           canvas.height = height;
           const ctx = canvas.getContext("2d");
           if (!ctx) {
-            resolve(e.target?.result as string);
+            fetch(e.target?.result as string)
+              .then((r) => r.blob())
+              .then((blob) => resolve({ blob, dataUrl: e.target?.result as string }));
             return;
           }
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL("image/jpeg", quality));
+          const dataUrl = canvas.toDataURL("image/jpeg", quality);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve({ blob, dataUrl });
+              } else {
+                fetch(dataUrl)
+                  .then((r) => r.blob())
+                  .then((b) => resolve({ blob: b, dataUrl }));
+              }
+            },
+            "image/jpeg",
+            quality
+          );
         };
-        img.onerror = () => resolve(e.target?.result as string);
+        img.onerror = () => {
+          fetch(e.target?.result as string)
+            .then((r) => r.blob())
+            .then((blob) => resolve({ blob, dataUrl: e.target?.result as string }))
+            .catch(reject);
+        };
         img.src = e.target?.result as string;
       };
       reader.onerror = reject;
@@ -325,44 +353,74 @@ export default function DashboardPage() {
     });
   };
 
-  // Handle local photo upload with automatic high-speed compression
+  // Handle local photo upload: client-side compression + direct Supabase Storage 'avatars' CDN upload
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 8 * 1024 * 1024) {
-        alert("Please select an image smaller than 8MB.");
-        return;
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Please select an image smaller than 10MB.");
+      return;
+    }
+
+    try {
+      setIsUploadingPhoto(true);
+
+      // 1. Instant client-side compression to sharp 480x480 (~35KB)
+      const { blob, dataUrl } = await compressImageFile(file, 480, 0.85);
+
+      // Instant preview in the UI
+      setProfile((prev) => ({ ...prev, photoUrl: dataUrl }));
+
+      // 2. Upload compressed blob directly to Supabase Storage 'avatars' bucket
+      const uploadRes = await uploadProfilePhotoToStorage(blob, profile.slug || "adv");
+      if (uploadRes.url) {
+        // Replace preview with permanent CDN URL
+        setProfile((prev) => ({ ...prev, photoUrl: uploadRes.url! }));
       }
-      try {
-        const compressedBase64 = await compressImageFile(file, 480, 0.85);
-        setProfile((prev) => ({ ...prev, photoUrl: compressedBase64 }));
-      } catch {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setProfile((prev) => ({ ...prev, photoUrl: event.target?.result as string }));
-        };
-        reader.readAsDataURL(file);
-      }
+    } catch (err) {
+      console.error("Photo upload error:", err);
+    } finally {
+      setIsUploadingPhoto(false);
     }
   };
 
-  // Handle Bar Council ID / Certificate proof upload
-  const handleBarIdUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle Bar Council ID / Certificate proof upload to private 'verification-documents' storage
+  const handleBarIdUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Please select a document or ID photo smaller than 5MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = (event) => {
+    if (!file) return;
+
+    if (file.size > 10 * 1024 * 1024) {
+      alert("Please select a document or ID photo smaller than 10MB.");
+      return;
+    }
+
+    try {
+      setIsUploadingBarId(true);
+
+      // Compress slightly to 1280px so text/stamps are 100% sharp for admin verification (~150KB)
+      const { blob, dataUrl } = await compressImageFile(file, 1280, 0.88);
+
+      // Show instant preview
+      setProfile((prev) => ({
+        ...prev,
+        barIdCardUrl: dataUrl,
+        verificationStatus: "pending",
+      }));
+
+      // Upload to private 'verification-documents' bucket
+      const uploadRes = await uploadVerificationDocToStorage(blob, profile.slug || "adv");
+      if (uploadRes.path) {
         setProfile((prev) => ({
           ...prev,
-          barIdCardUrl: event.target?.result as string,
+          barIdCardUrl: uploadRes.path!,
           verificationStatus: "pending",
         }));
-      };
-      reader.readAsDataURL(file);
+      }
+    } catch (err) {
+      console.error("Bar ID upload error:", err);
+    } finally {
+      setIsUploadingBarId(false);
     }
   };
 
@@ -1236,24 +1294,32 @@ export default function DashboardPage() {
                   />
                   <button
                     type="button"
+                    disabled={isUploadingBarId}
                     onClick={() => barIdFileInputRef.current?.click()}
-                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] transition-colors"
+                    className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#FAF8F5] hover:bg-[#F3EFE6] text-[#163826] text-xs font-semibold border border-[#E7E0D5] transition-colors disabled:opacity-50"
                   >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>{profile.barIdCardUrl ? "Replace ID Proof" : "Upload Bar Council ID / Certificate"}</span>
+                    <Upload className={`w-3.5 h-3.5 ${isUploadingBarId ? "animate-spin" : ""}`} />
+                    <span>{isUploadingBarId ? "Securing & Uploading Proof..." : profile.barIdCardUrl ? "Replace ID Proof" : "Upload Bar Council ID / Certificate"}</span>
                   </button>
 
                   {profile.barIdCardUrl && (
                     <div className="flex items-center gap-2">
-                      <img
-                        src={profile.barIdCardUrl}
-                        alt="Bar ID proof preview"
-                        className="w-9 h-9 object-cover rounded-lg border border-[#E7E0D5] shadow-sm"
-                      />
+                      {profile.barIdCardUrl.startsWith("storage://") ? (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#FAF8F5] border border-emerald-600/30 text-emerald-800 rounded-lg text-xs font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>ID Document Secured</span>
+                        </div>
+                      ) : (
+                        <img
+                          src={profile.barIdCardUrl}
+                          alt="Bar ID proof preview"
+                          className="w-9 h-9 object-cover rounded-lg border border-[#E7E0D5] shadow-sm"
+                        />
+                      )}
                       <button
                         type="button"
                         onClick={() => setProfile((prev) => ({ ...prev, barIdCardUrl: undefined }))}
-                        className="text-xs text-rose-400 hover:text-rose-300"
+                        className="text-xs text-rose-500 hover:text-rose-600 font-medium"
                       >
                         Remove
                       </button>
@@ -1490,11 +1556,12 @@ export default function DashboardPage() {
                     />
                     <button
                       type="button"
+                      disabled={isUploadingPhoto}
                       onClick={() => photoFileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 text-xs font-bold bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2.5 rounded-full shadow-sm transition-all active:scale-95"
+                      className="inline-flex items-center gap-2 text-xs font-bold bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] px-4 py-2.5 rounded-full shadow-sm transition-all active:scale-95 disabled:opacity-50"
                     >
-                      <Camera className="w-3.5 h-3.5 text-[#E6D5B8]" />
-                      <span>Upload Portrait Photo</span>
+                      <Camera className={`w-3.5 h-3.5 text-[#E6D5B8] ${isUploadingPhoto ? "animate-spin" : ""}`} />
+                      <span>{isUploadingPhoto ? "Optimizing & Uploading..." : "Upload Portrait Photo"}</span>
                     </button>
                     {profile.photoUrl && (
                       <button
