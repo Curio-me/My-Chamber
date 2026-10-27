@@ -64,7 +64,7 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mycha
       "@type": "WebPage",
       "@id": profileUrl,
     },
-    image: advocate.photoUrl || undefined,
+    image: advocate.photoUrl && advocate.photoUrl.startsWith("http") ? advocate.photoUrl : undefined,
     telephone: advocate.mobile || undefined,
     email: advocate.email || undefined,
     address: advocate.officeAddress

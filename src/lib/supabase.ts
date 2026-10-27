@@ -219,14 +219,20 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
   };
 }
 
-// Fetch advocate by slug from Supabase
+// Fetch advocate by slug from Supabase (with 2.5s fast safety timeout for instant SSR)
 export async function fetchAdvocateBySlug(slug: string): Promise<Advocate | null> {
   try {
-    const { data, error } = await supabase
+    const fetchPromise = supabase
       .from("advocate_profiles")
       .select("*")
       .eq("slug", slug.toLowerCase())
       .maybeSingle();
+
+    const timeoutPromise = new Promise<{ data: null; error: any }>((resolve) =>
+      setTimeout(() => resolve({ data: null, error: "timeout" }), 2500)
+    );
+
+    const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (error || !data) {
       return null;

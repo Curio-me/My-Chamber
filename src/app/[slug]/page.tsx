@@ -2,11 +2,25 @@ import { Suspense, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AdvocateClientView from "./AdvocateClientView";
-import { fetchAdvocateBySlug } from "@/lib/supabase";
+import { fetchAdvocateBySlug, fetchAllAdvocateSlugs } from "@/lib/supabase";
 import LegalSchema from "@/components/LegalSchema";
 
-// Cache rendered chamber pages on Vercel Edge CDN for 60s for sub-50ms instant loads
+// Pre-render static HTML at build time for existing advocates for instant <50ms CDN loads
+export const dynamicParams = true;
 export const revalidate = 60;
+
+export async function generateStaticParams() {
+  try {
+    const list = await fetchAllAdvocateSlugs();
+    const slugs = list.map((item) => ({ slug: item.slug }));
+    if (!slugs.some((s) => s.slug === "rajavikrant")) {
+      slugs.push({ slug: "rajavikrant" });
+    }
+    return slugs;
+  } catch {
+    return [{ slug: "rajavikrant" }];
+  }
+}
 
 // Deduplicate database queries across generateMetadata and Page execution
 const getCachedAdvocate = cache(async (slug: string) => {
@@ -71,13 +85,17 @@ export async function generateMetadata({
         url: canonicalUrl,
         type: "profile",
         siteName: "My Chamber",
-        images: advocate.photoUrl ? [{ url: advocate.photoUrl, width: 800, height: 800, alt: advocate.fullName }] : undefined,
+        images: advocate.photoUrl && advocate.photoUrl.startsWith("http")
+          ? [{ url: advocate.photoUrl, width: 800, height: 800, alt: advocate.fullName }]
+          : [{ url: "https://mychamber.me/icon.svg", width: 512, height: 512, alt: "My Chamber" }],
       },
       twitter: {
         card: "summary_large_image",
         title: `${advocate.fullName} — ${courtName} | My Chamber`,
         description: desc,
-        images: advocate.photoUrl ? [advocate.photoUrl] : undefined,
+        images: advocate.photoUrl && advocate.photoUrl.startsWith("http")
+          ? [advocate.photoUrl]
+          : ["https://mychamber.me/icon.svg"],
       },
     };
   }
