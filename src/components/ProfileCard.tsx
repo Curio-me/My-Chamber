@@ -474,14 +474,14 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({
-          title: advocate.fullName,
-          text: `Digital Chamber profile of ${advocate.fullName} (${advocate.enrollmentNo})`,
+          title: `${advocate.fullName} — Digital Chamber`,
+          text: `Official Digital Chamber of ${advocate.fullName} (${advocate.enrollmentNo})`,
           url: profileUrl,
         });
       } else {
         await navigator.clipboard.writeText(profileUrl);
         setCopied(true);
-        setToastMessage("✓ Chamber profile link copied to clipboard!");
+        setToastMessage("✓ Chamber link copied to clipboard!");
         setTimeout(() => {
           setCopied(false);
           setToastMessage(null);

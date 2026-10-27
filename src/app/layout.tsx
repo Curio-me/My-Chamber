@@ -13,7 +13,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL("https://mychamber.me"),
   title: {
-    default: "My Chamber — Digital Profiles for Indian Advocates",
+    default: "My Chamber — Digital Chambers for Indian Advocates",
     template: "%s | My Chamber",
   },
   description:
@@ -44,13 +44,13 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://mychamber.me",
     siteName: "My Chamber",
-    title: "My Chamber — Digital Profiles for Indian Advocates",
+    title: "My Chamber — Digital Chambers for Indian Advocates",
     description:
       "A distinguished digital chamber infrastructure for advocates in India. Bar Council verification, 1-tap vCard, desk QR code, and court particulars.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "My Chamber — Digital Profiles for Indian Advocates",
+    title: "My Chamber — Digital Chambers for Indian Advocates",
     description:
       "A distinguished digital chamber infrastructure for advocates in India. Bar Council verification, 1-tap vCard, desk QR code, and court particulars.",
   },
