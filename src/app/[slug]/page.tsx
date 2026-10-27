@@ -1,7 +1,17 @@
-import { Suspense } from "react";
+import { Suspense, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AdvocateClientView from "./AdvocateClientView";
+import { fetchAdvocateBySlug } from "@/lib/supabase";
+import LegalSchema from "@/components/LegalSchema";
+
+// Cache rendered chamber pages on Vercel Edge CDN for 60s for sub-50ms instant loads
+export const revalidate = 60;
+
+// Deduplicate database queries across generateMetadata and Page execution
+const getCachedAdvocate = cache(async (slug: string) => {
+  return await fetchAdvocateBySlug(slug);
+});
 
 const RESERVED_SLUGS = new Set([
   "dashboard",
@@ -27,8 +37,8 @@ export async function generateMetadata({
     return { title: "My Chamber" };
   }
 
-  // Fetch actual data or fallback
-  const advocate = await fetchAdvocateBySlug(slug);
+  // Fetch actual data or fallback (deduplicated across metadata & page render)
+  const advocate = await getCachedAdvocate(slug);
 
   if (advocate) {
     const courtName = advocate.courts?.[0] || "High Court";
@@ -139,9 +149,6 @@ export async function generateMetadata({
   };
 }
 
-import { fetchAdvocateBySlug } from "@/lib/supabase";
-import LegalSchema, { generateLegalSchema } from "@/components/LegalSchema";
-
 export default async function Page({
   params,
 }: {
@@ -153,8 +160,8 @@ export default async function Page({
     notFound();
   }
 
-  // Attempt SSR fetch for search engine crawlers
-  let advocateData = await fetchAdvocateBySlug(slug);
+  // Attempt SSR fetch (cached and shared with metadata)
+  let advocateData = await getCachedAdvocate(slug);
 
   if (!advocateData && (slug.toLowerCase() === "rajavikrant" || slug.toLowerCase() === "adv-rv")) {
     advocateData = {
@@ -200,7 +207,7 @@ export default async function Page({
           </div>
         }
       >
-        <AdvocateClientView slug={slug} />
+        <AdvocateClientView slug={slug} initialAdvocate={advocateData} />
       </Suspense>
     </>
   );

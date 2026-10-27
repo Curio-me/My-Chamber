@@ -287,19 +287,62 @@ export default function DashboardPage() {
     }
   };
 
-  // Handle local photo upload
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Helper to compress advocate portrait photo for fast mobile page loads (~35KB instead of 2MB+)
+  const compressImageFile = (file: File, maxDim = 480, quality = 0.85): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let { width, height } = img;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(e.target?.result as string);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", quality));
+        };
+        img.onerror = () => resolve(e.target?.result as string);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle local photo upload with automatic high-speed compression
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert("Please select an image smaller than 2MB.");
+      if (file.size > 8 * 1024 * 1024) {
+        alert("Please select an image smaller than 8MB.");
         return;
       }
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setProfile((prev) => ({ ...prev, photoUrl: event.target?.result as string }));
-      };
-      reader.readAsDataURL(file);
+      try {
+        const compressedBase64 = await compressImageFile(file, 480, 0.85);
+        setProfile((prev) => ({ ...prev, photoUrl: compressedBase64 }));
+      } catch {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setProfile((prev) => ({ ...prev, photoUrl: event.target?.result as string }));
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 

@@ -98,14 +98,25 @@ function createDefaultProfileFromSlug(slug: string): Advocate {
   };
 }
 
-export default function AdvocateClientView({ slug }: { slug: string }) {
+interface AdvocateClientViewProps {
+  slug: string;
+  initialAdvocate?: Advocate | null;
+}
+
+export default function AdvocateClientView({ slug, initialAdvocate }: AdvocateClientViewProps) {
   const [advocate, setAdvocate] = useState<Advocate>(() =>
-    createDefaultProfileFromSlug(slug)
+    initialAdvocate || createDefaultProfileFromSlug(slug)
   );
 
   useEffect(() => {
+    // If we already have server-rendered data for this advocate, avoid duplicate network roundtrips
+    if (initialAdvocate && (initialAdvocate.slug === slug || initialAdvocate.id === slug)) {
+      setAdvocate(initialAdvocate);
+      return;
+    }
+
     try {
-      // 1. Check local storage for instant zero-latency load
+      // 1. Check local storage for instant zero-latency load if local editing
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Advocate;
@@ -114,7 +125,7 @@ export default function AdvocateClientView({ slug }: { slug: string }) {
         }
       }
 
-      // 2. Fetch live data from Supabase cloud database
+      // 2. Fetch live data from Supabase cloud database if not pre-rendered
       fetch(`/api/profile?slug=${encodeURIComponent(slug)}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
@@ -128,7 +139,7 @@ export default function AdvocateClientView({ slug }: { slug: string }) {
     } catch {
       // fallback to generated profile
     }
-  }, [slug]);
+  }, [slug, initialAdvocate]);
 
   return <ProfileCard advocate={advocate} />;
 }
