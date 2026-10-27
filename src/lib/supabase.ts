@@ -196,7 +196,7 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
     user_id: userId || null,
     full_name: advocate.fullName,
     enrollment_no: advocate.enrollmentNo,
-    bio: advocate.bio,
+    bio: advocate.bio ? advocate.bio.slice(0, 800) : "",
     photo_url: advocate.photoUrl || null,
     mobile: advocate.mobile || "",
     office_phone: advocate.officePhone || null,

@@ -226,9 +226,15 @@ export default function DashboardPage() {
       return;
     }
 
+    if (profile.bio && profile.bio.length > 800) {
+      alert("⚠️ About / Bio exceeds 800 characters!\n\nPlease shorten your chamber introduction to 800 characters or fewer.");
+      return;
+    }
+
     const profileToSave: Advocate = {
       ...profile,
       slug: cleanSlug,
+      bio: (profile.bio || "").slice(0, 800),
       id: (!profile.id || profile.id === "chamber-new") ? cleanSlug : profile.id,
       hideEnrollmentNo: profile.hideEnrollmentNo === true,
       instagramUrl: normalizeSocialUrl("instagram", profile.instagramUrl || ""),
@@ -1484,14 +1490,18 @@ export default function DashboardPage() {
               </label>
               <textarea
                 rows={4}
+                maxLength={800}
                 value={profile.bio}
-                onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                onChange={(e) => setProfile({ ...profile, bio: e.target.value.slice(0, 800) })}
                 placeholder="Write a brief introduction about your chamber, areas of legal expertise, and courtroom advocacy..."
                 className="w-full bg-[#FAF8F5] border border-[#E7E0D5] rounded-xl p-3.5 text-sm text-[#14231C] leading-relaxed focus:outline-none focus:border-[#163826]"
               />
-              <p className="text-[11px] text-[#526057] mt-1 text-right">
-                {profile.bio.length} characters
-              </p>
+              <div className="flex items-center justify-between text-[11px] text-[#526057] mt-1">
+                <span>Maximum 800 characters</span>
+                <span className={`font-mono ${profile.bio.length >= 800 ? "text-rose-600 font-semibold" : profile.bio.length >= 750 ? "text-amber-600 font-semibold" : ""}`}>
+                  {profile.bio.length} / 800
+                </span>
+              </div>
             </div>
           </div>
 
