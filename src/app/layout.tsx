@@ -82,6 +82,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${plusJakartaSans.variable} h-full antialiased`}>
+      <head>
+        <link rel="preconnect" href="https://ajscsmcykqbygbgtusxb.supabase.co" />
+        <link rel="dns-prefetch" href="https://ajscsmcykqbygbgtusxb.supabase.co" />
+      </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[#FAF7F2] text-[#14231C] font-sans">
         {children}
       </body>

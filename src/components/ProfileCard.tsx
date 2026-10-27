@@ -235,6 +235,8 @@ function NewsCarousel({
                   <img
                     src={item.imageUrl}
                     alt={item.title}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 opacity-75"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/35" />
@@ -850,6 +852,11 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
               <img
                 src={advocate.photoUrl}
                 alt={advocate.fullName}
+                width={96}
+                height={96}
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
                 className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 transition-all duration-300 ${
                   is3DActive
                     ? isDark
