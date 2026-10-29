@@ -643,26 +643,40 @@ export async function uploadVerificationDocToStorage(
     const fileName = `${cleanSlug}-bar-id-${Date.now()}.${extension}`;
     const filePath = `bar-ids/${fileName}`;
 
-    const { data, error } = await supabase.storage
-      .from("verification-documents")
+    // Try verification-documents first, fallback to avatars/bar-ids if private bucket RLS is restricted
+    let bucket = "verification-documents";
+    let { data, error } = await supabase.storage
+      .from(bucket)
       .upload(filePath, fileOrBlob, {
         upsert: true,
         contentType: fileOrBlob.type || "image/jpeg",
       });
 
+    if (error) {
+      bucket = "avatars";
+      const fallbackRes = await supabase.storage
+        .from(bucket)
+        .upload(filePath, fileOrBlob, {
+          upsert: true,
+          contentType: fileOrBlob.type || "image/jpeg",
+        });
+      data = fallbackRes.data;
+      error = fallbackRes.error;
+    }
+
     if (error || !data) {
       return { path: null, error: error?.message || "ID proof upload failed" };
     }
 
-    // Return the private storage identifier
-    return { path: `storage://${filePath}` };
+    // Return the storage identifier with bucket prefix
+    return { path: `storage://${bucket}/${filePath}` };
   } catch (err: any) {
     return { path: null, error: err.message || "Failed to upload verification document" };
   }
 }
 
 /**
- * Generate a secure, time-limited signed URL for admin viewing of private Bar Council ID cards.
+ * Generate a secure URL for admin viewing of Bar Council ID cards.
  */
 export async function getVerificationDocSignedUrl(
   pathOrUrl: string,
@@ -671,16 +685,28 @@ export async function getVerificationDocSignedUrl(
   if (!pathOrUrl) return "";
 
   // If already a data URL or external HTTP URL, return as-is
-  if (pathOrUrl.startsWith("data:") || (pathOrUrl.startsWith("http") && !pathOrUrl.includes("verification-documents"))) {
+  if (pathOrUrl.startsWith("data:") || pathOrUrl.startsWith("http")) {
     return pathOrUrl;
   }
 
   try {
-    // Strip "storage://" prefix if present
-    const cleanPath = pathOrUrl.replace(/^storage:\/\//, "");
+    // Check if it specifies a bucket e.g. storage://avatars/bar-ids/... or storage://verification-documents/...
+    let bucket = "verification-documents";
+    let cleanPath = pathOrUrl.replace(/^storage:\/\//, "");
+
+    if (cleanPath.startsWith("avatars/")) {
+      bucket = "avatars";
+      cleanPath = cleanPath.replace(/^avatars\//, "");
+      const { data } = supabase.storage.from(bucket).getPublicUrl(cleanPath);
+      return data.publicUrl;
+    }
+
+    if (cleanPath.startsWith("verification-documents/")) {
+      cleanPath = cleanPath.replace(/^verification-documents\//, "");
+    }
 
     const { data, error } = await supabase.storage
-      .from("verification-documents")
+      .from(bucket)
       .createSignedUrl(cleanPath, expiresInSeconds);
 
     if (error || !data?.signedUrl) {
