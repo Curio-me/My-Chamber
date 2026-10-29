@@ -192,7 +192,10 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
       qualifications: advocate.qualifications || [],
       almaMater: advocate.almaMater || "",
       chamberHours: advocate.chamberHours || "",
-      barIdCardUrl: advocate.barIdCardUrl || null,
+      // Only store storage paths or cloud URLs; never embed multi-megabyte base64 strings in metadata
+      barIdCardUrl: advocate.barIdCardUrl && !advocate.barIdCardUrl.startsWith("data:")
+        ? advocate.barIdCardUrl
+        : null,
       verificationStatus: advocate.verificationStatus || (advocate.isVerified ? "verified" : "unverified"),
       hideEnrollmentNo: advocate.hideEnrollmentNo === true,
       youtubeUrl: advocate.youtubeUrl || null,

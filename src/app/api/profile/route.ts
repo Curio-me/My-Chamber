@@ -14,7 +14,9 @@ export async function GET(request: Request) {
   // 1. Attempt to fetch from Supabase
   const dbProfile = await fetchAdvocateBySlug(slug);
   if (dbProfile) {
-    return NextResponse.json(dbProfile);
+    // Sanitize: never leak private admin ID proofs to public profile requests
+    const { barIdCardUrl, ...publicProfile } = dbProfile;
+    return NextResponse.json(publicProfile);
   }
 
   return NextResponse.json({ found: false }, { status: 404 });

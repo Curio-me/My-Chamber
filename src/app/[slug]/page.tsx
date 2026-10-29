@@ -216,9 +216,17 @@ export default async function Page({
     };
   }
 
+  // Sanitize public payload: never bundle sensitive admin verification ID scans into public HTML
+  const publicAdvocateData = advocateData
+    ? (() => {
+        const { barIdCardUrl, ...rest } = advocateData;
+        return rest as typeof advocateData;
+      })()
+    : null;
+
   return (
     <>
-      {advocateData && <LegalSchema advocate={advocateData} />}
+      {publicAdvocateData && <LegalSchema advocate={publicAdvocateData} />}
       <Suspense
         fallback={
           <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center text-sm text-[#8ab4f8]">
@@ -226,7 +234,7 @@ export default async function Page({
           </div>
         }
       >
-        <AdvocateClientView slug={slug} initialAdvocate={advocateData} />
+        <AdvocateClientView slug={slug} initialAdvocate={publicAdvocateData} />
       </Suspense>
     </>
   );
