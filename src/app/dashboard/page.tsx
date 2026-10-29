@@ -3047,22 +3047,22 @@ export default function DashboardPage() {
           onClick={() => setShowSuccessModal(false)}
         >
           <div
-            className="relative w-full max-w-lg bg-[#FAF8F5] border-2 border-[#D4AF37]/50 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-200 text-[#14231C]"
+            className="relative w-full max-w-md bg-[#FAF8F5] border-2 border-[#D4AF37]/50 rounded-3xl p-5 sm:p-6 shadow-2xl text-center space-y-3.5 animate-in zoom-in-95 duration-200 text-[#14231C]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Close Button */}
             <button
               type="button"
               onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700 rounded-full bg-black/5 hover:bg-black/10 transition"
+              className="absolute top-3.5 right-3.5 p-1.5 text-stone-400 hover:text-stone-700 rounded-full bg-black/5 hover:bg-black/10 transition"
               title="Close"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
 
             {/* Top Square: Advocate Portrait Photo with Verified Checkmark */}
-            <div className="relative mx-auto w-20 h-20 rounded-2xl p-1 bg-gradient-to-br from-[#D4AF37] via-[#E5C768] to-[#163826] shadow-xl">
-              <div className="w-full h-full rounded-[14px] overflow-hidden bg-white flex items-center justify-center">
+            <div className="relative mx-auto w-14 h-14 rounded-xl p-0.5 bg-gradient-to-br from-[#D4AF37] via-[#E5C768] to-[#163826] shadow-md">
+              <div className="w-full h-full rounded-[10px] overflow-hidden bg-white flex items-center justify-center">
                 {profile.photoUrl ? (
                   <img
                     src={profile.photoUrl}
@@ -3070,7 +3070,7 @@ export default function DashboardPage() {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-[#163826] flex items-center justify-center text-white font-serif font-bold text-xl">
+                  <div className="w-full h-full bg-[#163826] flex items-center justify-center text-white font-serif font-bold text-base">
                     {profile.fullName
                       ? profile.fullName
                           .replace(/^Adv\.\s*/i, "")
@@ -3086,46 +3086,46 @@ export default function DashboardPage() {
               </div>
               {/* Green Verified Check Badge */}
               <div
-                className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-white shadow-md"
+                className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-white shadow-sm"
                 title="Verified Chamber"
               >
-                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <Check className="w-3 h-3 stroke-[3]" />
               </div>
             </div>
 
             {/* Title & Subtitle */}
-            <div className="space-y-1.5">
-              <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-[#163826] bg-[#163826]/10 border border-[#163826]/20 px-3.5 py-1 rounded-full">
+            <div className="space-y-1">
+              <span className="inline-block text-[10px] font-bold uppercase tracking-wider text-[#163826] bg-[#163826]/10 border border-[#163826]/20 px-2.5 py-0.5 rounded-full">
                 Profile Updated & Saved
               </span>
-              <h2 className="text-2xl font-serif font-bold text-[#14231C] pt-1">
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#14231C]">
                 Congratulations!
               </h2>
-              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed max-w-sm mx-auto">
+              <p className="text-xs text-[#526057] leading-relaxed max-w-xs mx-auto">
                 Your official <strong className="text-[#163826] font-semibold">Digital Chamber</strong> is now Live and ready to share with clients, colleagues, and courts.
               </p>
             </div>
 
             {/* Chamber Address Box */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7E0D5] text-left space-y-2.5 shadow-sm">
-              <div className="flex items-center justify-between text-xs">
+            <div className="p-3 sm:p-3.5 rounded-2xl bg-white border border-[#E7E0D5] text-left space-y-1.5 shadow-sm">
+              <div className="flex items-center justify-between text-[11px]">
                 <span className="font-bold uppercase tracking-wider text-[#163826] flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <Globe className="w-3 h-3 text-[#D4AF37]" />
                   Your Chamber Address
                 </span>
-                <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                <span className="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live Online
                 </span>
               </div>
 
               {/* Click-to-copy URL box */}
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#D4AF37]/40 shadow-inner">
+              <div className="flex items-center gap-2 p-2 rounded-xl bg-[#FAF8F5] border border-[#D4AF37]/40 shadow-inner">
                 <input
                   type="text"
                   readOnly
                   value={`${origin}/${profile.slug}`}
-                  className="bg-transparent text-xs sm:text-sm font-mono font-medium text-[#14231C] flex-1 outline-none select-all"
+                  className="bg-transparent text-xs font-mono font-medium text-[#14231C] flex-1 outline-none select-all"
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
                 <button
@@ -3135,39 +3135,35 @@ export default function DashboardPage() {
                     setCopiedModalAddress(true);
                     setTimeout(() => setCopiedModalAddress(false), 2500);
                   }}
-                  className="px-3.5 py-1.5 rounded-lg bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-bold transition flex items-center gap-1.5 shrink-0 active:scale-95 shadow-sm"
+                  className="px-3 py-1 rounded-lg bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-bold transition flex items-center gap-1 shrink-0 active:scale-95 shadow-sm"
                 >
                   {copiedModalAddress ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-300" />
+                      <Check className="w-3 h-3 text-emerald-300" />
                       <span>Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <Copy className="w-3 h-3 text-[#D4AF37]" />
                       <span>Copy</span>
                     </>
                   )}
                 </button>
               </div>
-
-              <p className="text-[11px] text-[#718277] leading-normal">
-                Share this link with clients, put it in your WhatsApp bio, email signature, or visiting card.
-              </p>
             </div>
 
             {/* Inspiring Judicial Quote by Nani A. Palkhivala */}
-            <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-[#163826]/5 via-[#D4AF37]/10 to-[#163826]/5 border border-[#D4AF37]/30 text-center space-y-1">
-              <p className="text-xs font-serif italic text-[#163826] leading-relaxed">
+            <div className="py-2 px-3 rounded-xl bg-gradient-to-r from-[#163826]/5 via-[#D4AF37]/10 to-[#163826]/5 border border-[#D4AF37]/30 text-center">
+              <p className="text-[11px] font-serif italic text-[#163826] leading-snug">
                 &ldquo;The highest duty of an advocate is not merely to win, but to assist in the fearless pursuit of truth and justice.&rdquo;
               </p>
-              <p className="text-[10px] font-bold tracking-wider uppercase text-[#8C7335]">
+              <p className="text-[9px] font-bold tracking-wider uppercase text-[#8C7335] mt-0.5">
                 — Nani A. Palkhivala
               </p>
             </div>
 
             {/* Action Buttons: WhatsApp Share & View Live */}
-            <div className="space-y-2.5 pt-1">
+            <div className="space-y-2 pt-0.5">
               {/* WhatsApp Share Button */}
               <a
                 href={`https://wa.me/?text=${encodeURIComponent(
@@ -3175,21 +3171,21 @@ export default function DashboardPage() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm shadow-lg shadow-[#25D366]/25 transition-all active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#25D366]/25 transition-all active:scale-[0.98]"
               >
-                <WhatsAppIcon className="w-5 h-5 fill-white" />
+                <WhatsAppIcon className="w-4 h-4 fill-white" />
                 <span>Share Address on WhatsApp</span>
               </a>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-2">
                 {/* View Chamber Button */}
                 <a
                   href={`/${profile.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-white hover:bg-[#FAF8F5] border border-[#163826]/30 text-[#163826] font-bold text-xs transition shadow-sm active:scale-[0.98]"
+                  className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-white hover:bg-[#FAF8F5] border border-[#163826]/30 text-[#163826] font-bold text-xs transition shadow-sm active:scale-[0.98]"
                 >
-                  <Eye className="w-4 h-4 text-[#163826]" />
+                  <Eye className="w-3.5 h-3.5 text-[#163826]" />
                   <span>View Chamber ↗</span>
                 </a>
 
@@ -3197,7 +3193,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowSuccessModal(false)}
-                  className="flex items-center justify-center py-3 px-3 rounded-xl bg-black/5 hover:bg-black/10 text-[#526057] font-semibold text-xs transition"
+                  className="flex items-center justify-center py-2.5 px-3 rounded-xl bg-black/5 hover:bg-black/10 text-[#526057] font-semibold text-xs transition"
                 >
                   Back to Dashboard
                 </button>
