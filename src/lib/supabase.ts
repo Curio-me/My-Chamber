@@ -17,7 +17,12 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
   const newsItems: any[] = Array.isArray(row.news_media) ? [...row.news_media] : [];
 
   customLinksRaw.forEach((item: any) => {
-    if (item.isBarAssociations) {
+    if (!item || typeof item !== "object") {
+      return;
+    }
+
+    // Ignore internal metadata entries stored inside custom_links JSONB
+    if (item.isBarAssociations || item.isProfileMeta || item.id?.startsWith("meta_")) {
       return;
     }
 
@@ -55,11 +60,14 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
         });
       }
     } else {
-      standardLinks.push({
-        id: item.id,
-        title: item.title,
-        url: item.url,
-      });
+      // Only keep actual custom links with valid title or URL (discard empty ghost objects)
+      if ((item.title && item.title.trim()) || (item.url && item.url.trim())) {
+        standardLinks.push({
+          id: item.id || `link_${Date.now()}_${Math.random()}`,
+          title: item.title || "",
+          url: item.url || "",
+        });
+      }
     }
   });
 
@@ -144,9 +152,22 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
 }
 
 export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
+  // Clean custom links: strictly filter out empty ghost links and internal metadata, and cap to 3
+  const cleanCustomLinks = (advocate.customLinks || [])
+    .filter(
+      (l) =>
+        l &&
+        !l.id?.startsWith("meta_") &&
+        !(l as any).isProfileMeta &&
+        !(l as any).isBarAssociations &&
+        (Boolean(l.title?.trim()) || Boolean(l.url?.trim()))
+    )
+    .slice(0, 3)
+    .map((l) => ({ id: l.id, title: l.title, url: l.url, isNews: false }));
+
   // Store customLinks, newsMedia, barAssociations, and profile meta inside custom_links JSONB
   const combinedCustomLinks = [
-    ...(advocate.customLinks || []).map((l) => ({ ...l, isNews: false })),
+    ...cleanCustomLinks,
     ...(advocate.newsMedia || []).map((n) => ({
       id: n.id,
       title: n.title,

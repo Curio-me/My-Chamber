@@ -125,6 +125,19 @@ export default function DashboardPage() {
           if (currentProfile.id === "chamber-new") {
             currentProfile.id = "";
           }
+          // Sanitize ghost/empty customLinks from old sessions
+          if (Array.isArray(currentProfile.customLinks)) {
+            currentProfile.customLinks = currentProfile.customLinks
+              .filter(
+                (l: any) =>
+                  l &&
+                  !l.id?.startsWith("meta_") &&
+                  !l.isProfileMeta &&
+                  !l.isBarAssociations &&
+                  (Boolean(l.title?.trim()) || Boolean(l.url?.trim()))
+              )
+              .slice(0, 3);
+          }
         }
       } catch {
         // remains EMPTY_ADVOCATE
@@ -246,11 +259,23 @@ export default function DashboardPage() {
       return;
     }
 
+    const cleanCustomLinks = (profile.customLinks || [])
+      .filter(
+        (l) =>
+          l &&
+          !l.id?.startsWith("meta_") &&
+          !(l as any).isProfileMeta &&
+          !(l as any).isBarAssociations &&
+          (Boolean(l.title?.trim()) || Boolean(l.url?.trim()))
+      )
+      .slice(0, 3);
+
     const profileToSave: Advocate = {
       ...profile,
       slug: cleanSlug,
       bio: (profile.bio || "").slice(0, 800),
       id: (!profile.id || profile.id === "chamber-new") ? cleanSlug : profile.id,
+      customLinks: cleanCustomLinks,
       hideEnrollmentNo: profile.hideEnrollmentNo === true,
       instagramUrl: normalizeSocialUrl("instagram", profile.instagramUrl || ""),
       linkedinUrl: normalizeSocialUrl("linkedin", profile.linkedinUrl || ""),
@@ -669,7 +694,12 @@ export default function DashboardPage() {
 
   // Custom Links / Judgments (Max 3 Allowed)
   const addCustomLink = () => {
-    if ((profile.customLinks || []).length >= 3) {
+    // Clean out any empty ghost links first
+    const validExisting = (profile.customLinks || []).filter(
+      (l) => l && !l.id?.startsWith("meta_") && (Boolean(l.title?.trim()) || Boolean(l.url?.trim()))
+    );
+
+    if (validExisting.length >= 3) {
       alert("⚠️ Maximum Limit Reached:\n\nYou can add a maximum of 3 Additional Links & Judgments to keep your chamber profile clean and focused.");
       return;
     }
@@ -680,7 +710,7 @@ export default function DashboardPage() {
     };
     setProfile((prev) => ({
       ...prev,
-      customLinks: [...(prev.customLinks || []), newLink],
+      customLinks: [...validExisting, newLink],
     }));
   };
 
@@ -695,6 +725,13 @@ export default function DashboardPage() {
     setProfile((prev) => ({
       ...prev,
       customLinks: (prev.customLinks || []).filter((l) => l.id !== id),
+    }));
+  };
+
+  const clearAllCustomLinks = () => {
+    setProfile((prev) => ({
+      ...prev,
+      customLinks: [],
     }));
   };
 
@@ -2376,23 +2413,34 @@ export default function DashboardPage() {
                   {profile.customLinks?.length || 0}/3 Max
                 </span>
               </div>
-              <button
-                type="button"
-                onClick={addCustomLink}
-                disabled={(profile.customLinks || []).length >= 3}
-                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors shadow-sm ${
-                  (profile.customLinks || []).length >= 3
-                    ? "bg-[#F3EFE6] text-[#8C9890] border-[#E7E0D5] cursor-not-allowed"
-                    : "bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] border-[#163826]/30"
-                }`}
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>
-                  {(profile.customLinks || []).length >= 3
-                    ? "Limit Reached (3/3)"
-                    : "Add Link / Judgment"}
-                </span>
-              </button>
+              <div className="flex items-center gap-2">
+                {(profile.customLinks || []).length > 0 && (
+                  <button
+                    type="button"
+                    onClick={clearAllCustomLinks}
+                    className="text-xs text-rose-600 hover:text-rose-700 font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-50 transition"
+                  >
+                    Clear All
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={addCustomLink}
+                  disabled={(profile.customLinks || []).length >= 3}
+                  className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl border transition-colors shadow-sm ${
+                    (profile.customLinks || []).length >= 3
+                      ? "bg-[#F3EFE6] text-[#8C9890] border-[#E7E0D5] cursor-not-allowed"
+                      : "bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] border-[#163826]/30"
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>
+                    {(profile.customLinks || []).length >= 3
+                      ? "Limit Reached (3/3)"
+                      : "Add Link / Judgment"}
+                  </span>
+                </button>
+              </div>
             </div>
 
             <p className="text-xs text-[#526057] leading-relaxed">
