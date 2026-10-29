@@ -3102,16 +3102,16 @@ export default function DashboardPage() {
                 Congratulations!
               </h2>
               <p className="text-xs sm:text-sm text-[#526057] leading-relaxed max-w-sm mx-auto">
-                Your official <strong className="text-[#163826] font-semibold">Digital Chamber</strong> is published and ready to share with clients, colleagues, and courts.
+                Your official <strong className="text-[#163826] font-semibold">Digital Chamber</strong> is now Live and ready to share with clients, colleagues, and courts.
               </p>
             </div>
 
-            {/* Chamber Web Address Box */}
+            {/* Chamber Address Box */}
             <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7E0D5] text-left space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold uppercase tracking-wider text-[#163826] flex items-center gap-1.5">
                   <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  Your Chamber Web Address
+                  Your Chamber Address
                 </span>
                 <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
