@@ -26,16 +26,22 @@ export function mapRowToAdvocate(row: Record<string, any>): Advocate {
       return;
     }
 
+    // If explicitly marked as standard link or not news
+    if (item.isNews === false) {
+      if ((item.title && item.title.trim()) || (item.url && item.url.trim())) {
+        standardLinks.push({
+          id: item.id || `link_${Date.now()}_${Math.random()}`,
+          title: item.title || "",
+          url: item.url || "",
+        });
+      }
+      return;
+    }
+
+    // Only treat as news if explicitly flagged as news or has news media properties (publication + imageUrl)
     const isNews =
-      item.isNews ||
-      item.publication ||
-      item.imageUrl ||
-      (item.url &&
-        (item.url.includes("tribuneindia") ||
-          item.url.includes("livelaw") ||
-          item.url.includes("barandbench") ||
-          item.url.includes("timesofindia") ||
-          item.url.includes("thehindu")));
+      item.isNews === true ||
+      Boolean(item.publication && item.imageUrl);
 
     if (isNews) {
       if (!newsItems.some((n) => n.id === item.id || n.url === item.url)) {

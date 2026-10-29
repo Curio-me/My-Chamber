@@ -1848,7 +1848,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                         >
                           <ExternalLink
                             className={`w-4 h-4 ${
-                              isDark ? "text-[#8ab4f8]" : "text-blue-600"
+                              isDark ? "text-[#D4AF37]" : "text-[#163826]"
                             }`}
                           />
                           <span>Additional Links & Judgments</span>
@@ -1866,45 +1866,51 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                       </div>
 
                       <div className="space-y-2">
-                        {validLinks.map((link) => (
-                          <a
-                            key={link.id}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`flex items-center justify-between p-3 rounded-xl border transition-colors group shadow-sm ${
-                              isDark
-                                ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40"
-                                : "bg-white hover:bg-slate-100 border-slate-200"
-                            }`}
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div
-                                className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-                                  isDark
-                                    ? "bg-[#18191c] text-[#8ab4f8]"
-                                    : "bg-blue-50 text-blue-600"
-                                }`}
-                              >
-                                <ExternalLink className="w-4 h-4" />
-                              </div>
-                              <span
-                                className={`text-sm font-medium truncate ${
-                                  isDark ? "text-[#f1f3f4]" : "text-slate-900"
-                                }`}
-                              >
-                                {link.title}
-                              </span>
-                            </div>
-                            <ChevronRight
-                              className={`w-4 h-4 shrink-0 ml-2 transition-colors ${
+                        {validLinks.map((link) => {
+                          const href = link.url.startsWith("http://") || link.url.startsWith("https://")
+                            ? link.url
+                            : `https://${link.url}`;
+
+                          return (
+                            <a
+                              key={link.id}
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 group shadow-sm hover:scale-[1.005] ${
                                 isDark
-                                  ? "text-[#9aa0a6] group-hover:text-white"
-                                  : "text-slate-400 group-hover:text-slate-700"
+                                  ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40 hover:border-[#D4AF37]/50"
+                                  : "bg-white hover:bg-slate-50 border-slate-200 hover:border-[#163826]/40"
                               }`}
-                            />
-                          </a>
-                        ))}
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                <div
+                                  className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
+                                    isDark
+                                      ? "bg-[#D4AF37]/15 text-[#D4AF37] border-[#D4AF37]/30"
+                                      : "bg-[#163826]/10 text-[#163826] border-[#163826]/20"
+                                  }`}
+                                >
+                                  <ExternalLink className="w-4 h-4" />
+                                </div>
+                                <span
+                                  className={`text-sm font-medium truncate ${
+                                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
+                                  }`}
+                                >
+                                  {link.title}
+                                </span>
+                              </div>
+                              <ChevronRight
+                                className={`w-4 h-4 shrink-0 ml-2 transition-transform group-hover:translate-x-0.5 ${
+                                  isDark
+                                    ? "text-[#D4AF37]/70 group-hover:text-[#D4AF37]"
+                                    : "text-[#163826]/60 group-hover:text-[#163826]"
+                                }`}
+                              />
+                            </a>
+                          );
+                        })}
                       </div>
                     </div>
                   );

@@ -109,23 +109,21 @@ export default function AdvocateClientView({ slug, initialAdvocate }: AdvocateCl
   );
 
   useEffect(() => {
-    // If we already have server-rendered data for this advocate, avoid duplicate network roundtrips
-    if (initialAdvocate && (initialAdvocate.slug === slug || initialAdvocate.id === slug)) {
-      setAdvocate(initialAdvocate);
-      return;
-    }
-
     try {
-      // 1. Check local storage for instant zero-latency load if local editing
+      // 1. If local editing occurred on this device, check local storage for instant zero-latency view
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved) as Advocate;
-        if (parsed.slug === slug || !parsed.slug) {
-          setAdvocate({ ...parsed, slug });
+        if (
+          parsed.slug &&
+          parsed.slug.toLowerCase() === slug.toLowerCase() &&
+          parsed.fullName
+        ) {
+          setAdvocate(parsed);
         }
       }
 
-      // 2. Fetch live data from Supabase cloud database if not pre-rendered
+      // 2. Fetch live data from API in background (stale-while-revalidate) to ensure changes are always fresh
       fetch(`/api/profile?slug=${encodeURIComponent(slug)}`)
         .then((res) => (res.ok ? res.json() : null))
         .then((data) => {
@@ -137,9 +135,9 @@ export default function AdvocateClientView({ slug, initialAdvocate }: AdvocateCl
           // ignore network error
         });
     } catch {
-      // fallback to generated profile
+      // fallback to initialAdvocate
     }
-  }, [slug, initialAdvocate]);
+  }, [slug]);
 
   return <ProfileCard advocate={advocate} />;
 }
