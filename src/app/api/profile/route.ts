@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { Advocate } from "@/lib/types";
 import { fetchAdvocateBySlug, upsertAdvocateProfile } from "@/lib/supabase";
 
@@ -31,6 +32,14 @@ export async function POST(request: Request) {
 
     if (!result.success) {
       return NextResponse.json({ error: result.error || "Database error" }, { status: 400 });
+    }
+
+    // Immediately revalidate the chamber's Edge CDN cache so visitors get fresh data instantly
+    try {
+      revalidatePath(`/${profile.slug}`);
+      revalidatePath(`/${profile.slug}`, "page");
+    } catch {
+      // ignore
     }
 
     return NextResponse.json({ success: true, slug: profile.slug });

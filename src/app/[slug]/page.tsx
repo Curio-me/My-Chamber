@@ -7,7 +7,8 @@ import LegalSchema from "@/components/LegalSchema";
 
 // Pre-render static HTML at build time for existing advocates for instant <50ms CDN loads
 export const dynamicParams = true;
-export const revalidate = 60;
+// Keep cached on Vercel Edge CDN for 1 hour (revalidated on-demand when edited)
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   try {

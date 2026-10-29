@@ -271,6 +271,9 @@ export default function DashboardPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileToSave),
       }).catch(() => {});
+
+      // 5. Pre-warm Vercel Edge CDN cache immediately in background so the very first visitor gets instant <300ms load
+      fetch(`/${cleanSlug}`, { cache: "no-store" }).catch(() => {});
     } catch (err: any) {
       alert("Failed to save profile: " + (err.message || "Unknown error"));
     }

@@ -219,7 +219,7 @@ export function mapAdvocateToRow(advocate: Advocate, userId?: string) {
   };
 }
 
-// Fetch advocate by slug from Supabase (with 2.5s fast safety timeout for instant SSR)
+// Fetch advocate by slug from Supabase (with 6s safety timeout for cold-start resilience)
 export async function fetchAdvocateBySlug(slug: string): Promise<Advocate | null> {
   try {
     const fetchPromise = supabase
@@ -229,7 +229,7 @@ export async function fetchAdvocateBySlug(slug: string): Promise<Advocate | null
       .maybeSingle();
 
     const timeoutPromise = new Promise<{ data: null; error: any }>((resolve) =>
-      setTimeout(() => resolve({ data: null, error: "timeout" }), 2500)
+      setTimeout(() => resolve({ data: null, error: "timeout" }), 6000)
     );
 
     const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
