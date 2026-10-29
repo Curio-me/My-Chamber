@@ -34,6 +34,9 @@ import {
   UserPlus,
   X,
   Printer,
+  ScrollText,
+  BookOpen,
+  ArrowUpRight,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
@@ -115,6 +118,40 @@ function InitialsAvatar({ name, isDark }: { name: string; isDark: boolean }) {
       {initials}
     </div>
   );
+}
+
+function getCitationSourceInfo(rawUrl: string) {
+  try {
+    const url = rawUrl.startsWith("http://") || rawUrl.startsWith("https://")
+      ? new URL(rawUrl)
+      : new URL(`https://${rawUrl}`);
+    const host = url.hostname.toLowerCase().replace(/^www\./, "");
+
+    if (host.includes("barandbench.com")) {
+      return { source: "Bar & Bench", category: "Legal Editorial & Column", badgeColor: "gold" };
+    }
+    if (host.includes("livelaw.in")) {
+      return { source: "LiveLaw", category: "Reported Judgment / Column", badgeColor: "gold" };
+    }
+    if (host.includes("scconline.com")) {
+      return { source: "SCC Online", category: "Law Report Citation", badgeColor: "gold" };
+    }
+    if (host.includes("indiankanoon.org")) {
+      return { source: "Indian Kanoon", category: "Reported Judgment", badgeColor: "gold" };
+    }
+    if (host.includes("sci.gov.in") || host.includes("supremecourtofindia.nic.in")) {
+      return { source: "Supreme Court", category: "Official Court Record", badgeColor: "forest" };
+    }
+    if (host.includes("ecourts.gov.in") || host.includes("highcourt") || host.includes(".nic.in")) {
+      return { source: "Court Registry", category: "Official Order / Judgment", badgeColor: "forest" };
+    }
+    if (host.includes("thehindu.com") || host.includes("tribuneindia.com") || host.includes("timesofindia")) {
+      return { source: host, category: "Press Publication", badgeColor: "slate" };
+    }
+    return { source: host, category: "External Legal Citation", badgeColor: "slate" };
+  } catch {
+    return { source: "Citation Link", category: "Reported Case / Article", badgeColor: "slate" };
+  }
 }
 
 function NewsCarousel({
@@ -1834,7 +1871,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                   return (
                     <div
                       key="box-custom-links"
-                      className={`rounded-2xl p-5 border space-y-3 shadow-sm ${
+                      className={`rounded-2xl p-5 border space-y-3.5 shadow-sm ${
                         isDark
                           ? "bg-[#202227] border-[#343840]/50"
                           : "bg-slate-50 border-slate-200"
@@ -1846,7 +1883,7 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                             isDark ? "text-[#f1f3f4]" : "text-slate-900"
                           }`}
                         >
-                          <ExternalLink
+                          <ScrollText
                             className={`w-4 h-4 ${
                               isDark ? "text-[#D4AF37]" : "text-[#163826]"
                             }`}
@@ -1854,22 +1891,25 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                           <span>Additional Links & Judgments</span>
                         </h2>
                         <span
-                          className={`text-xs ${
-                            isDark ? "text-[#9aa0a6]" : "text-slate-500"
+                          className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                            isDark
+                              ? "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/25"
+                              : "bg-[#163826]/8 text-[#163826] border-[#163826]/15"
                           }`}
                         >
                           {validLinks.length}{" "}
-                          {validLinks.length === 1
-                            ? "Citation / Link"
-                            : "Citations / Links"}
+                          {validLinks.length === 1 ? "Citation" : "Citations"}
                         </span>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2.5">
                         {validLinks.map((link) => {
-                          const href = link.url.startsWith("http://") || link.url.startsWith("https://")
-                            ? link.url
-                            : `https://${link.url}`;
+                          const href =
+                            link.url.startsWith("http://") ||
+                            link.url.startsWith("https://")
+                              ? link.url
+                              : `https://${link.url}`;
+                          const meta = getCitationSourceInfo(link.url);
 
                           return (
                             <a
@@ -1877,37 +1917,68 @@ export default function ProfileCard({ advocate }: ProfileCardProps) {
                               href={href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 group shadow-sm hover:scale-[1.005] ${
+                              className={`group relative flex items-start gap-3.5 p-3.5 rounded-xl border transition-all duration-200 shadow-sm hover:shadow-md hover:scale-[1.008] active:scale-[0.995] ${
                                 isDark
-                                  ? "bg-[#282a30] hover:bg-[#30333a] border-[#343840]/40 hover:border-[#D4AF37]/50"
-                                  : "bg-white hover:bg-slate-50 border-slate-200 hover:border-[#163826]/40"
+                                  ? "bg-[#1A1C21] hover:bg-[#22252C] border-[#343840]/60 hover:border-[#D4AF37]/50"
+                                  : "bg-white hover:bg-[#FAF7F2] border-[#E2E8F0] hover:border-[#D4AF37]/70"
                               }`}
                             >
-                              <div className="flex items-center gap-3 min-w-0">
-                                <div
-                                  className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border ${
-                                    isDark
-                                      ? "bg-[#D4AF37]/15 text-[#D4AF37] border-[#D4AF37]/30"
-                                      : "bg-[#163826]/10 text-[#163826] border-[#163826]/20"
-                                  }`}
-                                >
-                                  <ExternalLink className="w-4 h-4" />
+                              {/* Left Authoritative Icon Badge */}
+                              <div
+                                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border transition-all duration-200 group-hover:scale-105 mt-0.5 ${
+                                  isDark
+                                    ? "bg-[#D4AF37]/10 text-[#D4AF37] border-[#D4AF37]/25 group-hover:bg-[#D4AF37]/20"
+                                    : "bg-[#163826]/8 text-[#163826] border-[#163826]/15 group-hover:bg-[#163826]/12"
+                                }`}
+                              >
+                                <BookOpen className="w-4 h-4" />
+                              </div>
+
+                              {/* Center Content */}
+                              <div className="min-w-0 flex-1 space-y-1">
+                                {/* Source & Domain Meta Tag */}
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span
+                                    className={`text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md ${
+                                      isDark
+                                        ? "bg-[#D4AF37]/15 text-[#D4AF37]"
+                                        : "bg-[#163826]/8 text-[#163826]"
+                                    }`}
+                                  >
+                                    {meta.source}
+                                  </span>
+                                  <span
+                                    className={`text-[11px] ${
+                                      isDark ? "text-[#9aa0a6]" : "text-slate-400"
+                                    }`}
+                                  >
+                                    • {meta.category}
+                                  </span>
                                 </div>
-                                <span
-                                  className={`text-sm font-medium truncate ${
-                                    isDark ? "text-[#f1f3f4]" : "text-slate-900"
+
+                                {/* Citation / Article Title (Line-Clamp 2 for complete readability) */}
+                                <p
+                                  className={`text-[13px] font-semibold leading-snug transition-colors line-clamp-2 ${
+                                    isDark
+                                      ? "text-[#f1f3f4] group-hover:text-white"
+                                      : "text-slate-900 group-hover:text-[#163826]"
                                   }`}
+                                  title={link.title}
                                 >
                                   {link.title}
-                                </span>
+                                </p>
                               </div>
-                              <ChevronRight
-                                className={`w-4 h-4 shrink-0 ml-2 transition-transform group-hover:translate-x-0.5 ${
+
+                              {/* Trailing Action Pill */}
+                              <div
+                                className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 border transition-all duration-200 mt-1 ${
                                   isDark
-                                    ? "text-[#D4AF37]/70 group-hover:text-[#D4AF37]"
-                                    : "text-[#163826]/60 group-hover:text-[#163826]"
+                                    ? "bg-white/5 border-[#343840] text-[#9aa0a6] group-hover:text-[#D4AF37] group-hover:border-[#D4AF37]/40 group-hover:bg-[#D4AF37]/10"
+                                    : "bg-slate-50 border-slate-200 text-slate-400 group-hover:text-[#163826] group-hover:border-[#163826]/30 group-hover:bg-[#163826]/5"
                                 }`}
-                              />
+                              >
+                                <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                              </div>
                             </a>
                           );
                         })}
