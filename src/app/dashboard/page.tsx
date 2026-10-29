@@ -3156,10 +3156,13 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* Inspiring Judicial Quote */}
-            <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-[#163826]/5 via-[#D4AF37]/10 to-[#163826]/5 border border-[#D4AF37]/30 text-center">
+            {/* Inspiring Judicial Quote by Nani A. Palkhivala */}
+            <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-[#163826]/5 via-[#D4AF37]/10 to-[#163826]/5 border border-[#D4AF37]/30 text-center space-y-1">
               <p className="text-xs font-serif italic text-[#163826] leading-relaxed">
-                &ldquo;To represent with honor, argue with conviction, and serve justice without fear.&rdquo;
+                &ldquo;The highest duty of an advocate is not merely to win, but to assist in the fearless pursuit of truth and justice.&rdquo;
+              </p>
+              <p className="text-[10px] font-bold tracking-wider uppercase text-[#8C7335]">
+                — Nani A. Palkhivala
               </p>
             </div>
 
