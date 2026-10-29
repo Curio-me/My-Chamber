@@ -282,10 +282,12 @@ export async function checkBarCouncilUnique(
       return { isUnique: false, error: "Bar Council Enrollment Number is mandatory." };
     }
 
-    // Query existing profiles to verify uniqueness
+    // Query existing profiles to verify uniqueness (indexed / limited check)
     const { data, error } = await supabase
       .from("advocate_profiles")
-      .select("slug, enrollment_no");
+      .select("slug, enrollment_no")
+      .neq("slug", currentSlug.toLowerCase())
+      .limit(100);
 
     if (error) {
       return { isUnique: true };
@@ -295,7 +297,7 @@ export async function checkBarCouncilUnique(
       const match = data.find((row) => {
         if (!row.enrollment_no) return false;
         const rowNorm = normalizeEnrollmentNo(row.enrollment_no);
-        return rowNorm === normalized && row.slug.toLowerCase() !== currentSlug.toLowerCase();
+        return rowNorm === normalized;
       });
 
       if (match) {

@@ -87,6 +87,7 @@ export default function DashboardPage() {
   const [profile, setProfile] = useState<Advocate>(EMPTY_ADVOCATE);
   const [savedStatus, setSavedStatus] = useState<"idle" | "saved">("idle");
   const [saveErrorMessage, setSaveErrorMessage] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [copiedModalAddress, setCopiedModalAddress] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -260,6 +261,8 @@ export default function DashboardPage() {
     };
 
     try {
+      setIsSaving(true);
+
       // 2. Direct Supabase sync with strict uniqueness check (1 profile per Bar Council ID)
       const result = await upsertAdvocateProfile(profileToSave);
       if (!result.success) {
@@ -275,11 +278,11 @@ export default function DashboardPage() {
       setSaveErrorMessage(null);
       setTimeout(() => setSavedStatus("idle"), 2500);
 
-      // Open Congratulations & Share Chamber Address pop-up modal for non-tech advocates
+      // Open Congratulations & Share Chamber Address pop-up modal immediately!
       setShowSuccessModal(true);
 
-      // 4. Also sync to server API
-      await fetch("/api/profile", {
+      // 4. Fire background server sync & edge pre-warming without blocking the modal
+      fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profileToSave),
@@ -289,6 +292,8 @@ export default function DashboardPage() {
       fetch(`/${cleanSlug}`, { cache: "no-store" }).catch(() => {});
     } catch (err: any) {
       alert("Failed to save profile: " + (err.message || "Unknown error"));
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -963,9 +968,15 @@ export default function DashboardPage() {
             </Link>
             <button
               onClick={handleSave}
-              className="flex items-center gap-1.5 bg-[#163826] hover:bg-[#1E4A33] active:scale-95 text-[#FAF7F2] font-bold text-xs px-5 py-2.5 rounded-full shadow-sm transition-all"
+              disabled={isSaving}
+              className="flex items-center gap-1.5 bg-[#163826] hover:bg-[#1E4A33] active:scale-95 text-[#FAF7F2] font-bold text-xs px-5 py-2.5 rounded-full shadow-sm transition-all disabled:opacity-60"
             >
-              {savedStatus === "saved" ? (
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
+                  <span>Saving...</span>
+                </>
+              ) : savedStatus === "saved" ? (
                 <>
                   <Check className="w-4 h-4 text-[#E6D5B8]" />
                   <span>Saved!</span>
@@ -2799,10 +2810,20 @@ export default function DashboardPage() {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs px-6 py-2.5 rounded-full shadow-sm transition-all active:scale-95 flex items-center gap-1.5"
+                disabled={isSaving}
+                className="bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold text-xs px-6 py-2.5 rounded-full shadow-sm transition-all active:scale-95 flex items-center gap-1.5 disabled:opacity-60"
               >
-                <Save className="w-4 h-4 text-[#E6D5B8]" />
-                Save & Update Profile
+                {isSaving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-[#E6D5B8]" />
+                    <span>Saving Profile...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 text-[#E6D5B8]" />
+                    <span>Save & Update Profile</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -3022,61 +3043,89 @@ export default function DashboardPage() {
       {/* ── Congratulations & Live Chamber Address Popup Modal ───────────────── */}
       {showSuccessModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
           onClick={() => setShowSuccessModal(false)}
         >
           <div
-            className="relative w-full max-w-lg bg-[#0E1D14] border border-[#D4AF37]/40 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-6 animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-lg bg-[#FAF8F5] border-2 border-[#D4AF37]/50 rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-5 animate-in zoom-in-95 duration-200 text-[#14231C]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Top Close Button */}
             <button
               type="button"
               onClick={() => setShowSuccessModal(false)}
-              className="absolute top-4 right-4 p-2 text-stone-400 hover:text-white rounded-full bg-white/5 hover:bg-white/10 transition"
+              className="absolute top-4 right-4 p-2 text-stone-400 hover:text-stone-700 rounded-full bg-black/5 hover:bg-black/10 transition"
               title="Close"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Glowing Golden Badge */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#163826] to-[#0A160F] border border-[#D4AF37]/50 flex items-center justify-center mx-auto shadow-lg shadow-[#D4AF37]/15 relative">
-              <Sparkles className="w-8 h-8 text-[#D4AF37] animate-pulse" />
-              <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 border-2 border-[#0E1D14] flex items-center justify-center text-white">
+            {/* Top Square: Advocate Portrait Photo with Verified Checkmark */}
+            <div className="relative mx-auto w-20 h-20 rounded-2xl p-1 bg-gradient-to-br from-[#D4AF37] via-[#E5C768] to-[#163826] shadow-xl">
+              <div className="w-full h-full rounded-[14px] overflow-hidden bg-white flex items-center justify-center">
+                {profile.photoUrl ? (
+                  <img
+                    src={profile.photoUrl}
+                    alt={profile.fullName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-[#163826] flex items-center justify-center text-white font-serif font-bold text-xl">
+                    {profile.fullName
+                      ? profile.fullName
+                          .replace(/^Adv\.\s*/i, "")
+                          .split(" ")
+                          .filter(Boolean)
+                          .map((n) => n[0])
+                          .slice(0, 2)
+                          .join("")
+                          .toUpperCase() || "Adv"
+                      : "Adv"}
+                  </div>
+                )}
+              </div>
+              {/* Green Verified Check Badge */}
+              <div
+                className="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center text-white shadow-md"
+                title="Verified Chamber"
+              >
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
               </div>
             </div>
 
-            {/* Title & Explanation */}
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/30 px-3 py-1 rounded-full">
+            {/* Title & Subtitle */}
+            <div className="space-y-1.5">
+              <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-[#163826] bg-[#163826]/10 border border-[#163826]/20 px-3.5 py-1 rounded-full">
                 Profile Updated & Saved
               </span>
-              <h2 className="text-2xl font-serif font-bold text-[#FAF7F2] pt-1">
+              <h2 className="text-2xl font-serif font-bold text-[#14231C] pt-1">
                 Congratulations!
               </h2>
-              <p className="text-sm text-[#A3B3A9] leading-relaxed">
-                Your official <strong className="text-white font-semibold">Digital Chamber</strong> is live on the internet and ready to share.
+              <p className="text-xs sm:text-sm text-[#526057] leading-relaxed max-w-sm mx-auto">
+                Your official <strong className="text-[#163826] font-semibold">Digital Chamber</strong> is published and ready to share with clients, colleagues, and courts.
               </p>
             </div>
 
-            {/* Chamber Address Card */}
-            <div className="p-4 sm:p-5 rounded-2xl bg-[#08120B] border border-[#234D35] text-left space-y-2.5 shadow-inner">
+            {/* Chamber Web Address Box */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E7E0D5] text-left space-y-2.5 shadow-sm">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold uppercase tracking-wider text-[#D4AF37] flex items-center gap-1.5">
-                  <Globe className="w-3.5 h-3.5" />
+                <span className="font-bold uppercase tracking-wider text-[#163826] flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
                   Your Chamber Web Address
                 </span>
-                <span className="text-[11px] text-emerald-400 font-medium">● Live Online</span>
+                <span className="text-[11px] text-emerald-600 font-bold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live Online
+                </span>
               </div>
 
               {/* Click-to-copy URL box */}
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#122319] border border-[#D4AF37]/30">
+              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-[#FAF8F5] border border-[#D4AF37]/40 shadow-inner">
                 <input
                   type="text"
                   readOnly
                   value={`${origin}/${profile.slug}`}
-                  className="bg-transparent text-xs sm:text-sm font-mono text-white flex-1 outline-none select-all"
+                  className="bg-transparent text-xs sm:text-sm font-mono font-medium text-[#14231C] flex-1 outline-none select-all"
                   onClick={(e) => (e.target as HTMLInputElement).select()}
                 />
                 <button
@@ -3086,16 +3135,16 @@ export default function DashboardPage() {
                     setCopiedModalAddress(true);
                     setTimeout(() => setCopiedModalAddress(false), 2500);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-[#D4AF37] hover:bg-[#E5C768] text-[#0B1510] text-xs font-bold transition flex items-center gap-1.5 shrink-0 active:scale-95 shadow-sm"
+                  className="px-3.5 py-1.5 rounded-lg bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] text-xs font-bold transition flex items-center gap-1.5 shrink-0 active:scale-95 shadow-sm"
                 >
                   {copiedModalAddress ? (
                     <>
-                      <Check className="w-3.5 h-3.5" />
+                      <Check className="w-3.5 h-3.5 text-emerald-300" />
                       <span>Copied!</span>
                     </>
                   ) : (
                     <>
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="w-3.5 h-3.5 text-[#D4AF37]" />
                       <span>Copy</span>
                     </>
                   )}
@@ -3116,7 +3165,7 @@ export default function DashboardPage() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm shadow-lg shadow-[#25D366]/20 transition-all active:scale-[0.98]"
+                className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm shadow-lg shadow-[#25D366]/25 transition-all active:scale-[0.98]"
               >
                 <WhatsAppIcon className="w-5 h-5 fill-white" />
                 <span>Share Address on WhatsApp</span>
@@ -3128,9 +3177,9 @@ export default function DashboardPage() {
                   href={`/${profile.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-[#163826] hover:bg-[#1E4A33] border border-[#D4AF37]/30 text-[#FAF7F2] font-semibold text-xs transition active:scale-[0.98]"
+                  className="flex items-center justify-center gap-2 py-3 px-3 rounded-xl bg-white hover:bg-[#FAF8F5] border border-[#163826]/30 text-[#163826] font-bold text-xs transition shadow-sm active:scale-[0.98]"
                 >
-                  <Eye className="w-4 h-4 text-[#D4AF37]" />
+                  <Eye className="w-4 h-4 text-[#163826]" />
                   <span>View Chamber ↗</span>
                 </a>
 
@@ -3138,7 +3187,7 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowSuccessModal(false)}
-                  className="flex items-center justify-center py-3 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 font-medium text-xs transition"
+                  className="flex items-center justify-center py-3 px-3 rounded-xl bg-black/5 hover:bg-black/10 text-[#526057] font-semibold text-xs transition"
                 >
                   Back to Dashboard
                 </button>
