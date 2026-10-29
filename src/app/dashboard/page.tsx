@@ -3156,6 +3156,13 @@ export default function DashboardPage() {
               </p>
             </div>
 
+            {/* Inspiring Judicial Quote */}
+            <div className="py-2.5 px-4 rounded-2xl bg-gradient-to-r from-[#163826]/5 via-[#D4AF37]/10 to-[#163826]/5 border border-[#D4AF37]/30 text-center">
+              <p className="text-xs font-serif italic text-[#163826] leading-relaxed">
+                &ldquo;To represent with honor, argue with conviction, and serve justice without fear.&rdquo;
+              </p>
+            </div>
+
             {/* Action Buttons: WhatsApp Share & View Live */}
             <div className="space-y-2.5 pt-1">
               {/* WhatsApp Share Button */}
