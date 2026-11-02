@@ -24,11 +24,17 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mycha
     })),
   ];
 
+  // Separate concatenated words in names like 'RajaVikrant' -> 'Raja Vikrant'
+  const normalizedFullName = advocate.fullName.replace(/([a-z])([A-Z])/g, "$1 $2");
+  const plainName = normalizedFullName.replace(/^Adv\.\s*/i, "").trim();
+
   const socialLinks = [
     advocate.websiteUrl,
     advocate.linkedinUrl,
     advocate.twitterUrl,
     advocate.instagramUrl,
+    ...(advocate.newsMedia || []).map((n) => n.url),
+    ...(advocate.customLinks || []).map((l) => l.url),
   ].filter((link): link is string => Boolean(link && link.trim().startsWith("http")));
 
   const practiceAreas = (advocate.specializations || []).map((spec) => ({
@@ -49,10 +55,16 @@ export function generateLegalSchema(advocate: Advocate, baseUrl = "https://mycha
     "@context": "https://schema.org",
     "@type": ["Attorney", "LegalService", "ProfessionalService"],
     "@id": `${profileUrl}#attorney`,
-    name: advocate.fullName,
-    alternateName: advocate.slug
-      ? [`Adv. ${advocate.slug}`, advocate.fullName.replace(/^Adv\.\s*/i, "")].filter(Boolean)
-      : undefined,
+    name: `Advocate ${plainName}`,
+    alternateName: Array.from(
+      new Set([
+        plainName,
+        `Adv. ${plainName}`,
+        `Advocate ${plainName}`,
+        advocate.fullName,
+        advocate.slug ? `Adv. ${advocate.slug}` : "",
+      ])
+    ).filter(Boolean),
     jobTitle: "Advocate",
     description:
       advocate.bio ||

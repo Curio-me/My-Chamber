@@ -57,17 +57,30 @@ export async function generateMetadata({
 
   if (advocate) {
     const courtName = advocate.courts?.[0] || "High Court";
-    const title = `${advocate.fullName} — ${courtName}`;
+
+    // Normalize spaced names like 'RajaVikrant' -> 'Raja Vikrant'
+    const normalizedName = advocate.fullName.replace(/([a-z])([A-Z])/g, "$1 $2");
+    const plainName = normalizedName.replace(/^Adv\.\s*/i, "").trim();
+
+    // Target the highest-volume search queries: "Advocate [Name]", "[Name]"
+    const title = `Advocate ${plainName} — ${courtName}`;
     const desc = advocate.bio
-      ? advocate.bio.slice(0, 155)
-      : `Official digital chamber of ${advocate.fullName}, practicing at ${courtName}. Bar Council Registration: ${
+      ? `${plainName} is an advocate practicing at ${courtName}. Bar Council No: ${advocate.enrollmentNo || "Registered Advocate"}. ${advocate.bio.slice(0, 140)}`
+      : `Official digital chamber of Advocate ${plainName}, practicing at ${courtName}. Bar Council Registration: ${
           advocate.enrollmentNo || "Registered Advocate"
         }. Contact details, chamber address & desk QR.`;
+
     return {
       title,
       description: desc,
       keywords: [
+        plainName,
+        `Advocate ${plainName}`,
+        `Adv. ${plainName}`,
+        `${plainName} advocate`,
+        `${plainName} lawyer`,
         advocate.fullName,
+        courtName,
         ...(advocate.specializations || []),
         ...(advocate.courts || []),
         ...(advocate.barAssociations || []),
@@ -81,18 +94,18 @@ export async function generateMetadata({
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: `${advocate.fullName} — ${courtName} | My Chamber`,
+        title: `Advocate ${plainName} — ${courtName} | My Chamber`,
         description: desc,
         url: canonicalUrl,
         type: "profile",
         siteName: "My Chamber",
         images: advocate.photoUrl && advocate.photoUrl.startsWith("http")
-          ? [{ url: advocate.photoUrl, width: 800, height: 800, alt: advocate.fullName }]
+          ? [{ url: advocate.photoUrl, width: 800, height: 800, alt: `Advocate ${plainName}` }]
           : [{ url: "https://mychamber.me/icon.svg", width: 512, height: 512, alt: "My Chamber" }],
       },
       twitter: {
         card: "summary_large_image",
-        title: `${advocate.fullName} — ${courtName} | My Chamber`,
+        title: `Advocate ${plainName} — ${courtName} | My Chamber`,
         description: desc,
         images: advocate.photoUrl && advocate.photoUrl.startsWith("http")
           ? [advocate.photoUrl]
