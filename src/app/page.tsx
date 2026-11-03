@@ -96,7 +96,18 @@ export default function Home() {
     e.preventDefault();
     const clean = handleInput.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
     if (!clean) {
-      router.push("/dashboard");
+      // If advocate is already logged in, take them to their studio
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data?.session?.user) {
+          router.push("/dashboard");
+          return;
+        }
+      } catch {
+        // ignore
+      }
+      // If not logged in, direct the advocate straight to Sign up!
+      router.push("/login?tab=signup");
       return;
     }
     if (clean.length < 4) {
