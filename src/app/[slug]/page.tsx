@@ -2,6 +2,7 @@ import { Suspense, cache } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AdvocateClientView from "./AdvocateClientView";
+import UnclaimedChamberView from "@/components/UnclaimedChamberView";
 import { fetchAdvocateBySlug, fetchAllAdvocateSlugs } from "@/lib/supabase";
 import LegalSchema from "@/components/LegalSchema";
 
@@ -232,9 +233,14 @@ export default async function Page({
       })()
     : null;
 
+  // If no published profile exists in the database, render the Available Handle reservation view
+  if (!publicAdvocateData) {
+    return <UnclaimedChamberView slug={slug} />;
+  }
+
   return (
     <>
-      {publicAdvocateData && <LegalSchema advocate={publicAdvocateData} />}
+      <LegalSchema advocate={publicAdvocateData} />
       <Suspense
         fallback={
           <div className="min-h-screen bg-[#0e0e10] flex items-center justify-center text-sm text-[#8ab4f8]">

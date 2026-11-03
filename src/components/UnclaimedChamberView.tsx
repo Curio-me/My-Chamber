@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ShieldCheck, Sparkles, ArrowRight, Check, Scale, QrCode, Smartphone, Home, Search } from "lucide-react";
+import { ShieldCheck, Sparkles, ArrowRight, Check, Scale, QrCode, Smartphone, Home, Search, Edit3 } from "lucide-react";
 import Logo, { ShieldIcon } from "@/components/Logo";
 
 interface UnclaimedChamberViewProps {
@@ -11,6 +12,19 @@ interface UnclaimedChamberViewProps {
 export default function UnclaimedChamberView({ slug }: UnclaimedChamberViewProps) {
   const cleanSlug = (slug || "").toLowerCase().replace(/[^a-z0-9-_]/g, "");
   const claimUrl = `/login?slug=${encodeURIComponent(cleanSlug)}&tab=signup`;
+  const [hasLocalDraft, setHasLocalDraft] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("virtual_chamber_advocate_profile");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.slug && parsed.slug.toLowerCase() === cleanSlug.toLowerCase()) {
+          setHasLocalDraft(true);
+        }
+      }
+    } catch {}
+  }, [cleanSlug]);
 
   // Format clean display name if it resembles a name (e.g. rajavikrant -> Adv. Raja Vikrant)
   const formattedName = cleanSlug
@@ -46,6 +60,27 @@ export default function UnclaimedChamberView({ slug }: UnclaimedChamberViewProps
           <div className="w-16 h-16 rounded-2xl bg-[#EBF3ED] text-[#163826] border border-[#163826]/15 flex items-center justify-center mx-auto mb-5 shadow-xs">
             <ShieldIcon size={38} />
           </div>
+
+          {/* Local Draft Notice if edited on this device */}
+          {hasLocalDraft && (
+            <div className="mb-5 p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-left flex items-center justify-between gap-3 shadow-2xs">
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                  <Edit3 className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Unpublished Local Draft Detected</span>
+                </p>
+                <p className="text-[11px] text-amber-800 mt-0.5">
+                  You have unsaved edits for this chamber on this device.
+                </p>
+              </div>
+              <Link
+                href={`/dashboard?slug=${encodeURIComponent(cleanSlug)}`}
+                className="text-xs font-bold bg-[#163826] hover:bg-[#1E4A33] text-white px-3.5 py-1.5 rounded-full shrink-0 shadow-sm transition-all"
+              >
+                Open Studio
+              </Link>
+            </div>
+          )}
 
           {/* Availability Pill */}
           <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#EBF3ED] border border-[#163826]/20 text-[#163826] text-xs font-bold mb-4 shadow-2xs">
