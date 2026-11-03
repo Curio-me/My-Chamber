@@ -110,7 +110,7 @@ export default function UnclaimedChamberView({ slug }: UnclaimedChamberViewProps
               <div className="w-4 h-4 rounded-full bg-[#EBF3ED] text-[#163826] flex items-center justify-center shrink-0">
                 <Check className="w-3 h-3 stroke-[3]" />
               </div>
-              <span><strong>Bar Council Rule 36 Compliant</strong> digital stationery</span>
+              <span><strong>Easily Highlight Your Work</strong></span>
             </div>
             <div className="flex items-center gap-2.5 text-xs text-[#3F4D45]">
               <div className="w-4 h-4 rounded-full bg-[#EBF3ED] text-[#163826] flex items-center justify-center shrink-0">
