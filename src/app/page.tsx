@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Logo, { ShieldIcon } from "@/components/Logo";
+import { supabase } from "@/lib/supabase";
 import {
   Scale,
   QrCode,
@@ -91,7 +92,7 @@ export default function Home() {
     }, 350);
   };
 
-  const handleClaim = (e: React.FormEvent) => {
+  const handleClaim = async (e: React.FormEvent) => {
     e.preventDefault();
     const clean = handleInput.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
     if (!clean) {
@@ -107,7 +108,20 @@ export default function Home() {
       return;
     }
     setHandleError(null);
-    router.push(`/dashboard?slug=${encodeURIComponent(clean)}`);
+
+    // If advocate is already logged in, take them directly to the studio with the handle
+    try {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session?.user) {
+        router.push(`/dashboard?slug=${encodeURIComponent(clean)}`);
+        return;
+      }
+    } catch {
+      // ignore
+    }
+
+    // New visitor: take them to Sign Up to claim their handle and create their account
+    router.push(`/login?slug=${encodeURIComponent(clean)}&tab=signup`);
   };
 
   const copySampleLink = () => {

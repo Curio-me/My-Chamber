@@ -91,11 +91,30 @@ export default function LoginPage() {
     setClaimStatus("success");
   };
 
+  const [claimedSlug, setClaimedSlug] = useState<string | null>(null);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
       const tabParam = params.get("tab");
-      if (tabParam === "signup" || tabParam === "register") {
+      const slugParam = params.get("slug");
+
+      if (slugParam) {
+        const clean = slugParam.toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
+        if (clean) {
+          setClaimedSlug(clean);
+          try {
+            sessionStorage.setItem("pending_claim_slug", clean);
+          } catch {}
+        }
+      } else {
+        try {
+          const stored = sessionStorage.getItem("pending_claim_slug");
+          if (stored) setClaimedSlug(stored);
+        } catch {}
+      }
+
+      if (tabParam === "signup" || tabParam === "register" || slugParam) {
         setTab("signup");
       } else if (tabParam === "password") {
         setTab("password");
@@ -119,15 +138,18 @@ export default function LoginPage() {
     };
   }, []);
 
+  const getDashboardRedirectUrl = () => {
+    const targetSlug = claimedSlug || (typeof window !== "undefined" ? sessionStorage.getItem("pending_claim_slug") : null);
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://mychamber.me";
+    return targetSlug ? `${origin}/dashboard?slug=${encodeURIComponent(targetSlug)}` : `${origin}/dashboard`;
+  };
+
   // ── 1. Google 1-Tap OAuth Sign-In ──────────────────────────────────────────
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setMessage(null);
     try {
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/dashboard`
-          : "https://mychamber.me/dashboard";
+      const redirectTo = getDashboardRedirectUrl();
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
@@ -194,10 +216,7 @@ export default function LoginPage() {
         return;
       }
 
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/dashboard`
-          : "https://mychamber.me/dashboard";
+      const redirectTo = getDashboardRedirectUrl();
 
       const { error } = await supabase.auth.signInWithOtp({
         email: resolvedEmail,
@@ -256,8 +275,10 @@ export default function LoginPage() {
 
       if (data.session) {
         setMessage({ type: "success", text: "Logged in successfully! Redirecting to studio..." });
+        const targetSlug = claimedSlug || (typeof window !== "undefined" ? sessionStorage.getItem("pending_claim_slug") : null);
+        const nextUrl = targetSlug ? `/dashboard?slug=${encodeURIComponent(targetSlug)}` : `/dashboard`;
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push(nextUrl);
         }, 700);
       }
     } catch (err: any) {
@@ -362,10 +383,7 @@ export default function LoginPage() {
       }
 
       // 2. Register account with Supabase
-      const redirectTo =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/dashboard`
-          : "https://mychamber.me/dashboard";
+      const redirectTo = getDashboardRedirectUrl();
 
       const { data, error } = await supabase.auth.signUp({
         email: identifier,
@@ -422,6 +440,8 @@ export default function LoginPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold text-[#14231C] tracking-tight">
                 {currentUser
                   ? "Chamber Session Active"
+                  : claimedSlug
+                  ? "Claim Your Chamber"
                   : tab === "signup"
                   ? "Create Your Chamber"
                   : "Advocate Portal"}
@@ -429,6 +449,8 @@ export default function LoginPage() {
               <p className="text-[#526057] text-xs sm:text-sm mt-1.5 leading-relaxed">
                 {currentUser
                   ? `Signed in as ${currentUser.email}`
+                  : claimedSlug
+                  ? `Create an account or sign in to permanently link mychamber.me/${claimedSlug} to your profile.`
                   : tab === "signup"
                   ? "Register your verified advocate profile & digital visiting card"
                   : "Sign in to manage your digital chamber profile, QR codes & practice links"}
@@ -449,7 +471,7 @@ export default function LoginPage() {
                 </div>
 
                 <button
-                  onClick={() => router.push("/dashboard")}
+                  onClick={() => router.push(getDashboardRedirectUrl())}
                   className="w-full flex items-center justify-center gap-2 bg-[#163826] hover:bg-[#1E4A33] text-[#FAF7F2] font-bold py-3.5 rounded-full transition-all shadow-sm active:scale-95"
                 >
                   <Sparkles className="w-4 h-4 text-[#E6D5B8]" />
@@ -467,6 +489,25 @@ export default function LoginPage() {
             ) : (
               /* ── Sign In / Register Forms ──────────────────────────────────── */
               <div className="space-y-5">
+                {/* ── Reserving Handle Banner ── */}
+                {claimedSlug && (
+                  <div className="p-3.5 rounded-2xl bg-[#EBF3ED] border border-[#163826]/20 flex items-center gap-3 shadow-2xs">
+                    <div className="w-9 h-9 rounded-xl bg-[#163826] text-[#D4AF37] flex items-center justify-center shrink-0 shadow-sm">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[10px] font-bold text-[#163826] uppercase tracking-wider">
+                        Reserving Chamber Address
+                      </p>
+                      <p className="text-sm font-extrabold text-[#14231C] truncate">
+                        mychamber.me/{claimedSlug}
+                      </p>
+                    </div>
+                    <span className="text-[10.5px] font-bold text-[#163826] bg-white px-2.5 py-0.5 rounded-full border border-[#163826]/15 shrink-0 shadow-2xs">
+                      ✓ Reserved
+                    </span>
+                  </div>
+                )}
                 
                 {/* ── 1-Tap Google Sign In Button (FREE, 1-Click for Android & iPhone) ── */}
                 <button

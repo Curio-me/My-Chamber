@@ -152,7 +152,8 @@ export default function DashboardPage() {
         return;
       }
 
-      const querySlug = urlParams.get("slug");
+      const storedClaimSlug = typeof window !== "undefined" ? sessionStorage.getItem("pending_claim_slug") : null;
+      const querySlug = urlParams.get("slug") || storedClaimSlug;
       if (querySlug) {
         const cleanSlug = querySlug.toLowerCase().replace(/[^a-z0-9-_]/g, "").slice(0, 20);
         if (cleanSlug) {
@@ -183,6 +184,20 @@ export default function DashboardPage() {
               setProfile(mapped);
               localStorage.setItem(STORAGE_KEY, JSON.stringify(mapped));
               return;
+            } else {
+              // Brand new advocate sign-up! Pre-populate email, name, and claimed handle
+              setProfile((prev) => ({
+                ...prev,
+                email: prev.email || user.email || "",
+                fullName: prev.fullName || user.user_metadata?.full_name || "",
+                enrollmentNo: prev.enrollmentNo || user.user_metadata?.enrollment_no || "",
+                slug: querySlug || prev.slug || "",
+              }));
+              if (storedClaimSlug) {
+                try {
+                  sessionStorage.removeItem("pending_claim_slug");
+                } catch {}
+              }
             }
           }
 
@@ -285,11 +300,27 @@ export default function DashboardPage() {
       websiteUrl: normalizeSocialUrl("website", profile.websiteUrl || ""),
     };
 
+    // Verify authentication: ensure advocate is signed in so chamber is permanently tied to their account
+    const { data: sessionData } = await supabase.auth.getSession();
+    if (!sessionData?.session?.user) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(profileToSave));
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("pending_claim_slug", cleanSlug);
+      }
+      const shouldLogin = confirm(
+        `🔒 Sign-In Required:\n\nTo publish your official chamber at mychamber.me/${cleanSlug} and manage it in the future, please sign in with Google or Email.\n\nYour profile draft is safely saved. Click OK to sign in.`
+      );
+      if (shouldLogin) {
+        window.location.href = `/login?slug=${encodeURIComponent(cleanSlug)}&tab=signup`;
+      }
+      return;
+    }
+
     try {
       setIsSaving(true);
 
       // 2. Direct Supabase sync with strict uniqueness check (1 profile per Bar Council ID)
-      const result = await upsertAdvocateProfile(profileToSave);
+      const result = await upsertAdvocateProfile(profileToSave, sessionData.session.user.id);
       if (!result.success) {
         setSaveErrorMessage(result.error || "Failed to save profile due to database restriction.");
         alert(`❌ Cannot Save Profile:\n\n${result.error}`);
