@@ -148,35 +148,30 @@ export async function generateMetadata({
     };
   }
 
-  // Format clean name from slug (e.g. rajavikrant -> Adv. Rajavikrant, adv-raj-vikrant -> Adv. Raj Vikrant)
-  const clean = slug.replace(/^adv-?/i, "");
-  const formattedName = clean
-    ? clean
-        .split("-")
-        .map((w) => (w.length <= 3 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
-        .join(" ")
-    : "Advocate";
-
-  const title = `Adv. ${formattedName} | My Chamber`;
-  const description = `Official digital chamber of Adv. ${formattedName}. Specializations, Bar Council credentials, chamber location, and direct contact.`;
-
+  // Slug does not exist in the database: mark as available to claim
   return {
-    title,
-    description,
+    title: `mychamber.me/${slug} is Available | Claim Your Digital Chamber`,
+    description: `The official digital chamber address mychamber.me/${slug} has not been registered yet. Claim this permanent address on My Chamber today.`,
+    robots: {
+      index: false,
+      follow: true,
+    },
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title,
-      description,
+      title: `mychamber.me/${slug} is Available to Claim | My Chamber`,
+      description: `The official digital chamber address mychamber.me/${slug} has not been registered yet. Claim this permanent address on My Chamber today.`,
       url: canonicalUrl,
-      type: "profile",
+      type: "website",
       siteName: "My Chamber",
+      images: [{ url: "https://mychamber.me/icon.svg", width: 512, height: 512, alt: "My Chamber" }],
     },
     twitter: {
-      card: "summary_large_image",
-      title,
-      description,
+      card: "summary",
+      title: `mychamber.me/${slug} is Available to Claim | My Chamber`,
+      description: `The official digital chamber address mychamber.me/${slug} has not been registered yet. Claim this permanent address on My Chamber today.`,
+      images: ["https://mychamber.me/icon.svg"],
     },
   };
 }
