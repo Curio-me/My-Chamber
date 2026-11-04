@@ -1557,19 +1557,23 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Theme & 3D Settings */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-[#F0ECE4]">
-              {/* Default Theme */}
-              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60 space-y-2">
-                <p className="text-xs font-semibold text-[#14231C]">Default Chamber Theme</p>
-                <div className="flex gap-2">
+            {/* Default Chamber Theme Setting */}
+            <div className="pt-2 border-t border-[#F0ECE4]">
+              <div className="p-3.5 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold text-[#14231C]">Default Chamber Theme</p>
+                  <p className="text-[11px] text-[#526057]">
+                    Choose whether your chamber defaults to dark obsidian or clean light mode
+                  </p>
+                </div>
+                <div className="flex gap-2 shrink-0">
                   <button
                     type="button"
                     onClick={() => setProfile({ ...profile, themePreference: "dark" })}
-                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                    className={`py-1.5 px-3.5 rounded-lg text-xs font-medium border transition-all ${
                       profile.themePreference !== "light"
-                        ? "bg-[#163826] border-[#163826] text-[#FAF7F2]"
-                        : "bg-white border-[#E7E0D5] text-[#526057]"
+                        ? "bg-[#163826] border-[#163826] text-[#FAF7F2] font-bold shadow-xs"
+                        : "bg-white border-[#E7E0D5] text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
                     🌙 Dark Obsidian
@@ -1577,29 +1581,15 @@ export default function DashboardPage() {
                   <button
                     type="button"
                     onClick={() => setProfile({ ...profile, themePreference: "light" })}
-                    className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-medium border transition-all ${
+                    className={`py-1.5 px-3.5 rounded-lg text-xs font-medium border transition-all ${
                       profile.themePreference === "light"
-                        ? "bg-[#EBF3ED] border-[#163826] text-[#163826] font-bold"
-                        : "bg-white border-[#E7E0D5] text-[#526057]"
+                        ? "bg-[#EBF3ED] border-[#163826] text-[#163826] font-bold shadow-xs"
+                        : "bg-white border-[#E7E0D5] text-[#526057] hover:text-[#14231C]"
                     }`}
                   >
                     ☀️ Clean Light
                   </button>
                 </div>
-              </div>
-
-              {/* 3D Tilt Enable */}
-              <div className="p-3 rounded-xl bg-[#FAF8F5] border border-[#E7E0D5]/60 flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-[#14231C]">3D Parallax Rotation</p>
-                  <p className="text-[11px] text-[#526057]">3D tilt & specular glare on hover</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={profile.enable3d ?? false}
-                  onChange={(e) => setProfile({ ...profile, enable3d: e.target.checked })}
-                  className="w-4 h-4 accent-[#8ab4f8] rounded cursor-pointer"
-                />
               </div>
             </div>
           </div>
