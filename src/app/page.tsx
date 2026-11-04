@@ -58,11 +58,6 @@ export default function Home() {
 
   const faqs = [
     {
-      question: "Do you provide QR codes for visiting cards and acrylic desk stands?",
-      answer:
-        "Yes, absolutely! Every verified chamber profile automatically generates an instant, high-resolution (1000×1200) print-ready QR code in both vector SVG and PNG formats. You can download it with 1 click from your chamber dashboard to print directly onto physical visiting cards, briefing stationery, or place it inside an acrylic QR stand on your chamber desk. When clients or instructing counsel scan it with their phone camera, your complete verified profile, Bar Council credentials, and 1-tap contact saver open immediately.",
-    },
-    {
       question: "What is My Chamber?",
       answer:
         "My Chamber is a professional digital chamber and verified link platform built exclusively for Indian advocates. It gives practicing lawyers a dignified digital presence (mychamber.me/yourname) featuring a 1-tap phonebook contact saver (.vcf), high-resolution desk & visiting card QR codes, Bar Council credentials, courts of practice, newspaper press coverage, reported judgments, and client consultation links—with zero coding or technical setup required.",
@@ -71,6 +66,11 @@ export default function Home() {
       question: "Is creating and maintaining a digital chamber profile 100% free?",
       answer:
         "Yes, 100% free forever. There are no monthly fees, hidden charges, or paid paywalls. Every advocate receives their dedicated custom chamber handle (mychamber.me/your-handle), high-resolution desk QR code generator, interactive court of practice badges, and client orientation links at zero cost.",
+    },
+    {
+      question: "Do you provide QR codes for visiting cards and acrylic desk stands?",
+      answer:
+        "Yes, absolutely! Every verified chamber profile automatically generates an instant, high-resolution (1000×1200) print-ready QR code in both vector SVG and PNG formats. You can download it with 1 click from your chamber dashboard to print directly onto physical visiting cards, briefing stationery, or place it inside an acrylic QR stand on your chamber desk. When clients or instructing counsel scan it with their phone camera, your complete verified profile, Bar Council credentials, and 1-tap contact saver open immediately.",
     },
     {
       question: "How does State Bar enrollment verification protect against impersonation?",
@@ -303,18 +303,14 @@ export default function Home() {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-y-2.5 gap-x-4 text-xs font-semibold text-[#66756B]">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3ED] text-[#163826] border border-[#D5E5DA]">
-                <QrCode className="w-3.5 h-3.5 text-[#163826]" />
-                <span className="font-bold">Free Printable Desk & Visiting Card QR Included</span>
-              </div>
+            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-5 text-xs font-semibold text-[#66756B]">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-[#163826]" />
                 <span>1 Advocate = 1 Profile</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <BadgeCheck className="w-4 h-4 text-[#163826]" />
-                <span>Bar Council Verified</span>
+                <span>Bar Council Enrollment Verified</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-[#163826]" />
