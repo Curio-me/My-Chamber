@@ -1283,14 +1283,14 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5">
                   <label className="text-xs font-semibold text-[#14231C] flex items-center gap-1.5">
                     <span>Bar Council Enrollment Number</span>
-                    <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/30 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] text-amber-700 font-bold bg-amber-50 border border-amber-300 px-1.5 py-0.5 rounded">
                       * Mandatory
                     </span>
                   </label>
-                  <span className="text-[10px] text-[#163826] font-mono">1 Profile / Bar No.</span>
+                  <span className="text-[10px] text-[#163826] font-mono shrink-0">1 Profile / Bar No.</span>
                 </div>
                 <input
                   type="text"
@@ -1308,7 +1308,7 @@ export default function DashboardPage() {
                   }`}
                 />
                 {!profile.enrollmentNo?.trim() ? (
-                  <p className="text-[11px] text-amber-400 mt-1 flex items-center gap-1">
+                  <p className="text-[11px] text-amber-600 mt-1 flex items-center gap-1">
                     <span>⚠️ Mandatory:</span>
                     <span>Every advocate must have a registered Bar Council number to save.</span>
                   </p>
@@ -1334,7 +1334,7 @@ export default function DashboardPage() {
                       Hide enrollment number from public visitors (Keep private)
                     </span>
                     <span className="text-[11px] text-[#526057] block mt-0.5 leading-relaxed">
-                      Your enrollment number remains securely verified in MyChamber records, but public visitors on your chamber profile link will only see your State Bar Council and Verified Advocate Badge.
+                      Your enrollment number remains securely verified in MyChamber records, but public visitors on your chamber profile link will only see your Verified Advocate Badge.
                     </span>
                   </label>
                 </div>
