@@ -58,9 +58,14 @@ export default function Home() {
 
   const faqs = [
     {
+      question: "Do you provide QR codes for visiting cards and acrylic desk stands?",
+      answer:
+        "Yes, absolutely! Every verified chamber profile automatically generates an instant, high-resolution (1000×1200) print-ready QR code in both vector SVG and PNG formats. You can download it with 1 click from your chamber dashboard to print directly onto physical visiting cards, briefing stationery, or place it inside an acrylic QR stand on your chamber desk. When clients or instructing counsel scan it with their phone camera, your complete verified profile, Bar Council credentials, and 1-tap contact saver open immediately.",
+    },
+    {
       question: "What is My Chamber?",
       answer:
-        "My Chamber is a professional digital chamber and verified link platform built exclusively for Indian advocates. It gives practicing lawyers a dignified digital presence (mychamber.me/yourname) featuring a 1-tap phonebook contact saver (.vcf), high-resolution desk & visiting card QR codes, Bar Council credentials, courts of practice, and client consultation links—with zero coding or technical setup required.",
+        "My Chamber is a professional digital chamber and verified link platform built exclusively for Indian advocates. It gives practicing lawyers a dignified digital presence (mychamber.me/yourname) featuring a 1-tap phonebook contact saver (.vcf), high-resolution desk & visiting card QR codes, Bar Council credentials, courts of practice, newspaper press coverage, reported judgments, and client consultation links—with zero coding or technical setup required.",
     },
     {
       question: "Is creating and maintaining a digital chamber profile 100% free?",
@@ -251,7 +256,7 @@ export default function Home() {
             </h1>
 
             <p className="text-base sm:text-lg text-[#526057] max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-              Join advocates practicing in the Supreme Court, High Courts, and District Courts using My Chamber. One verified link for your visiting card QR code, 1-tap phonebook vCard, Bar Council credentials, and client consultations.
+              Join advocates practicing in the Supreme Court, High Courts, and District Courts using My Chamber. One verified link for your visiting card QR code, 1-tap phonebook vCard, Bar Council credentials, client consultations, newspaper & media coverage, reported judgment citations, and chamber office directions.
             </p>
 
             {/* Interactive Handle Claim Form */}
@@ -298,14 +303,18 @@ export default function Home() {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-y-2 gap-x-5 text-xs font-semibold text-[#66756B]">
+            <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-y-2.5 gap-x-4 text-xs font-semibold text-[#66756B]">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF3ED] text-[#163826] border border-[#D5E5DA]">
+                <QrCode className="w-3.5 h-3.5 text-[#163826]" />
+                <span className="font-bold">Free Printable Desk & Visiting Card QR Included</span>
+              </div>
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-[#163826]" />
                 <span>1 Advocate = 1 Profile</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <BadgeCheck className="w-4 h-4 text-[#163826]" />
-                <span>Bar Council Enrollment Verified</span>
+                <span>Bar Council Verified</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <Check className="w-4 h-4 text-[#163826]" />
@@ -426,13 +435,16 @@ export default function Home() {
               </div>
 
               {/* Floating Pill on Card side */}
-              <div className="absolute -bottom-4 -left-4 bg-white border border-[#E0D8CB] rounded-2xl p-3 shadow-lg flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
-                  <Download className="w-4 h-4" />
+              <div className="absolute -bottom-4 -left-4 sm:-left-6 bg-white border border-[#D5E5DA] rounded-2xl p-3 shadow-xl flex items-center gap-3 z-20">
+                <div className="w-10 h-10 rounded-xl bg-[#163826] flex items-center justify-center text-[#E6D5B8] shadow-sm shrink-0">
+                  <QrCode className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-[11px] font-bold text-[#14231C]">Printable QR Studio</div>
-                  <div className="text-[10px] text-[#6E7B72]">1000×1200 Acrylic Desk Ready</div>
+                  <div className="text-xs font-extrabold text-[#14231C] flex items-center gap-1.5">
+                    <span>Print-Ready QR Code</span>
+                    <span className="text-[10px] bg-[#EBF3ED] text-[#163826] font-bold px-1.5 py-0.5 rounded">Free</span>
+                  </div>
+                  <div className="text-[11px] text-[#526057] font-medium">1000×1200 for Acrylic Desk Stands & Cards</div>
                 </div>
               </div>
             </div>
@@ -758,8 +770,13 @@ export default function Home() {
           {/* Feature 1: QR Code Studio */}
           <div id="qr-studio" className="bg-white rounded-3xl p-7 border border-[#E7E0D5] shadow-sm hover:border-[#163826]/40 transition-all flex flex-col justify-between">
             <div className="space-y-4">
-              <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
-                <QrCode className="w-6 h-6" />
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-2xl bg-[#EBF3ED] flex items-center justify-center text-[#163826]">
+                  <QrCode className="w-6 h-6" />
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-[#EBF3ED] text-[#163826] text-[11px] font-extrabold border border-[#D5E5DA]">
+                  Free SVG & PNG
+                </span>
               </div>
               <h3 className="text-xl font-bold text-[#14231C]">
                 Printable QR Code Studio
@@ -769,7 +786,7 @@ export default function Home() {
               </p>
             </div>
             <div className="mt-6 pt-4 border-t border-[#F2EDE4] flex items-center justify-between text-xs font-bold text-[#163826]">
-              <span>Includes SVG & PNG</span>
+              <span>Instant 1-Click Download</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
